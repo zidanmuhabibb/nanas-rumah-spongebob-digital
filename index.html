@@ -334,22 +334,22 @@
 
           </div>
 
-          <!-- Center Panel: The Manipulative Columns (Tens & Ones) + Jalur Simpan -->
+          <!-- Center Panel: The Manipulative Stage (PULUHAN | JALUR SIMPAN & PENGUIN | SATUAN) -->
           <div class="ws-center-panel">
             
             <div class="manipulation-board" id="manipulationBoard">
 
-              <!-- ================= COLUMN PULUHAN (Purple) ================= -->
+              <!-- ================= 1. COLUMN PULUHAN (Ungu / Kiri) ================= -->
               <div class="col-place-value col-tens" id="colTensArea">
                 <div class="col-header">
                   <div class="col-title">PULUHAN</div>
                   <span class="col-tag">Nilai: 10</span>
                 </div>
 
-                <!-- Carry Slot in Workspace Column -->
-                <div class="tens-carry-anchor">
+                <!-- Carry Slot in Workspace Column (Slot Angka Simpan di atas) -->
+                <div class="tens-carry-anchor" id="tensCarryAnchor">
                   <span class="carry-label">⭐ Slot Angka Simpan</span>
-                  <div class="token-drop-slot" id="wsCarryDropSlot" data-target="carry-slot" title="Tempat menaruh angka simpan dari Penguin">
+                  <div class="token-drop-slot" id="wsCarryDropSlot" data-target="carry-slot" title="Slot Angka Simpan dari Penguin">
                   </div>
                 </div>
 
@@ -376,7 +376,48 @@
                 </div>
               </div>
 
-              <!-- ================= COLUMN SATUAN (Amber/Yellow) ================= -->
+              <!-- ================= 2. JALUR SIMPAN & PENGUIN (DI TENGAH) ================= -->
+              <div class="col-jalur-center" id="colJalurCenter">
+                
+                <!-- Top Delivery Chute to Puluhan Carry Slot -->
+                <div class="chute-to-carry" id="chuteToCarry">
+                  <div class="chute-arrow-left">⇦ Meluncur ke Carry Slot Puluhan</div>
+                </div>
+
+                <!-- Penguin Center Sanctuary & Holding Nest -->
+                <div class="penguin-center-hub">
+                  <span class="penguin-mini-badge">🐧 TEMPAT SIMPAN</span>
+                  
+                  <div class="penguin-character-box" id="wsPenguinContainer"></div>
+
+                  <div class="penguin-bubble">
+                    <p id="penguinSpeech">“Aku siap menjaga angka simpanmu!”</p>
+                  </div>
+
+                  <!-- Penguin Storage Nest (Drop Target) -->
+                  <div class="penguin-storage-nest" id="penguinStorageNest" data-target="penguin-nest">
+                    <span class="nest-title">Sarang Simpan Penguin</span>
+                    <div class="token-drop-slot" id="penguinDropSlot" data-target="penguin-nest">
+                      <!-- Stored token placed here -->
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Vertical Jalur Simpan Pipe connecting from Satuan to Penguin and up to Puluhan -->
+                <div class="jalur-simpan-pipe-center" id="jalurSimpanPipe">
+                  <div class="pipe-label-v">
+                    <span>🌊</span> JALUR SIMPAN
+                  </div>
+                  <div class="pipe-stream-arrows">
+                    <span class="stream-dot">⇧</span>
+                    <span class="stream-dot">⇧</span>
+                    <span class="stream-dot">⇦</span>
+                  </div>
+                </div>
+
+              </div>
+
+              <!-- ================= 3. COLUMN SATUAN (Kuning-Oranye / Kanan) ================= -->
               <div class="col-place-value col-ones" id="colOnesArea">
                 <div class="col-header">
                   <div class="col-title">SATUAN</div>
@@ -384,7 +425,7 @@
                 </div>
 
                 <!-- Operands Ones Tokens -->
-                <div class="operand-slots-box" style="margin-top: 32px;">
+                <div class="operand-slots-box" style="margin-top: 4px;">
                   <div class="slot-row">
                     <span class="slot-label-mini">Atas:</span>
                     <div class="token-drop-slot filled" id="slotOnesA">
@@ -411,61 +452,29 @@
                     <span style="font-size:0.85rem; color:#94a3b8; font-weight:600;">Masukkan hasil pada keypad ➜</span>
                   </div>
 
-                  <!-- Interactive Choice Prompt for Split Digits (PRD Section 24) -->
-                  <div id="splitQuestionsBox" style="display:none; flex-direction:column; gap:6px; margin-top:4px;">
-                    <div id="splitQuestionLabel" style="font-size:0.85rem; font-weight:700; color:#b45309; text-align:center;">
-                      Pindahkan angka 5 ke hasil satuan!
+                  <!-- Instruction prompt for split tokens -->
+                  <div id="splitQuestionsBox" style="display:none; flex-direction:column; gap:4px; margin-top:4px;">
+                    <div id="splitQuestionLabel" style="font-size:0.82rem; font-weight:700; color:#b45309; text-align:center;">
+                      Pisahkan: 1 simpan ke Penguin, 5 tetap di Satuan!
                     </div>
                   </div>
                 </div>
 
                 <!-- Ones Result Slot -->
-                <div style="margin-top:10px; display:flex; flex-direction:column; align-items:center; gap:6px;">
+                <div style="margin-top:auto; display:flex; flex-direction:column; align-items:center; gap:6px;">
                   <span style="font-size:0.75rem; font-weight:800; color:var(--color-ones-dark);">HASIL SATUAN</span>
                   <div class="token-drop-slot" id="wsResultOnesSlot" data-target="result-ones"></div>
                 </div>
 
               </div>
 
-              <!-- ================= JALUR SIMPAN (Glowing Pipe Path) - PRD Section 26 ================= -->
-              <div class="jalur-simpan-pipe" id="jalurSimpanPipe">
-                <div class="pipe-label">
-                  <span>🌊</span> JALUR SIMPAN ANGKA PULUHAN
-                </div>
-                <div class="pipe-arrow-trail">
-                  <span class="arrow-dot">➜</span>
-                  <span class="arrow-dot">➜</span>
-                  <span class="arrow-dot">➜</span>
-                  <span>🐧</span>
-                </div>
-              </div>
-
             </div>
 
           </div>
 
-          <!-- Right Panel: Penguin Sanctuary & Keypad -->
+          <!-- Right Panel: Keypad & Quick Concept Guide -->
           <div class="ws-right-panel">
             
-            <!-- Penguin Storage Sanctuary Card (PRD Section 25) -->
-            <div class="penguin-sanctuary-card">
-              <span class="penguin-header-tag">🐧 TEMPAT SIMPAN</span>
-              
-              <div class="penguin-character-box" id="wsPenguinContainer"></div>
-
-              <div class="penguin-bubble">
-                <p id="penguinSpeech">“Aku siap menjaga angka simpanmu!”</p>
-              </div>
-
-              <!-- The Penguin Holding Nest / Slot -->
-              <div class="penguin-storage-nest" id="penguinStorageNest" data-target="penguin-nest">
-                <span class="nest-title">Sarang Simpan Penguin</span>
-                <div class="token-drop-slot" id="penguinDropSlot" data-target="penguin-nest">
-                  <!-- Token stored here -->
-                </div>
-              </div>
-            </div>
-
             <!-- Digital Calculation Keypad -->
             <div class="keypad-container" id="wsKeypadCard">
               <div class="keypad-header" id="keypadPrompt">Ketik Hasil Satuan:</div>
@@ -486,6 +495,18 @@
                 <button class="key-btn key-btn-action" data-key="backspace">⌫</button>
                 <button class="key-btn key-btn-enter" data-key="enter" style="grid-column: span 3;">MASUKKAN ➜</button>
               </div>
+            </div>
+
+            <!-- Concept Reminder Card in Right Panel -->
+            <div class="concept-reminder-card">
+              <div class="concept-header">
+                <span>💡</span> Aturan Menyimpan
+              </div>
+              <ul class="concept-list">
+                <li><strong>Satuan:</strong> Angka satuan tetap di kolom Hasil Satuan.</li>
+                <li><strong>Puluhan:</strong> Angka puluhan disimpan ke Penguin di tengah.</li>
+                <li><strong>Meluncur:</strong> Penguin akan meluncur mengantar angka simpan ke atas kolom Puluhan!</li>
+              </ul>
             </div>
 
           </div>

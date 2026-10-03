@@ -533,7 +533,7 @@ class NRSDApp {
     // Reset Penguin
     this.setPenguinSpeech('“Aku siap menjaga angka simpanmu!”');
     const penguinContainer = document.getElementById('wsPenguinContainer');
-    if (penguinContainer) penguinContainer.innerHTML = Mascots.getPenguinMascotSvg(120, 130, 'neutral');
+    if (penguinContainer) penguinContainer.innerHTML = Mascots.getPenguinMascotSvg(100, 105, 'neutral');
 
     // Set initial phase
     this.setPhase('ONES_INPUT');
@@ -563,45 +563,42 @@ class NRSDApp {
       window.soundEngine.speak(`Hitung angka satuan: ${this.onesA} ditambah ${this.onesB}`);
     } 
     else if (phase === 'ONES_SPLIT_CHOICE') {
-      if (phasePill) phasePill.textContent = 'Tahap 2: Pisahkan Digit Satuan';
-      const prompt = `Pindahkan angka satuan (${this.onesDigit}) ke kotak HASIL SATUAN!`;
+      if (phasePill) phasePill.textContent = 'Tahap 2: Pisahkan Hasil Satuan';
+      const prompt = `Hasilnya ${this.onesSum}: Pindahkan ${this.onesDigit} ke Hasil Satuan, dan simpan ${this.carryDigit} ke Penguin!`;
       if (instructionText) instructionText.textContent = prompt;
-      if (spongeSpeech) spongeSpeech.innerHTML = `Hasilnya <strong>${this.onesSum}</strong>! Pindahkan angka <strong>${this.onesDigit}</strong> ke Hasil Satuan di bawah.`;
-      if (btnCheckText) btnCheckText.textContent = 'LANJUT SIMPAN';
+      if (spongeSpeech) spongeSpeech.innerHTML = `Hasilnya <strong>${this.onesSum}</strong>! Letakkan angka <strong>${this.onesDigit}</strong> di Hasil Satuan, dan simpan <strong>${this.carryDigit}</strong> ke Sarang Penguin di tengah!`;
+      if (btnCheckText) btnCheckText.textContent = 'CEK LANGKAH';
       if (keypadCard) keypadCard.style.opacity = '0.5';
 
-      // Highlight ones result target
+      // Highlight targets
+      this.highlightValidTarget('result-ones');
+      this.highlightValidTarget('penguin-nest');
+      window.soundEngine.speak(`Pisahkan angka satuan dan angka simpan`);
+    }
+    else if (phase === 'MOVE_TO_PENGUIN') {
+      if (phasePill) phasePill.textContent = 'Tahap 3: Simpan ke Penguin';
+      const prompt = `Bawa angka ${this.carryDigit} ke Sarang Penguin di tengah Jalur Simpan!`;
+      if (instructionText) instructionText.textContent = prompt;
+      if (spongeSpeech) spongeSpeech.innerHTML = `Sekarang simpan angka <strong>${this.carryDigit}</strong> ke Sarang Penguin di tengah!`;
+      
+      this.highlightValidTarget('penguin-nest');
+      this.setPenguinSpeech(`“Oper angka ${this.carryDigit} ke sini, biar aku antar ke Puluhan!”`);
+      window.soundEngine.speak(`Simpan angka ${this.carryDigit} ke Penguin`);
+    }
+    else if (phase === 'MOVE_TO_ONES_RESULT') {
+      if (phasePill) phasePill.textContent = 'Tahap 3: Tempatkan Satuan';
+      const prompt = `Pindahkan angka satuan (${this.onesDigit}) ke kotak HASIL SATUAN!`;
+      if (instructionText) instructionText.textContent = prompt;
+      if (spongeSpeech) spongeSpeech.innerHTML = `Bagus! Sekarang letakkan angka <strong>${this.onesDigit}</strong> di Hasil Satuan.`;
+      
       this.highlightValidTarget('result-ones');
       window.soundEngine.speak(`Pindahkan angka ${this.onesDigit} ke hasil satuan`);
     }
-    else if (phase === 'MOVE_TO_PENGUIN') {
-      if (phasePill) phasePill.textContent = 'Tahap 3: Simpan Digit ke Penguin';
-      const prompt = `Bawa angka ${this.carryDigit} ke Penguin melalui Jalur Simpan!`;
-      if (instructionText) instructionText.textContent = prompt;
-      if (spongeSpeech) spongeSpeech.innerHTML = `Hebat! Angka <strong>${this.carryDigit}</strong> adalah puluhan, geser ke Sarang Penguin!`;
-      
-      const pipe = document.getElementById('jalurSimpanPipe');
-      if (pipe) pipe.classList.add('pipe-active');
-
-      this.highlightValidTarget('penguin-nest');
-      this.setPenguinSpeech(`“Oper angka ${this.carryDigit} ke aku, biar aku simpan!”`);
-      window.soundEngine.speak(`Bawa angka ${this.carryDigit} ke Penguin untuk disimpan`);
-    }
-    else if (phase === 'MOVE_TO_CARRY') {
-      if (phasePill) phasePill.textContent = 'Tahap 4: Geser ke Carry Slot Puluhan';
-      const prompt = `Pindahkan angka ${this.carryDigit} dari Penguin ke Slot Simpan Puluhan (di atas)!`;
-      if (instructionText) instructionText.textContent = prompt;
-      if (spongeSpeech) spongeSpeech.innerHTML = `Penguin sudah menyimpan angka <strong>${this.carryDigit}</strong>! Sekarang bawa ke <strong>Slot Simpan Puluhan</strong>.`;
-      
-      this.highlightValidTarget('carry-slot');
-      this.setPenguinSpeech(`“Silakan ambil angka ${this.carryDigit} dan taruh di Carry Slot!”`);
-      window.soundEngine.speak(`Pindahkan angka ${this.carryDigit} dari Penguin ke slot simpan puluhan`);
-    }
     else if (phase === 'TENS_INPUT') {
-      if (phasePill) phasePill.textContent = 'Tahap 5: Jumlahkan Puluhan';
+      if (phasePill) phasePill.textContent = 'Tahap 4: Jumlahkan Puluhan';
       const prompt = `Jumlahkan semua puluhan: ${this.carryDigit > 0 ? this.carryDigit + ' (simpan) + ' : ''}${this.tensA} + ${this.tensB} = ?`;
       if (instructionText) instructionText.textContent = prompt;
-      if (spongeSpeech) spongeSpeech.innerHTML = `Sekarang jumlahkan puluhan: <strong>${this.carryDigit > 0 ? this.carryDigit + ' + ' : ''}${this.tensA} + ${this.tensB}</strong>. Ketik di keypad!`;
+      if (spongeSpeech) spongeSpeech.innerHTML = `Angka simpan sudah siap di atas Puluhan! Sekarang hitung: <strong>${this.carryDigit > 0 ? this.carryDigit + ' + ' : ''}${this.tensA} + ${this.tensB}</strong> di keypad!`;
       if (keypadCard) keypadCard.style.opacity = '1';
       
       const keyPrompt = document.getElementById('keypadPrompt');
@@ -660,7 +657,7 @@ class NRSDApp {
         if (keyDisplay) keyDisplay.textContent = '__';
       }
     }
-    // Step 5: Tens Input
+    // Step 4: Tens Input
     else if (this.phase === 'TENS_INPUT') {
       if (val === this.tensSum) {
         this.saveHistorySnapshot();
@@ -690,10 +687,10 @@ class NRSDApp {
 
     container.innerHTML = `
       <div style="display:flex; align-items:center; gap:16px;">
-        <div class="digit-ball digit-ball-carry" id="splitBallCarry" data-digit="${carry}" data-type="carry" title="Digit Puluhan Simpan: ${carry}">
+        <div class="digit-ball digit-ball-carry" id="splitBallCarry" data-digit="${carry}" data-type="carry" title="Digit Puluhan Simpan: ${carry} (Simpan ke Penguin)">
           ${carry}
         </div>
-        <div class="digit-ball digit-ball-amber" id="splitBallOnes" data-digit="${ones}" data-type="ones" title="Digit Satuan: ${ones}">
+        <div class="digit-ball digit-ball-amber" id="splitBallOnes" data-digit="${ones}" data-type="ones" title="Digit Satuan: ${ones} (Tetap di Satuan)">
           ${ones}
         </div>
       </div>
@@ -708,7 +705,6 @@ class NRSDApp {
      DRAG AND DROP & CLICK-TO-MOVE ENGINE (PRD Section 20, 21, 22)
      ========================================================================== */
   bindDragAndDrop() {
-    // Global pointer up to cancel or finalize dragging
     window.addEventListener('pointerup', (e) => this.handlePointerUp(e));
     window.addEventListener('pointermove', (e) => this.handlePointerMove(e));
   }
@@ -734,9 +730,10 @@ class NRSDApp {
       tokenElem.classList.remove('selected', 'click-move-active-ball');
       this.selectedBall = null;
       this.clearAllDropHighlights();
-      if (this.phase === 'ONES_SPLIT_CHOICE') this.highlightValidTarget('result-ones');
-      if (this.phase === 'MOVE_TO_PENGUIN') this.highlightValidTarget('penguin-nest');
-      if (this.phase === 'MOVE_TO_CARRY') this.highlightValidTarget('carry-slot');
+      if (this.phase === 'ONES_SPLIT_CHOICE') {
+        this.highlightValidTarget('result-ones');
+        this.highlightValidTarget('penguin-nest');
+      }
       return;
     }
 
@@ -749,17 +746,15 @@ class NRSDApp {
     tokenElem.classList.add('selected', 'click-move-active-ball');
 
     const tokenType = tokenElem.getAttribute('data-type');
-    if (tokenType === 'ones' && this.phase === 'ONES_SPLIT_CHOICE') {
+    if (tokenType === 'ones') {
       this.highlightValidTarget('result-ones', true);
-    } else if (tokenType === 'carry' && this.phase === 'MOVE_TO_PENGUIN') {
+    } else if (tokenType === 'carry') {
       this.highlightValidTarget('penguin-nest', true);
-    } else if (tokenType === 'carry-stored' && this.phase === 'MOVE_TO_CARRY') {
-      this.highlightValidTarget('carry-slot', true);
     }
   }
 
   handlePointerDown(e, tokenElem) {
-    if (e.button !== 0) return; // Only primary button
+    if (e.button !== 0) return;
     this.isDragging = true;
     this.draggedElem = tokenElem;
     this.dragStartX = e.clientX;
@@ -786,13 +781,12 @@ class NRSDApp {
     elem.classList.remove('dragging');
     elem.style.transform = '';
 
-    // Check hit testing with drop targets (PRD Section 21 Snap System)
     const dropTarget = this.findDropTargetUnderCursor(e.clientX, e.clientY);
     if (dropTarget) {
       this.executeTokenPlacement(elem, dropTarget);
     } else {
       window.soundEngine.playErrorBounce();
-      this.showToast('Arahkan bola angka ke target yang menyala hijau.', 'warning');
+      this.showToast('Arahkan bola angka ke target yang menyala.', 'warning');
     }
   }
 
@@ -800,7 +794,6 @@ class NRSDApp {
     const targets = document.querySelectorAll('[data-target]');
     for (const target of targets) {
       const rect = target.getBoundingClientRect();
-      // Expand drop target bounds for easier child touch interaction
       const padding = 20;
       if (
         x >= rect.left - padding &&
@@ -822,50 +815,126 @@ class NRSDApp {
     const digit = parseInt(tokenElem.getAttribute('data-digit') || '0', 10);
 
     // Case 1: Placing Ones Result Digit (e.g. 5 into Ones Result)
-    if (tokenType === 'ones' && this.phase === 'ONES_SPLIT_CHOICE' && targetType === 'result-ones') {
+    if (tokenType === 'ones' && targetType === 'result-ones') {
       this.saveHistorySnapshot();
       window.soundEngine.playSnap();
       this.placeOnesResultBall(digit);
       tokenElem.remove();
       this.showToast(`Bagus! Angka ${digit} tetap pada tempat satuan.`, 'success');
-      this.setPhase('MOVE_TO_PENGUIN');
+
+      // Check if carry token is already placed in Carry Slot
+      const carrySlotFilled = document.getElementById('wsCarryDropSlot')?.classList.contains('filled');
+      if (carrySlotFilled) {
+        this.setPhase('TENS_INPUT');
+      } else {
+        this.setPhase('MOVE_TO_PENGUIN');
+      }
       return;
     }
 
-    // Case 2: Moving Carry Digit to Penguin Sanctuary
-    if (tokenType === 'carry' && this.phase === 'MOVE_TO_PENGUIN' && targetType === 'penguin-nest') {
+    // Case 2: Moving Carry Digit to Penguin Nest -> Triggers Penguin Glide Animation!
+    if (tokenType === 'carry' && (targetType === 'penguin-nest' || targetType === 'carry-slot' || targetType === 'algo-carry')) {
       this.saveHistorySnapshot();
-      window.soundEngine.playWhoosh();
-      setTimeout(() => window.soundEngine.playPenguinChirp(), 200);
-
-      this.placePenguinCarryBall(digit);
       tokenElem.remove();
-
-      this.showToast(`Tepat! Angka ${digit} disimpan terlebih dahulu oleh Penguin.`, 'success');
-      this.setPhase('MOVE_TO_CARRY');
+      
+      // Animate Penguin gliding up the central Jalur Simpan to Carry Slot
+      this.animatePenguinGlideToCarry(digit);
       return;
     }
 
-    // Case 3: Moving Carry Digit from Penguin to Carry Slot above Tens Column
-    if (tokenType === 'carry-stored' && this.phase === 'MOVE_TO_CARRY' && (targetType === 'carry-slot' || targetType === 'algo-carry')) {
-      this.saveHistorySnapshot();
-      window.soundEngine.playCarryPlaced();
-      this.placeCarrySlotBall(digit);
-      tokenElem.remove();
-
-      this.showToast(`Sempurna! Angka simpan ${digit} berada di posisi Puluhan.`, 'success');
-      this.setPhase('TENS_INPUT');
-      return;
-    }
-
-    // Invalid target feedback (PRD Section 22 & 31)
+    // Invalid target feedback
     window.soundEngine.playErrorBounce();
     if (tokenType === 'ones') {
       this.showToast(`Angka ${digit} adalah satuan. Letakkan di kotak Hasil Satuan!`, 'warning');
     } else if (tokenType === 'carry') {
-      this.showToast(`Angka simpan ${digit} harus dibawa ke Penguin terlebih dahulu!`, 'warning');
+      this.showToast(`Angka ${digit} adalah puluhan. Letakkan di Sarang Penguin di tengah!`, 'warning');
     } else {
       this.showToast('Letakkan angka pada slot yang menyala.', 'warning');
+    }
+  }
+
+  /* ==========================================================================
+     ANIMATE PENGUIN GLIDING FROM CENTER TO CARRY SLOT
+     ========================================================================== */
+  animatePenguinGlideToCarry(digit) {
+    window.soundEngine.playPenguinChirp();
+    this.setPenguinSpeech(`“Hore! Aku bawa angka ${digit} meluncur ke Slot Simpan Puluhan!”`);
+    
+    const jalurCol = document.getElementById('colJalurCenter');
+    if (jalurCol) jalurCol.classList.add('active-flow');
+
+    // Highlight target carry slot
+    const carryAnchor = document.getElementById('tensCarryAnchor');
+    if (carryAnchor) carryAnchor.classList.add('target-active');
+
+    // Create dynamic gliding sprite
+    const sprite = document.createElement('div');
+    sprite.className = 'penguin-glide-sprite';
+    sprite.innerHTML = `
+      ${Mascots.getPenguinMascotSvg(80, 85, 'holding')}
+      <div class="held-carry-digit">${digit}</div>
+    `;
+
+    // Calculate start position (Penguin nest in center) and end position (Carry Slot above Puluhan)
+    const startElem = document.getElementById('penguinDropSlot');
+    const endElem = document.getElementById('wsCarryDropSlot');
+    const boardElem = document.getElementById('manipulationBoard');
+
+    if (startElem && endElem && boardElem) {
+      const boardRect = boardElem.getBoundingClientRect();
+      const startRect = startElem.getBoundingClientRect();
+      const endRect = endElem.getBoundingClientRect();
+
+      const startX = startRect.left - boardRect.left + startRect.width / 2 - 40;
+      const startY = startRect.top - boardRect.top + startRect.height / 2 - 42;
+
+      const endX = endRect.left - boardRect.left + endRect.width / 2 - 40;
+      const endY = endRect.top - boardRect.top + endRect.height / 2 - 42;
+
+      sprite.style.left = `${startX}px`;
+      sprite.style.top = `${startY}px`;
+      sprite.style.transform = 'scale(0.8)';
+      boardElem.appendChild(sprite);
+
+      // Play whoosh sound as it glides
+      window.soundEngine.playWhoosh();
+
+      // Trigger glide transition
+      requestAnimationFrame(() => {
+        sprite.style.transform = 'scale(1.1)';
+        requestAnimationFrame(() => {
+          sprite.style.left = `${endX}px`;
+          sprite.style.top = `${endY}px`;
+        });
+      });
+
+      // On arrival at Carry Slot
+      setTimeout(() => {
+        window.soundEngine.playCarryPlaced();
+        this.placeCarrySlotBall(digit);
+
+        if (sprite.parentNode) {
+          sprite.remove();
+        }
+
+        if (jalurCol) jalurCol.classList.remove('active-flow');
+        if (carryAnchor) carryAnchor.classList.remove('target-active');
+
+        this.setPenguinSpeech(`“Angka ${digit} berhasil disimpan di atas Puluhan!”`);
+        this.showToast(`Tepat! Angka simpan ${digit} berhasil dipindahkan ke atas Puluhan.`, 'success');
+
+        // Check if ones digit is already placed
+        const onesSlotFilled = document.getElementById('wsResultOnesSlot')?.classList.contains('filled');
+        if (onesSlotFilled) {
+          this.setPhase('TENS_INPUT');
+        } else {
+          this.setPhase('MOVE_TO_ONES_RESULT');
+        }
+      }, 1250);
+    } else {
+      // Fallback
+      this.placeCarrySlotBall(digit);
+      this.setPhase('TENS_INPUT');
     }
   }
 
@@ -886,31 +955,6 @@ class NRSDApp {
     }
   }
 
-  placePenguinCarryBall(digit) {
-    const penguinSlot = document.getElementById('penguinDropSlot');
-    const penguinNest = document.getElementById('penguinStorageNest');
-    const penguinContainer = document.getElementById('wsPenguinContainer');
-
-    if (penguinSlot) {
-      penguinSlot.innerHTML = `
-        <div class="digit-ball digit-ball-carry" id="penguinStoredBall" data-digit="${digit}" data-type="carry-stored" title="Klik atau seret angka ${digit} ke Carry Slot">
-          ${digit}
-        </div>
-      `;
-      this.bindTokenInteractivity(document.getElementById('penguinStoredBall'));
-    }
-
-    if (penguinNest) {
-      penguinNest.classList.add('has-stored-ball');
-    }
-
-    if (penguinContainer) {
-      penguinContainer.innerHTML = Mascots.getPenguinMascotSvg(120, 130, 'holding');
-      penguinContainer.classList.add('celebrating');
-      setTimeout(() => penguinContainer.classList.remove('celebrating'), 800);
-    }
-  }
-
   placeCarrySlotBall(digit) {
     const wsCarrySlot = document.getElementById('wsCarryDropSlot');
     const algoCarryVal = document.getElementById('algoCarryVal');
@@ -926,7 +970,7 @@ class NRSDApp {
     if (algoCarrySlot) algoCarrySlot.classList.add('filled');
 
     if (penguinContainer) {
-      penguinContainer.innerHTML = Mascots.getPenguinMascotSvg(120, 130, 'neutral');
+      penguinContainer.innerHTML = Mascots.getPenguinMascotSvg(100, 105, 'neutral');
     }
   }
 
