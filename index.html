@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NANAS RUMAH SPONGEBOB - Media Manipulatif Digital Penjumlahan dengan Menyimpan</title>
+  <meta name="description" content="Media manipulatif digital interaktif untuk pembelajaran penjumlahan bilangan cacah dengan menyimpan kelas 3 Sekolah Dasar.">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍍</text></svg>">
+</head>
+<body>
+
+  <!-- Undersea Background Canvas with Sunbeams and Bubbles -->
+  <div class="ocean-bg">
+    <div class="sunbeam sunbeam-1"></div>
+    <div class="sunbeam sunbeam-2"></div>
+    <div class="sunbeam sunbeam-3"></div>
+    <div class="bubble-container" id="bubbleContainer"></div>
+  </div>
+
+  <!-- App Wrapper Frame -->
+  <div id="app">
+    <div class="app-frame">
+
+      <!-- ==========================================================================
+           TOP APPLICATION HEADER
+           ========================================================================== -->
+      <header class="app-header">
+        <div class="header-brand" id="btnHeaderHome" role="button" tabindex="0" title="Kembali ke Beranda">
+          <div class="brand-icon">🍍</div>
+          <div class="brand-text">
+            <h1>NANAS RUMAH SPONGEBOB</h1>
+            <span>Media Pembelajaran Penjumlahan dengan Menyimpan • Kelas III SD</span>
+          </div>
+        </div>
+
+        <div class="header-center-info">
+          <div class="mode-badge" id="headerModeBadge">
+            <span id="headerModeIcon">📚</span>
+            <span id="headerModeText">Mode Belajar</span>
+          </div>
+        </div>
+
+        <div class="header-actions">
+          <button class="header-btn" id="btnToggleSound" data-tooltip="Suara Efek (Aktif)" aria-label="Toggle Suara Efek">
+            🔊
+          </button>
+          <button class="header-btn" id="btnToggleVoice" data-tooltip="Suara Narasi (Aktif)" aria-label="Toggle Suara Narasi">
+            🗣️
+          </button>
+          <button class="header-btn" id="btnHeaderGuide" data-tooltip="Petunjuk Belajar" aria-label="Petunjuk">
+            📖
+          </button>
+          <button class="header-btn" id="btnHeaderTeacher" data-tooltip="Pengaturan Guru" aria-label="Pengaturan Guru">
+            ⚙️
+          </button>
+        </div>
+      </header>
+
+      <!-- ==========================================================================
+           SCREEN 1: SPLASH SCREEN (PRD Section 11)
+           ========================================================================== -->
+      <section class="view-screen active" id="screen-splash">
+        <div class="splash-content">
+          <div class="splash-mascot-group">
+            <div class="mascot-avatar" id="splashSponge"></div>
+            <div class="mascot-avatar mascot-penguin" id="splashPenguin"></div>
+          </div>
+          <span class="splash-badge">Matematika Kelas 3 Sekolah Dasar</span>
+          <h2 class="splash-title">NANAS RUMAH SPONGEBOB</h2>
+          <p class="splash-subtitle">Media Manipulatif Digital Penjumlahan dengan Menyimpan</p>
+          <button class="btn btn-primary btn-lg" id="btnSplashStart">
+            <span>▶</span> MULAI BELAJAR
+          </button>
+        </div>
+      </section>
+
+      <!-- ==========================================================================
+           SCREEN 2: HOME SCREEN (PRD Section 12)
+           ========================================================================== -->
+      <section class="view-screen" id="screen-home">
+        <div class="home-container">
+          <div class="home-illustration">
+            <div class="home-hero-mascots">
+              <div class="home-hero-sponge" id="homeSpongeContainer"></div>
+              <div class="home-hero-penguin" id="homePenguinContainer"></div>
+            </div>
+            <div class="home-quote">
+              <p>“Pindahkan Angkanya, Pahami Menyimpannya!”</p>
+            </div>
+          </div>
+
+          <div class="home-menu">
+            <div class="home-header-text">
+              <h2>Ayo Belajar Menjumlahkan!</h2>
+              <p>Pilih mode aktivitas di bawah ini untuk memulai petualangan matematika:</p>
+            </div>
+
+            <!-- Primary CTA -->
+            <div class="menu-card-primary" id="btnHomeLearn">
+              <div class="menu-primary-info">
+                <h3><span>📚</span> MULAI BELAJAR</h3>
+                <p>Panduan langkah demi langkah dengan bantuan visual penuh</p>
+              </div>
+              <div class="menu-arrow">➜</div>
+            </div>
+
+            <div class="home-secondary-grid">
+              <div class="menu-card-sec" id="btnHomePractice">
+                <div class="menu-sec-icon">🎮</div>
+                <div class="menu-sec-info">
+                  <h4>Mode Latihan</h4>
+                  <p>Mengerjakan soal mandiri</p>
+                </div>
+              </div>
+
+              <div class="menu-card-sec btn-tantangan" id="btnHomeChallenge">
+                <div class="menu-sec-icon">🏆</div>
+                <div class="menu-sec-info">
+                  <h4>Mode Tantangan</h4>
+                  <p>Kumpulkan skor & bintang</p>
+                </div>
+              </div>
+
+              <div class="menu-card-sec" id="btnHomeGuide">
+                <div class="menu-sec-icon">📖</div>
+                <div class="menu-sec-info">
+                  <h4>Petunjuk</h4>
+                  <p>Cara menggunakan media</p>
+                </div>
+              </div>
+
+              <div class="menu-card-sec btn-guru" id="btnHomeTeacher">
+                <div class="menu-sec-icon">👩‍🏫</div>
+                <div class="menu-sec-info">
+                  <h4>Mode Guru</h4>
+                  <p>Kustom soal & diagnostik</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==========================================================================
+           SCREEN 3: PETUNJUK CARA MENGGUNAKAN (PRD Section 13)
+           ========================================================================== -->
+      <section class="view-screen" id="screen-guide">
+        <div class="guide-header">
+          <h2>Petunjuk & Cara Kerja Media</h2>
+          <p>Tiga langkah mudah memahami konsep penjumlahan dengan teknik menyimpan:</p>
+        </div>
+
+        <div class="guide-steps-grid">
+          <div class="guide-step-card step-1">
+            <span class="step-number-badge">Langkah 1</span>
+            <div class="step-icon-area">
+              <div style="display:flex; gap:10px;">
+                <div class="digit-ball digit-ball-purple" style="width:50px; height:50px; font-size:1.6rem;">2</div>
+                <div class="digit-ball digit-ball-amber" style="width:50px; height:50px; font-size:1.6rem;">7</div>
+              </div>
+            </div>
+            <h3>1. Nilai Tempat</h3>
+            <p>Kenali digit <strong>Puluhan</strong> (ungu) dan digit <strong>Satuan</strong> (oranye/kuning). Jumlahkan selalu dari kolom satuan terlebih dahulu.</p>
+          </div>
+
+          <div class="guide-step-card step-2">
+            <span class="step-number-badge">Langkah 2</span>
+            <div class="step-icon-area">
+              <div style="display:flex; gap:8px; align-items:center;">
+                <div class="digit-ball digit-ball-blue" style="width:48px; height:48px; font-size:1.5rem;">1</div>
+                <span style="font-weight:800; font-size:1.3rem;">+</span>
+                <div class="digit-ball digit-ball-amber" style="width:48px; height:48px; font-size:1.5rem;">5</div>
+              </div>
+            </div>
+            <h3>2. Pisahkan Hasil</h3>
+            <p>Jika hasil satuan adalah <strong>15</strong>, angka <strong>5</strong> tetap di satuan, dan angka <strong>1</strong> adalah puluhan yang harus disimpan.</p>
+          </div>
+
+          <div class="guide-step-card step-3">
+            <span class="step-number-badge">Langkah 3</span>
+            <div class="step-icon-area">
+              <div style="display:flex; gap:10px; align-items:center;">
+                <span style="font-size:2rem;">🐧</span>
+                <span style="font-size:1.5rem;">➜</span>
+                <div class="digit-ball digit-ball-carry" style="width:48px; height:48px; font-size:1.5rem;">1</div>
+              </div>
+            </div>
+            <h3>3. Simpan ke Puluhan</h3>
+            <p>Bawa angka <strong>1</strong> ke Penguin untuk disimpan, lalu geser ke <strong>Slot Simpan Puluhan</strong> dan jumlahkan bersama puluhan lainnya!</p>
+          </div>
+        </div>
+
+        <div class="guide-demo-box">
+          <div class="guide-demo-text">
+            <span style="font-size: 2rem;">💡</span>
+            <div>
+              <strong>Prinsip Inti Pembelajaran:</strong>
+              <div style="font-size: 0.95rem; opacity: 0.9;">“Angka yang disimpan tidak hilang, melainkan berpindah ke kolom puluhan sesuai nilai tempatnya.”</div>
+            </div>
+          </div>
+          <div class="demo-formula">7 + 8 = 15 ➜ 1 Simpan + 5 Satuan</div>
+        </div>
+
+        <div class="guide-footer-actions">
+          <button class="btn btn-secondary" id="btnGuideBack">← Kembali</button>
+          <button class="btn btn-primary" id="btnGuideToWorkspace">Mulai Praktik Sekarang ➜</button>
+        </div>
+      </section>
+
+      <!-- ==========================================================================
+           SCREEN 4: MODE SELECTOR (PRD Section 14)
+           ========================================================================== -->
+      <section class="view-screen" id="screen-modes">
+        <div style="text-align: center; margin-bottom: 20px;">
+          <h2 style="font-family: var(--font-display); font-size: 2.2rem; color: #1e1b4b;">Pilih Mode Belajar</h2>
+          <p style="color: #475569; font-size: 1.1rem;">Sesuaikan pengalaman belajarmu hari ini:</p>
+        </div>
+
+        <div class="modes-grid">
+          <div class="mode-card mode-card-belajar" id="cardModeBelajar">
+            <div class="mode-card-icon">📚</div>
+            <div class="mode-card-content">
+              <h3>Mode Belajar</h3>
+              <p>Panduan lengkap terstruktur dengan petunjuk otomatis dan bantuan setiap langkah.</p>
+              <span class="mode-card-badge" style="background:#fde68a; color:#854d0e;">Disarankan untuk Pemula</span>
+            </div>
+          </div>
+
+          <div class="mode-card mode-card-latihan" id="cardModeLatihan">
+            <div class="mode-card-icon">🎮</div>
+            <div class="mode-card-content">
+              <h3>Mode Latihan</h3>
+              <p>Mengerjakan serangkaian soal dengan bantuan mandiri tanpa paksaan langkah.</p>
+              <span class="mode-card-badge" style="background:#a7f3d0; color:#065f46;">Latihan Mandiri</span>
+            </div>
+          </div>
+
+          <div class="mode-card mode-card-tantangan" id="cardModeTantangan">
+            <div class="mode-card-icon">🏆</div>
+            <div class="mode-card-content">
+              <h3>Mode Tantangan</h3>
+              <p>Uji kemampuanmu! Selesaikan soal, kumpulkan skor, dan raih medali Bintang Bawah Laut.</p>
+              <span class="mode-card-badge" style="background:#fbcfe8; color:#9f1239;">Skor & Medali</span>
+            </div>
+          </div>
+
+          <div class="mode-card mode-card-guru" id="cardModeGuru">
+            <div class="mode-card-icon">👩‍🏫</div>
+            <div class="mode-card-content">
+              <h3>Mode Guru</h3>
+              <p>Pengaturan kustom bilangan (0-99), saklar bantuan, dan diagnostik pemahaman konsep.</p>
+              <span class="mode-card-badge" style="background:#ddd6fe; color:#5b21b6;">Panel Pendidik</span>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top: 24px;">
+          <button class="btn btn-secondary" id="btnModesBack">← Kembali ke Beranda</button>
+        </div>
+      </section>
+
+      <!-- ==========================================================================
+           SCREEN 5: WORKSPACE UTAMA (PRD Section 15, 49, 61)
+           ========================================================================== -->
+      <section class="view-screen" id="screen-workspace">
+        
+        <!-- Contextual Instruction Banner (Section 35) -->
+        <div class="instruction-banner">
+          <div class="instruction-main">
+            <div class="instruction-icon" id="wsInstructionIcon">🎯</div>
+            <div class="instruction-text" id="wsInstructionText">Ayo jumlahkan angka pada kolom Satuan terlebih dahulu!</div>
+          </div>
+          <div class="workspace-status-badge">
+            <div class="phase-pill" id="wsPhasePill">Tahap 1: Satuan</div>
+            <div class="phase-pill" id="wsProblemCounter" style="display:none; background:#ec4899;">Soal 1 / 5</div>
+          </div>
+        </div>
+
+        <!-- Main Body -->
+        <div class="workspace-body">
+
+          <!-- Left Panel: Problem Card, Algorithm Bersusun, Mascot Helper -->
+          <div class="ws-left-panel">
+            
+            <!-- Horizontal Problem Display -->
+            <div class="problem-card">
+              <div class="problem-card-label">Soal Penjumlahan</div>
+              <div class="problem-card-display" id="wsProblemDisplay">27 + 18 = ?</div>
+            </div>
+
+            <!-- Standard Vertical Algorithm (Penjumlahan Bersusun) with Carry Slot (PRD Section 27 & 28) -->
+            <div class="vertical-algorithm-card">
+              <div class="algorithm-title">
+                <span>📝</span> Penjumlahan Bersusun
+              </div>
+
+              <div class="algorithm-grid">
+                <!-- Header Tags -->
+                <div class="algo-header-tens">PUL</div>
+                <div class="algo-header-ones">SAT</div>
+
+                <!-- Carry Slot on top of Tens Column -->
+                <div class="algo-carry-slot" id="algoCarrySlot" data-target="algo-carry">
+                  <span class="algo-carry-slot-label">SIMPAN</span>
+                  <span id="algoCarryVal"></span>
+                </div>
+
+                <!-- Operand 1 -->
+                <div class="algo-num-tens-1" id="algoTens1">2</div>
+                <div class="algo-num-ones-1" id="algoOnes1">7</div>
+
+                <!-- Operand 2 -->
+                <div class="algo-plus-sign">+</div>
+                <div class="algo-num-tens-2" id="algoTens2">1</div>
+                <div class="algo-num-ones-2" id="algoOnes2">8</div>
+
+                <!-- Separation Line -->
+                <div class="algo-line"></div>
+
+                <!-- Result Row -->
+                <div class="algo-result-tens" id="algoResultTens"></div>
+                <div class="algo-result-ones" id="algoResultOnes"></div>
+              </div>
+            </div>
+
+            <!-- Sponge Helper Speech Card -->
+            <div class="sponge-helper-card">
+              <div class="sponge-small-avatar" id="wsSpongeAvatar"></div>
+              <div class="sponge-bubble-text" id="wsSpongeSpeech">
+                Halo! Aku SpongeBob. Mari kita hitung angka satuan <strong>7 + 8</strong> terlebih dahulu!
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Center Panel: The Manipulative Columns (Tens & Ones) + Jalur Simpan -->
+          <div class="ws-center-panel">
+            
+            <div class="manipulation-board" id="manipulationBoard">
+
+              <!-- ================= COLUMN PULUHAN (Purple) ================= -->
+              <div class="col-place-value col-tens" id="colTensArea">
+                <div class="col-header">
+                  <div class="col-title">PULUHAN</div>
+                  <span class="col-tag">Nilai: 10</span>
+                </div>
+
+                <!-- Carry Slot in Workspace Column -->
+                <div class="tens-carry-anchor">
+                  <span class="carry-label">⭐ Slot Angka Simpan</span>
+                  <div class="token-drop-slot" id="wsCarryDropSlot" data-target="carry-slot" title="Tempat menaruh angka simpan dari Penguin">
+                  </div>
+                </div>
+
+                <!-- Operands Tens Tokens -->
+                <div class="operand-slots-box">
+                  <div class="slot-row">
+                    <span class="slot-label-mini">Atas:</span>
+                    <div class="token-drop-slot filled" id="slotTensA">
+                      <div class="digit-ball digit-ball-purple" id="ballTensA">2</div>
+                    </div>
+                  </div>
+                  <div class="slot-row">
+                    <span class="slot-label-mini">Bawah:</span>
+                    <div class="token-drop-slot filled" id="slotTensB">
+                      <div class="digit-ball digit-ball-purple" id="ballTensB">1</div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Tens Result Drop/Display Slot -->
+                <div style="margin-top:auto; display:flex; flex-direction:column; align-items:center; gap:6px;">
+                  <span style="font-size:0.75rem; font-weight:800; color:var(--color-tens);">HASIL PULUHAN</span>
+                  <div class="token-drop-slot" id="wsResultTensSlot" data-target="result-tens"></div>
+                </div>
+              </div>
+
+              <!-- ================= COLUMN SATUAN (Amber/Yellow) ================= -->
+              <div class="col-place-value col-ones" id="colOnesArea">
+                <div class="col-header">
+                  <div class="col-title">SATUAN</div>
+                  <span class="col-tag">Nilai: 1</span>
+                </div>
+
+                <!-- Operands Ones Tokens -->
+                <div class="operand-slots-box" style="margin-top: 32px;">
+                  <div class="slot-row">
+                    <span class="slot-label-mini">Atas:</span>
+                    <div class="token-drop-slot filled" id="slotOnesA">
+                      <div class="digit-ball digit-ball-amber" id="ballOnesA">7</div>
+                    </div>
+                  </div>
+                  <div class="slot-row">
+                    <span class="slot-label-mini">Bawah:</span>
+                    <div class="token-drop-slot filled" id="slotOnesB">
+                      <div class="digit-ball digit-ball-amber" id="ballOnesB">8</div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Ones Calculation & Split Zone (PRD Section 24) -->
+                <div class="ones-calculation-zone" id="onesCalcZone">
+                  <div class="ones-calc-header">
+                    <span>Hasil Hitung Satuan:</span>
+                    <span id="onesCalcFormula" style="font-family:var(--font-numbers); font-weight:800;">7 + 8 = ?</span>
+                  </div>
+
+                  <!-- Split Tokens Container (e.g. 🔵1 & 🔵5) -->
+                  <div class="split-tokens-container" id="splitTokensContainer">
+                    <span style="font-size:0.85rem; color:#94a3b8; font-weight:600;">Masukkan hasil pada keypad ➜</span>
+                  </div>
+
+                  <!-- Interactive Choice Prompt for Split Digits (PRD Section 24) -->
+                  <div id="splitQuestionsBox" style="display:none; flex-direction:column; gap:6px; margin-top:4px;">
+                    <div id="splitQuestionLabel" style="font-size:0.85rem; font-weight:700; color:#b45309; text-align:center;">
+                      Pindahkan angka 5 ke hasil satuan!
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Ones Result Slot -->
+                <div style="margin-top:10px; display:flex; flex-direction:column; align-items:center; gap:6px;">
+                  <span style="font-size:0.75rem; font-weight:800; color:var(--color-ones-dark);">HASIL SATUAN</span>
+                  <div class="token-drop-slot" id="wsResultOnesSlot" data-target="result-ones"></div>
+                </div>
+
+              </div>
+
+              <!-- ================= JALUR SIMPAN (Glowing Pipe Path) - PRD Section 26 ================= -->
+              <div class="jalur-simpan-pipe" id="jalurSimpanPipe">
+                <div class="pipe-label">
+                  <span>🌊</span> JALUR SIMPAN ANGKA PULUHAN
+                </div>
+                <div class="pipe-arrow-trail">
+                  <span class="arrow-dot">➜</span>
+                  <span class="arrow-dot">➜</span>
+                  <span class="arrow-dot">➜</span>
+                  <span>🐧</span>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+
+          <!-- Right Panel: Penguin Sanctuary & Keypad -->
+          <div class="ws-right-panel">
+            
+            <!-- Penguin Storage Sanctuary Card (PRD Section 25) -->
+            <div class="penguin-sanctuary-card">
+              <span class="penguin-header-tag">🐧 TEMPAT SIMPAN</span>
+              
+              <div class="penguin-character-box" id="wsPenguinContainer"></div>
+
+              <div class="penguin-bubble">
+                <p id="penguinSpeech">“Aku siap menjaga angka simpanmu!”</p>
+              </div>
+
+              <!-- The Penguin Holding Nest / Slot -->
+              <div class="penguin-storage-nest" id="penguinStorageNest" data-target="penguin-nest">
+                <span class="nest-title">Sarang Simpan Penguin</span>
+                <div class="token-drop-slot" id="penguinDropSlot" data-target="penguin-nest">
+                  <!-- Token stored here -->
+                </div>
+              </div>
+            </div>
+
+            <!-- Digital Calculation Keypad -->
+            <div class="keypad-container" id="wsKeypadCard">
+              <div class="keypad-header" id="keypadPrompt">Ketik Hasil Satuan:</div>
+              <div class="keypad-display-input" id="keypadDisplay">__</div>
+              
+              <div class="keypad-grid">
+                <button class="key-btn" data-key="1">1</button>
+                <button class="key-btn" data-key="2">2</button>
+                <button class="key-btn" data-key="3">3</button>
+                <button class="key-btn" data-key="4">4</button>
+                <button class="key-btn" data-key="5">5</button>
+                <button class="key-btn" data-key="6">6</button>
+                <button class="key-btn" data-key="7">7</button>
+                <button class="key-btn" data-key="8">8</button>
+                <button class="key-btn" data-key="9">9</button>
+                <button class="key-btn key-btn-action" data-key="clear">↺</button>
+                <button class="key-btn" data-key="0">0</button>
+                <button class="key-btn key-btn-action" data-key="backspace">⌫</button>
+                <button class="key-btn key-btn-enter" data-key="enter" style="grid-column: span 3;">MASUKKAN ➜</button>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- ==========================================================================
+             BOTTOM MANIPULATION CONTROL BAR (PRD Section 15, 49)
+             🖐 PINDAH │ 💡 BANTUAN │ 👀 CONTOH │ ↩ UNDO │ ↺ RESET │ ✅ CEK
+             ========================================================================== -->
+        <footer class="manipulation-bar">
+          <div class="manip-left-actions">
+            <button class="control-btn" id="btnToggleInteractionMode" data-tooltip="Klik untuk beralih mode interaksi">
+              <span id="interactionModeIcon">🖐</span>
+              <span id="interactionModeText">Mode: Drag & Drop / Klik</span>
+            </button>
+            <button class="control-btn btn-help" id="btnHelp" data-tooltip="Tampilkan bantuan bertingkat">
+              <span>💡</span> BANTUAN (<span id="hintLevelBadge">Lv 1</span>)
+            </button>
+            <button class="control-btn" id="btnDemoStep" data-tooltip="Lihat contoh perpindahan digit">
+              <span>👀</span> CONTOH
+            </button>
+          </div>
+
+          <div class="manip-right-actions">
+            <button class="control-btn" id="btnUndo" data-tooltip="Batalkan langkah terakhir" disabled>
+              <span>↩</span> UNDO
+            </button>
+            <button class="control-btn" id="btnReset" data-tooltip="Ulangi dari awal soal">
+              <span>↺</span> RESET
+            </button>
+            <button class="btn btn-green btn-sm" id="btnCheckAction" data-tooltip="Periksa & Lanjutkan langkah">
+              <span>✅</span> <span id="btnCheckText">CEK HASIL</span>
+            </button>
+          </div>
+        </footer>
+
+        <!-- Formative Toast Notification (PRD Section 31) -->
+        <div class="formative-toast" id="formativeToast">
+          <span id="toastIcon">✨</span>
+          <span id="toastMessage">Bagus! Angka 5 tetap pada tempat satuan.</span>
+        </div>
+
+      </section>
+
+      <!-- ==========================================================================
+           SCREEN 6: MODE GURU & DASHBOARD (PRD Section 39 & 40)
+           ========================================================================== -->
+      <section class="view-screen" id="screen-teacher">
+        <div style="text-align: center; margin-bottom: 20px;">
+          <h2 style="font-family: var(--font-display); font-size: 2.2rem; color: #5b21b6;">⚙️ Panel Guru & Pengaturan Kelas</h2>
+          <p style="color: #64748b; font-size: 1rem;">Kustomisasi soal penjumlahan, aturan bantuan, dan pantau diagnostik konsep murid.</p>
+        </div>
+
+        <div class="teacher-grid">
+          
+          <!-- Custom Problem Input Card -->
+          <div class="teacher-card">
+            <h3><span>✏️</span> Input Kustom Soal</h3>
+            
+            <div class="teacher-input-group">
+              <div class="input-row">
+                <label for="teacherNum1">Bilangan Pertama (0 - 99):</label>
+                <input type="number" id="teacherNum1" class="input-number-field" min="0" max="99" value="27">
+              </div>
+
+              <div class="input-row">
+                <label for="teacherNum2">Bilangan Kedua (0 - 99):</label>
+                <input type="number" id="teacherNum2" class="input-number-field" min="0" max="99" value="18">
+              </div>
+            </div>
+
+            <div style="margin-bottom: 12px; font-weight:700; color:#475569; font-size:0.9rem;">
+              Pilihan Cepat (Presets):
+            </div>
+            <div class="preset-pills-row">
+              <button class="preset-pill-btn" data-n1="27" data-n2="18">27 + 18 (Dasar)</button>
+              <button class="preset-pill-btn" data-n1="38" data-n2="27">38 + 27</button>
+              <button class="preset-pill-btn" data-n1="46" data-n2="17">46 + 17</button>
+              <button class="preset-pill-btn" data-n1="58" data-n2="24">58 + 24</button>
+              <button class="preset-pill-btn" data-n1="67" data-n2="15">67 + 15</button>
+              <button class="preset-pill-btn" data-n1="23" data-n2="14">23 + 14 (Tanpa Simpan)</button>
+            </div>
+
+            <button class="btn btn-purple" id="btnApplyTeacherProblem" style="width: 100%;">
+              <span>▶</span> Terapkan & Buka di Workspace
+            </button>
+          </div>
+
+          <!-- Class Controls & Pedagogical Diagnostics (PRD Section 40) -->
+          <div class="teacher-card">
+            <h3><span>📊</span> Diagnostik Penguasaan Konsep</h3>
+            
+            <div class="diagnostic-box" style="margin-bottom: 16px;">
+              <div class="diag-item">
+                <span>1. Pemahaman Nilai Tempat Puluhan & Satuan</span>
+                <span class="diag-status-badge badge-mastered">✓ Dikuasai</span>
+              </div>
+              <div class="diag-item">
+                <span>2. Menentukan Hasil Satuan (7 + 8 = 15)</span>
+                <span class="diag-status-badge badge-mastered">✓ Dikuasai</span>
+              </div>
+              <div class="diag-item">
+                <span>3. Memisahkan Digit Simpan (Puluhan)</span>
+                <span class="diag-status-badge badge-mastered">✓ Dikuasai</span>
+              </div>
+              <div class="diag-item">
+                <span>4. Memindahkan Angka Simpan ke Penguin</span>
+                <span class="diag-status-badge badge-mastered">✓ Dikuasai</span>
+              </div>
+              <div class="diag-item">
+                <span>5. Memindahkan dari Penguin ke Carry Slot</span>
+                <span class="diag-status-badge badge-needs-practice" id="diagCarryStatus">⚠ Perlu Latihan</span>
+              </div>
+              <div class="diag-item">
+                <span>6. Penjumlahan Puluhan dengan Angka Simpan</span>
+                <span class="diag-status-badge badge-mastered">✓ Dikuasai</span>
+              </div>
+            </div>
+
+            <div class="toggle-switch-row">
+              <span class="toggle-label">Bantuan Otomatis (Auto Hint)</span>
+              <input type="checkbox" id="chkTeacherAutoHint" checked style="transform:scale(1.3); cursor:pointer;">
+            </div>
+            <div class="toggle-switch-row">
+              <span class="toggle-label">Suara Efek Web Audio</span>
+              <input type="checkbox" id="chkTeacherSound" checked style="transform:scale(1.3); cursor:pointer;">
+            </div>
+            <div class="toggle-switch-row">
+              <span class="toggle-label">Suara Narasi Suara Bahasa Indonesia</span>
+              <input type="checkbox" id="chkTeacherVoice" checked style="transform:scale(1.3); cursor:pointer;">
+            </div>
+
+            <div style="display:flex; gap:10px; margin-top:16px;">
+              <button class="btn btn-secondary" id="btnPrintWorksheet" style="flex:1;">
+                <span>🖨️</span> Cetak LKPD Soal
+              </button>
+              <button class="btn btn-secondary" id="btnTeacherBack" style="flex:1;">
+                ← Kembali
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ==========================================================================
+           SCREEN 7: CHALLENGE COMPLETE SCREEN
+           ========================================================================== -->
+      <section class="view-screen" id="screen-challenge-complete">
+        <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; flex:1; text-align:center; padding:30px;">
+          <div style="font-size: 5rem; animation: bounceSlow 2s infinite;">🏆</div>
+          <h2 style="font-family: var(--font-display); font-size: 2.6rem; color: #1e1b4b; margin: 10px 0;">LUAR BIASA! KAMU JUARA!</h2>
+          <p style="font-size: 1.2rem; color: #475569; max-width: 500px; margin-bottom: 20px;">
+            Kamu telah berhasil menyelesaikan seluruh tantangan penjumlahan dengan teknik menyimpan dengan gemilang!
+          </p>
+
+          <div style="background: #ffffff; border-radius: var(--radius-lg); padding: 20px 40px; border: 3px solid #fbbf24; box-shadow: var(--shadow-md); margin-bottom: 24px;">
+            <div style="font-size: 1rem; font-weight: 700; color: #64748b;">Medali Diperoleh:</div>
+            <div style="font-family: var(--font-display); font-size: 1.8rem; font-weight: 800; color: #d97706; margin-top: 4px;">
+              ⭐ Bintang Ahli Menyimpan Penguin
+            </div>
+          </div>
+
+          <div style="display:flex; gap:16px;">
+            <button class="btn btn-secondary" id="btnChallengeHome">Ke Beranda</button>
+            <button class="btn btn-primary" id="btnChallengeRetry">Main Lagi ➜</button>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       MODALS: PEDAGOGICAL SUMMARY MODAL (PRD Section 30)
+       ========================================================================== -->
+  <div class="modal-backdrop" id="modalResultSummary">
+    <div class="modal-card">
+      <div class="modal-header-icon">🎉</div>
+      <h2 class="modal-title" id="modalResultTitle">BENAR & TEPAT!</h2>
+      <p class="modal-subtitle" id="modalResultFormula">27 + 18 = 45</p>
+
+      <div class="pedagogical-summary-box">
+        <div class="summary-row">
+          <span class="summary-label">1. Hasil Satuan (7 + 8):</span>
+          <span class="summary-val" id="sumRowOnes">15 (1 Puluhan + 5 Satuan)</span>
+        </div>
+        <div class="summary-row">
+          <span class="summary-label">2. Angka Simpan via Penguin:</span>
+          <span class="summary-val" id="sumRowCarry">+ 1 (ke Puluhan)</span>
+        </div>
+        <div class="summary-row">
+          <span class="summary-label">3. Jumlah Puluhan (1 + 2 + 1):</span>
+          <span class="summary-val" id="sumRowTens">4</span>
+        </div>
+        <div class="summary-row">
+          <span class="summary-label">Hasil Akhir:</span>
+          <span class="summary-val" id="sumRowFinal" style="color:#059669; font-size:1.4rem;">45</span>
+        </div>
+      </div>
+
+      <div style="display:flex; gap:12px; justify-content:center;">
+        <button class="btn btn-secondary" id="btnModalClose">Tinjau Workspace</button>
+        <button class="btn btn-green" id="btnModalNext">Soal Selanjutnya ➜</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Hint Level Dialog (PRD Section 32) -->
+  <div class="modal-backdrop" id="modalHintDialog">
+    <div class="modal-card" style="max-width: 480px;">
+      <div style="font-size: 3rem; margin-bottom: 8px;">💡</div>
+      <h3 style="font-family: var(--font-display); font-size: 1.6rem; color: #854d0e; margin-bottom: 6px;">
+        Petunjuk & Bantuan Bertingkat
+      </h3>
+      <div id="modalHintContent" style="background: #fefce8; border-radius: var(--radius-md); padding: 16px; border: 2px solid #fde047; font-size: 1.05rem; font-weight: 600; color: #713f12; margin: 16px 0; line-height: 1.5; text-align: left;">
+        Mulai dari kolom Satuan.
+      </div>
+      <button class="btn btn-primary" id="btnModalHintClose" style="width: 100%;">
+        Paham, Lanjutkan!
+      </button>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/audio.js"></script>
+  <script src="js/mascots.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
