@@ -3418,3 +3418,209 @@ body.no-anim *::after {
   margin-bottom: 8px;
 }
 
+/* ==========================================================================
+   STUDENT IDENTITY CARD (BERANDA)
+   ========================================================================== */
+.home-student-identity-card {
+  background: linear-gradient(135deg, #ffffff 0%, #f0f9ff 100%);
+  border: 3px solid #7dd3fc;
+  border-radius: var(--radius-lg);
+  padding: 16px 20px;
+  box-shadow: 0 8px 20px rgba(2, 132, 199, 0.12);
+  margin-top: 4px;
+}
+
+.identity-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.identity-icon {
+  font-size: 2.2rem;
+  background: #e0f2fe;
+  padding: 6px;
+  border-radius: 12px;
+  border: 2px solid #bae6fd;
+}
+
+.identity-title {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  color: #0369a1;
+  margin: 0;
+}
+
+.identity-subtitle {
+  font-size: 0.88rem;
+  color: #64748b;
+  margin: 2px 0 0 0;
+}
+
+.identity-fields-row {
+  display: flex;
+  gap: 12px;
+  align-items: flex-end;
+  flex-wrap: wrap;
+}
+
+.identity-field-group {
+  flex: 1;
+  min-width: 200px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.identity-field-group label {
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: #1e293b;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.identity-input {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 700;
+  color: #1e1b4b;
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  border: 2px solid #cbd5e1;
+  background: #ffffff;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.identity-input:focus {
+  border-color: #0284c7;
+  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.35);
+}
+
+.btn-save-identity {
+  padding: 10px 20px;
+  font-size: 1rem;
+  height: 46px;
+}
+
+.identity-saved-notice {
+  margin-top: 10px;
+  background: #ecfdf5;
+  border: 1.5px solid #6ee7b7;
+  color: #065f46;
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  animation: fadeIn 0.3s ease;
+}
+
+/* ==========================================================================
+   REGROUPING 3-COLUMN VISUALIZER (PULUHAN | PENGUIN | SATUAN)
+   ========================================================================== */
+.rg-visualization-stage {
+  display: grid;
+  grid-template-columns: 240px 180px 280px;
+  gap: 16px;
+  align-items: stretch;
+  justify-content: center;
+  margin: 16px auto;
+  max-width: 780px;
+}
+
+.rg-house-box {
+  min-height: 240px;
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.rg-penguin-center-col {
+  background: linear-gradient(180deg, #f0f9ff 0%, #e0f2fe 100%);
+  border: 3px dashed #38bdf8;
+  border-radius: var(--radius-lg);
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.rg-units-breakdown-box {
+  background: #ede9fe;
+  border: 2px solid #a78bfa;
+  border-radius: var(--radius-md);
+  padding: 8px 10px;
+  margin-top: 8px;
+  width: 100%;
+}
+
+.rg-group-title {
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: #5b21b6;
+  text-align: center;
+  margin-bottom: 6px;
+}
+
+.rg-units-dots-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  justify-content: center;
+}
+
+.unit-dot {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #a78bfa, #7c3aed);
+  border: 1.5px solid #5b21b6;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+  animation: pulseDot 2s infinite ease-in-out;
+}
+
+@keyframes pulseDot {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.15); }
+}
+
+.rg-units-remain-box {
+  background: #fffbeb;
+  border: 2px solid #fde68a;
+  border-radius: var(--radius-md);
+  padding: 8px 10px;
+  margin-top: 8px;
+  width: 100%;
+}
+
+/* ==========================================================================
+   BANYUMAS STORY ILLUSTRATION CONTAINER
+   ========================================================================== */
+.banyumas-illustration-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f8fafc;
+  border: 2px solid #e2e8f0;
+  border-radius: var(--radius-md);
+  padding: 8px;
+  margin-bottom: 12px;
+}
+
+.banyumas-svg-illustration {
+  filter: drop-shadow(0 4px 10px rgba(0,0,0,0.12));
+  transition: transform 0.3s ease;
+}
+
+.banyumas-svg-illustration:hover {
+  transform: scale(1.05);
+}
+
+

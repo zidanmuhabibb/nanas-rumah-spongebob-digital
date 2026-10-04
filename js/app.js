@@ -179,6 +179,7 @@ class NRSDApp {
   getDefaultState() {
     return {
       studentName: 'Bintang Juara',
+      studentClass: 'Kelas 3',
       sessions: [],
       unlockedLevels: [1],
       achievements: ['badge_pemula'],
@@ -201,6 +202,7 @@ class NRSDApp {
         this.state = JSON.parse(raw);
         const def = this.getDefaultState();
         this.state.settings = { ...def.settings, ...this.state.settings };
+        if (!this.state.studentClass) this.state.studentClass = 'Kelas 3';
         if (!Array.isArray(this.state.sessions)) this.state.sessions = [];
         if (!Array.isArray(this.state.unlockedLevels)) this.state.unlockedLevels = [1];
         if (!Array.isArray(this.state.achievements)) this.state.achievements = [];
@@ -227,6 +229,7 @@ class NRSDApp {
     const sessionData = {
       id: 'sess_' + Date.now(),
       studentName: this.state.studentName || 'Murid Juara',
+      studentClass: this.state.studentClass || 'Kelas 3',
       timestamp: Date.now(),
       dateStr: new Date().toLocaleString('id-ID', { dateStyle: 'short', timeStyle: 'short' }),
       mode: sess.mode || 'latihan',
@@ -464,11 +467,17 @@ class NRSDApp {
      ========================================================================== */
   updateStudentNameUI() {
     const name = this.state.studentName || 'Murid Juara';
+    const cls = this.state.studentClass || 'Kelas 3';
     const headerName = document.getElementById('headerStudentName');
-    if (headerName) headerName.textContent = name;
+    if (headerName) headerName.textContent = `${name} • ${cls}`;
 
     const inputSetting = document.getElementById('inputSettingStudentName');
     if (inputSetting) inputSetting.value = name;
+
+    const inputHomeName = document.getElementById('homeInputStudentName');
+    const inputHomeClass = document.getElementById('homeInputStudentClass');
+    if (inputHomeName) inputHomeName.value = name;
+    if (inputHomeClass) inputHomeClass.value = cls;
   }
 
   bindStudentIdentity() {
@@ -479,6 +488,31 @@ class NRSDApp {
         const input = document.getElementById('inputModalStudentName');
         if (input) input.value = this.state.studentName || '';
         document.getElementById('modalStudentName')?.classList.add('active');
+      });
+    }
+
+    // Save from Home screen identity card (Revisi 2)
+    const btnSaveHome = document.getElementById('btnSaveHomeIdentity');
+    if (btnSaveHome) {
+      btnSaveHome.addEventListener('click', () => {
+        const nameVal = (document.getElementById('homeInputStudentName')?.value || '').trim() || 'Murid Juara';
+        const classVal = (document.getElementById('homeInputStudentClass')?.value || '').trim() || 'Kelas 3';
+        this.state.studentName = nameVal;
+        this.state.studentClass = classVal;
+        this.saveState();
+        this.updateStudentNameUI();
+
+        const notice = document.getElementById('homeIdentitySavedNotice');
+        const label = document.getElementById('savedStudentLabel');
+        if (label) label.textContent = `${nameVal} • ${classVal}`;
+        if (notice) {
+          notice.style.display = 'block';
+          setTimeout(() => { if (notice) notice.style.display = 'none'; }, 4000);
+        }
+
+        window.soundEngine.playSuccessFanfare();
+        this.showToast(`Halo ${nameVal} (${classVal})! Identitas berhasil disimpan.`, 'success');
+        window.soundEngine.speak(`Halo ${nameVal}, selamat belajar penjumlahan.`);
       });
     }
 
@@ -607,7 +641,7 @@ class NRSDApp {
     });
 
     document.getElementById('btnRGRunPenguin')?.addEventListener('click', () => {
-      this.animatePenguinGlideToCarry(1);
+      this.animateRegroupingPenguinGlide(1);
     });
 
     // Quiz Mode buttons
@@ -755,7 +789,7 @@ class NRSDApp {
     }
   }
 
-  /* --- Fitur 2 & 3: Regrouping & Angka Simpan Interactive Stage --- */
+  /* --- Fitur 2 & 3: Regrouping & Angka Simpan 3-Column Interactive Stage --- */
   startRegroupingInteractive(mode) {
     document.getElementById('practiceSetupView').style.display = 'none';
     document.getElementById('practicePlaceValueView').style.display = 'none';
@@ -770,6 +804,7 @@ class NRSDApp {
     const o1 = a % 10;
     const o2 = b % 10;
     const onesSum = o1 + o2;
+    const carry = Math.floor(onesSum / 10);
     const onesRemain = onesSum % 10;
 
     const title = document.getElementById('rgTitle');
@@ -779,21 +814,125 @@ class NRSDApp {
       title.innerHTML = `Hasil Penjumlahan Satuan: <span style="font-family:var(--font-numbers); color:#d97706; font-size:2.2rem; font-weight:900;">${o1} + ${o2} = ${onesSum} Satuan</span>`;
     }
     if (subtitle) {
-      subtitle.innerHTML = `Karena ${onesSum} &ge; 10, kelompokkan <strong>10 Satuan</strong> menjadi <strong>1 Puluhan</strong> yang siap dibawa Penguin ke rumah Puluhan!`;
+      subtitle.innerHTML = `Karena hasil satuan <strong style="color:#e11d48;">${onesSum} &ge; 10</strong> (lebih dari 9), kelompokkan <strong style="color:#7c3aed;">10 Satuan</strong> menjadi <strong style="color:#7c3aed;">${carry} Puluhan</strong> yang siap dibawa Penguin ke Rumah Puluhan!`;
     }
 
     const carryBall = document.getElementById('rgCarryBall');
     const onesBall = document.getElementById('rgOnesBall');
-    if (carryBall) carryBall.textContent = '1';
+    const onesRemainText = document.getElementById('rgOnesRemainText');
+    if (carryBall) carryBall.textContent = `${carry}`;
     if (onesBall) onesBall.textContent = `${onesRemain}`;
+    if (onesRemainText) onesRemainText.textContent = `(${onesRemain} Satuan)`;
+
+    // Populate 10 unit dots inside breakdown box
+    const dotsContainer = document.getElementById('rgBundleDots');
+    if (dotsContainer) {
+      let dotsHtml = '';
+      for (let i = 0; i < 10; i++) {
+        dotsHtml += `<div class="unit-dot" style="animation-delay:${i * 0.12}s;" title="1 Satuan (ke-${i+1})"></div>`;
+      }
+      dotsContainer.innerHTML = dotsHtml;
+    }
+
+    // Populate Penguin SVG avatar
+    const penguinAvatar = document.getElementById('rgPenguinAvatar');
+    if (penguinAvatar) {
+      penguinAvatar.innerHTML = Mascots.getPenguinMascotSvg(90, 95, 'holding');
+    }
+
+    // Reset carry drop slot
+    const carryDropTarget = document.getElementById('rgCarryDropTarget');
+    if (carryDropTarget) {
+      carryDropTarget.innerHTML = '';
+      carryDropTarget.classList.remove('filled');
+    }
 
     const fbBox = document.getElementById('rgFeedbackBox');
     if (fbBox) fbBox.style.display = 'none';
   }
 
-  /* --- Fitur 4 & 5: Penjumlahan Menyimpan & Soal Cerita Quiz Mode --- */
+  animateRegroupingPenguinGlide(carryVal = 1) {
+    window.soundEngine.playPenguinChirp();
+    const startElem = document.getElementById('rgPenguinNestSlot');
+    const endElem = document.getElementById('rgCarryDropTarget');
+    const boardElem = document.getElementById('rgVisualBoard');
+
+    if (startElem && endElem && boardElem) {
+      const boardRect = boardElem.getBoundingClientRect();
+      const startRect = startElem.getBoundingClientRect();
+      const endRect = endElem.getBoundingClientRect();
+
+      const startX = startRect.left - boardRect.left + startRect.width / 2 - 30;
+      const startY = startRect.top - boardRect.top + startRect.height / 2 - 30;
+
+      const topCornerX = startX;
+      const topCornerY = endRect.top - boardRect.top + endRect.height / 2 - 30;
+
+      const endX = endRect.left - boardRect.left + endRect.width / 2 - 30;
+      const endY = topCornerY;
+
+      const sprite = document.createElement('div');
+      sprite.className = 'penguin-glide-sprite';
+      sprite.innerHTML = `
+        ${Mascots.getPenguinMascotSvg(65, 70, 'holding')}
+        <div class="held-carry-digit" style="font-size:1.2rem; width:26px; height:26px;">${carryVal}</div>
+      `;
+
+      sprite.style.left = `${startX}px`;
+      sprite.style.top = `${startY}px`;
+      sprite.style.position = 'absolute';
+      sprite.style.transform = 'scale(0.85)';
+      boardElem.appendChild(sprite);
+
+      window.soundEngine.playWhoosh();
+
+      // Step 1: Naik
+      requestAnimationFrame(() => {
+        sprite.style.transition = 'top 0.45s ease-out, transform 0.3s ease';
+        sprite.style.top = `${topCornerY}px`;
+        sprite.style.transform = 'scale(1.1)';
+
+        // Step 2: Belok & Ke Kiri
+        setTimeout(() => {
+          sprite.style.transition = 'left 0.55s cubic-bezier(0.25, 1, 0.5, 1), transform 0.35s ease';
+          sprite.style.transform = 'scale(1.1) rotate(-10deg)';
+          sprite.style.left = `${endX}px`;
+
+          // Step 3: Land at Carry Slot
+          setTimeout(() => {
+            sprite.style.transform = 'scale(1) rotate(0deg)';
+            window.soundEngine.playCarryPlaced();
+            
+            if (endElem) {
+              endElem.innerHTML = `<div class="digit-ball digit-ball-carry locked" style="width:46px; height:46px; font-size:1.5rem;">${carryVal}</div>`;
+              endElem.classList.add('filled');
+            }
+
+            if (sprite.parentNode) sprite.remove();
+
+            const fbBox = document.getElementById('rgFeedbackBox');
+            const fbText = document.getElementById('rgFeedbackText');
+            if (fbBox && fbText) {
+              fbBox.className = 'growth-feedback-box correct show';
+              fbBox.style.display = 'flex';
+              fbText.innerHTML = `<strong>Luar Biasa!</strong> 10 Satuan telah dikelompokkan menjadi <strong>${carryVal} Puluhan</strong> dan berhasil dibawa Penguin meluncur ke Rumah Puluhan!`;
+            }
+            window.soundEngine.speak('10 satuan dikelompokkan menjadi 1 puluhan dibawa oleh penguin ke rumah puluhan.');
+          }, 600);
+        }, 450);
+      });
+    }
+  }
+
+  /* --- Fitur 4 & 5: Penjumlahan Menyimpan & Soal Cerita Full Workspace Mode --- */
   startPracticeQuiz() {
-    this.practiceQuestions = this.generatePracticeQuestions(this.practiceFocus, this.practiceCount);
+    this.startWorkspacePractice(this.practiceFocus, this.practiceCount);
+  }
+
+  startWorkspacePractice(focus, count = 5) {
+    this.isPracticeSession = true;
+    this.practiceFocus = focus;
+    this.practiceQuestions = this.generatePracticeQuestions(focus, count);
     this.practiceIndex = 0;
     this.practiceCorrectCount = 0;
     this.practiceWrongCount = 0;
@@ -801,30 +940,79 @@ class NRSDApp {
     this.practiceHintsUsed = 0;
     this.practiceStartTime = Date.now();
 
+    this.setMode('latihan');
+    this.showScreen('screen-workspace');
+
+    this.loadCurrentPracticeWorkspaceProblem();
+  }
+
+  loadCurrentPracticeWorkspaceProblem() {
+    const q = this.practiceQuestions[this.practiceIndex];
+    if (!q) {
+      this.finishPracticeSession();
+      return;
+    }
+
+    const counter = document.getElementById('wsProblemCounter');
+    if (counter) {
+      counter.style.display = 'block';
+      counter.textContent = `Soal ${this.practiceIndex + 1} / ${this.practiceQuestions.length}`;
+    }
+
+    this.startProblem(q.a, q.b);
+
+    if (this.practiceFocus === 'wordProblems') {
+      const instructionText = document.getElementById('wsInstructionText');
+      if (instructionText) instructionText.textContent = `📖 Soal Cerita: ${q.prompt}`;
+      const spongeSpeech = document.getElementById('wsSpongeSpeech');
+      if (spongeSpeech) spongeSpeech.innerHTML = `Mari kita selesaikan soal cerita ini bersama-sama! Hitung angka satuan <strong>${this.onesA} + ${this.onesB}</strong> di Rumah Satuan (Pink) ya!`;
+    }
+  }
+
+  finishPracticeSession() {
+    this.isPracticeSession = false;
+    const elapsed = Math.floor((Date.now() - this.practiceStartTime) / 1000);
+    const score = Math.round((this.practiceCorrectCount / this.practiceQuestions.length) * 100);
+
+    this.recordSession({
+      mode: 'latihan',
+      focus: this.practiceFocus,
+      focusTitle: this.practiceFocus === 'wordProblems' ? 'Soal Cerita' : 'Penjumlahan Menyimpan',
+      total: this.practiceQuestions.length,
+      correct: this.practiceCorrectCount,
+      wrong: this.practiceWrongCount,
+      score: score,
+      durationSec: elapsed,
+      hintsUsed: this.practiceHintsUsed || 0
+    });
+
+    this.showScreen('screen-practice');
     document.getElementById('practiceSetupView').style.display = 'none';
     document.getElementById('practicePlaceValueView').style.display = 'none';
     document.getElementById('practiceRegroupingView').style.display = 'none';
-    document.getElementById('practiceQuizView').style.display = 'block';
-    document.getElementById('practiceSummaryView').style.display = 'none';
+    document.getElementById('practiceQuizView').style.display = 'none';
+    document.getElementById('practiceSummaryView').style.display = 'block';
 
-    const focusTitles = {
-      withCarry: '4. Penjumlahan Menyimpan',
-      wordProblems: '5. Soal Cerita',
-      customTeacher: 'Kustom Guru'
-    };
-    const badge = document.getElementById('practiceQuizFocusBadge');
-    if (badge) badge.textContent = `Fokus: ${focusTitles[this.practiceFocus] || 'Latihan'}`;
+    const sumCorrect = document.getElementById('sumPracCorrect');
+    const sumWrong = document.getElementById('sumPracWrong');
+    const sumScore = document.getElementById('sumPracScore');
+    const sumTime = document.getElementById('sumPracTime');
+    const sumSub = document.getElementById('practiceSummarySubtitle');
 
-    clearInterval(this.practiceTimerInterval);
-    const timerElem = document.getElementById('practiceTimer');
-    this.practiceTimerInterval = setInterval(() => {
-      const elapsed = Math.floor((Date.now() - this.practiceStartTime) / 1000);
-      const mins = String(Math.floor(elapsed / 60)).padStart(2, '0');
-      const secs = String(elapsed % 60).padStart(2, '0');
-      if (timerElem) timerElem.textContent = `⏱️ ${mins}:${secs}`;
-    }, 1000);
+    if (sumCorrect) sumCorrect.textContent = this.practiceCorrectCount;
+    if (sumWrong) sumWrong.textContent = this.practiceWrongCount;
+    if (sumScore) sumScore.textContent = score;
 
-    this.renderCurrentPracticeQuestion();
+    const mins = String(Math.floor(elapsed / 60)).padStart(2, '0');
+    const secs = String(elapsed % 60).padStart(2, '0');
+    if (sumTime) sumTime.textContent = `${mins}:${secs}`;
+
+    if (sumSub) {
+      sumSub.textContent = `Hebat ${this.state.studentName || 'Murid Juara'}! Kamu telah menuntaskan seluruh latihan manipulatif bersama Penguin!`;
+    }
+
+    window.soundEngine.playLevelUp();
+    this.showAchievementModal('🎉 LATIHAN SELESAI!', `Hebat! Kamu telah menuntaskan seluruh soal latihan manipulatif dengan skor ${score}!`);
   }
 
   generatePracticeQuestions(focus, count) {
@@ -842,7 +1030,8 @@ class NRSDApp {
             { txt: (a, b) => `SpongeBob menangkap ${a} ubur-ubur di pagi hari dan ${b} ubur-ubur di sore hari. Berapa total seluruh ubur-ubur yang ditangkap SpongeBob?`, a: 28, b: 17 },
             { txt: (a, b) => `Krusty Krab membuat ${a} Krabby Patty keju dan ${b} Krabby Patty pedas. Berapa total Krabby Patty yang dibuat?`, a: 36, b: 28 },
             { txt: (a, b) => `Patrick mengumpulkan ${a} kerang laut dan Squidward mengumpulkan ${b} batu karang. Berapa total koleksi mereka?`, a: 45, b: 38 },
-            { txt: (a, b) => `Tuan Krab menghitung ${a} koin perak dan ${b} koin emas di peti harta karun. Berapa total seluruh koin?`, a: 54, b: 29 }
+            { txt: (a, b) => `Tuan Krab menghitung ${a} koin perak dan ${b} koin emas di peti harta karun. Berapa total seluruh koin?`, a: 54, b: 29 },
+            { txt: (a, b) => `Sandy mengumpulkan ${a} biji kenari dan ${b} biji pohon ek di dalam kubah. Berapa total biji yang dikumpulkan Sandy?`, a: 38, b: 27 }
           ];
           const tpl = templates[i % templates.length];
           const a = tpl.a + (i * 2);
@@ -851,12 +1040,10 @@ class NRSDApp {
           if (!used.has(key)) {
             used.add(key);
             q = {
+              a: a,
+              b: b,
               prompt: tpl.txt(a, b),
-              visual: `<div style="font-size:1.8rem; text-align:center;">🍔 🌊 🍍</div>`,
-              answer: a + b,
-              hint1: `Soal cerita ini menanyakan jumlah total (penjumlahan: ${a} + ${b}).`,
-              hint2: `Hitung satuan: ${a % 10} + ${b % 10} = ${(a % 10) + (b % 10)}. Simpan 1 ke puluhan.`,
-              hint3: `Hasil akhirnya adalah ${a + b}.`
+              answer: a + b
             };
             break;
           }
@@ -872,12 +1059,10 @@ class NRSDApp {
           if (!used.has(key)) {
             used.add(key);
             q = {
+              a: a,
+              b: b,
               prompt: `Berapakah hasil dari <strong>${a} + ${b}</strong>?`,
-              visual: `<div style="font-family:var(--font-numbers); font-size:2rem; font-weight:900; color:#1e1b4b; background:#f1f5f9; padding:6px 20px; border-radius:8px; display:inline-block;">${a} + ${b}</div>`,
-              answer: a + b,
-              hint1: `Jumlahkan satuan: ${o1} + ${o2} = ${o1 + o2}. Simpan 1 ke puluhan.`,
-              hint2: `Jumlahkan puluhan: 1 (simpan) + ${t1} + ${t2} = ${1 + t1 + t2}.`,
-              hint3: `Gabungkan hasilnya: ${a + b}.`
+              answer: a + b
             };
             break;
           }
@@ -886,12 +1071,10 @@ class NRSDApp {
 
       if (!q) {
         q = {
+          a: 27,
+          b: 18,
           prompt: `Hitunglah: <strong>27 + 18 = ?</strong>`,
-          visual: '',
-          answer: 45,
-          hint1: `Jumlahkan satuan: 7 + 8 = 15.`,
-          hint2: `Simpan 1 ke puluhan: 1 + 2 + 1 = 4.`,
-          hint3: `Hasil akhirnya 45.`
+          answer: 45
         };
       }
       list.push(q);
@@ -1164,9 +1347,10 @@ class NRSDApp {
       list.push({ a: 58, b: 24, ans: 82, prompt: '58 + 24 = __', carry: 1 });
       list.push({ a: 67, b: 15, ans: 82, prompt: '67 + 15 = __', carry: 1 });
     } else {
-      // Level 3: Banyumas Culture Story Problems
+      // Level 3: Banyumas Culture Story Problems (Revisi 5: Ilustrasi Pendukung Soal Cerita)
       list.push({
         type: 'banyumas',
+        key: 'mendoan',
         cultureName: 'Tempe Mendoan Sokaraja',
         icon: '🍘',
         story: 'Ibu menggoreng 28 potong Tempe Mendoan hangat di pagi hari dan 17 potong lagi di sore hari untuk pesanan wisatawan. Berapa total seluruh tempe mendoan yang digoreng Ibu?',
@@ -1176,6 +1360,7 @@ class NRSDApp {
       });
       list.push({
         type: 'banyumas',
+        key: 'getuk_goreng',
         cultureName: 'Getuk Goreng Khas Sokaraja',
         icon: '🥮',
         story: 'Toko oleh-oleh Banyumas menjual 36 kotak Getuk Goreng rasa gula kelapa dan 28 kotak Getuk Goreng rasa cokelat. Berapa total kotak getuk goreng yang terjual?',
@@ -1185,6 +1370,7 @@ class NRSDApp {
       });
       list.push({
         type: 'banyumas',
+        key: 'es_dawet',
         cultureName: 'Es Dawet Segar & Es Durian',
         icon: '🍧',
         story: 'Warung minuman khas Banyumas menjual 45 mangkuk Es Dawet segar dan 38 porsi Es Durian lezat. Berapa total porsi minuman khas yang terjual?',
@@ -1194,6 +1380,7 @@ class NRSDApp {
       });
       list.push({
         type: 'banyumas',
+        key: 'soto_sokaraja',
         cultureName: 'Soto Sokaraja dengan Ketupat',
         icon: '🍲',
         story: 'Warung Soto Sokaraja menyiapkan 54 mangkuk Soto Daging dan 29 mangkuk Soto Ayam dengan sambal kacang gurih. Berapa total mangkuk soto yang disiapkan?',
@@ -1203,6 +1390,7 @@ class NRSDApp {
       });
       list.push({
         type: 'banyumas',
+        key: 'batik_banyumas',
         cultureName: 'Kain Batik Banyumasan',
         icon: '🎨',
         story: 'Pengrajin Batik Banyumas berhasil membuat 38 lembar kain motif Jahe Puger dan 27 lembar kain motif Lumbon. Berapa total kain batik yang dibuat?',
@@ -1308,13 +1496,26 @@ class NRSDApp {
         </div>
       `;
     } else {
-      // Level 3: Banyumas Culture Story Problem Worksheet
+      // Level 3: Banyumas Culture Story Problem Worksheet with Rich Illustration
+      const illustrationSvg = Mascots.getBanyumasIllustrationSvg(q.key || 'mendoan', 130, 95);
+
       stageContainer.innerHTML = `
         <div style="background:#ffffff; border:3px solid #fde68a; border-radius:var(--radius-lg); padding:20px; box-shadow:var(--shadow-md);">
-          <div class="banyumas-culture-badge">${q.icon} Kebudayaan & Kuliner Khas Banyumas: ${q.cultureName}</div>
-          <p style="font-size:1.15rem; font-weight:700; color:#1e1b4b; line-height:1.5; margin-bottom:16px;">
-            ${q.story}
-          </p>
+          
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:12px;">
+            <div class="banyumas-culture-badge">${q.icon} Kebudayaan & Kuliner Khas Banyumas: ${q.cultureName}</div>
+            <span style="font-size:0.85rem; color:#b45309; font-weight:700;">Soal Kontekstual Banyumas</span>
+          </div>
+
+          <!-- Story Narrative & Visual Illustration Card -->
+          <div style="display:flex; gap:18px; align-items:center; margin-bottom:16px; flex-wrap:wrap;">
+            <div class="banyumas-illustration-wrap" style="flex-shrink:0;">
+              ${illustrationSvg}
+            </div>
+            <p style="flex:1; min-width:260px; font-size:1.15rem; font-weight:700; color:#1e1b4b; line-height:1.5; margin:0;">
+              ${q.story}
+            </p>
+          </div>
 
           <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px;">
             <!-- Worksheet Column 1: Tentukan Bilangan -->
@@ -3129,26 +3330,38 @@ class NRSDApp {
     if (rowTens) rowTens.textContent = tensExp;
     if (rowFinal) rowFinal.textContent = `${this.finalResult}`;
 
-    this.recordSession({
-      mode: 'belajar',
-      focus: 'general',
-      focusTitle: 'Panduan Belajar Bersusun',
-      total: 1,
-      correct: 1,
-      wrong: 0,
-      score: 100,
-      durationSec: 45,
-      hintsUsed: this.currentHintLevel - 1,
-      stages: {
-        placeValue: true,
-        onesAddition: true,
-        regrouping: true,
-        carryDigit: true,
-        withCarry: true,
-        tensAddition: true,
-        finalResult: true
+    if (this.isPracticeSession && this.practiceQuestions && this.practiceQuestions.length > 0) {
+      this.practiceCorrectCount++;
+      const isLast = (this.practiceIndex + 1) >= this.practiceQuestions.length;
+      const btnModalNext = document.getElementById('btnModalNext');
+      if (btnModalNext) {
+        btnModalNext.textContent = isLast ? 'LIHAT SKOR AKHIR 🏆' : 'SOAL BERIKUTNYA ➜';
       }
-    });
+    } else {
+      const btnModalNext = document.getElementById('btnModalNext');
+      if (btnModalNext) btnModalNext.textContent = 'SOAL BERIKUTNYA ➜';
+
+      this.recordSession({
+        mode: 'belajar',
+        focus: 'general',
+        focusTitle: 'Panduan Belajar Bersusun',
+        total: 1,
+        correct: 1,
+        wrong: 0,
+        score: 100,
+        durationSec: 45,
+        hintsUsed: this.currentHintLevel - 1,
+        stages: {
+          placeValue: true,
+          onesAddition: true,
+          regrouping: true,
+          carryDigit: true,
+          withCarry: true,
+          tensAddition: true,
+          finalResult: true
+        }
+      });
+    }
 
     setTimeout(() => {
       document.getElementById('modalResultSummary')?.classList.add('active');
@@ -3166,6 +3379,16 @@ class NRSDApp {
   }
 
   advanceToNextProblem() {
+    if (this.isPracticeSession && this.practiceQuestions && this.practiceQuestions.length > 0) {
+      this.practiceIndex++;
+      if (this.practiceIndex < this.practiceQuestions.length) {
+        this.loadCurrentPracticeWorkspaceProblem();
+      } else {
+        this.finishPracticeSession();
+      }
+      return;
+    }
+
     const presets = [
       { a: 38, b: 27 },
       { a: 46, b: 17 },

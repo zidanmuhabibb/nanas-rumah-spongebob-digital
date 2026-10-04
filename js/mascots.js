@@ -283,7 +283,233 @@ const Mascots = {
         <ellipse cx="${isRight ? '30' : '34'}" cy="22" rx="5" ry="3" fill="#ffffff" opacity="0.75" class="fish-fin-flutter"/>
       </svg>
     `;
+  },
+
+  // 🥘 Kebudayaan & Kuliner Khas Banyumas Vector Illustrations
+  getBanyumasIllustrationSvg(type = 'mendoan', width = 120, height = 95) {
+    if (type === 'mendoan') {
+      return `
+        <svg width="${width}" height="${height}" viewBox="0 0 140 110" fill="none" xmlns="http://www.w3.org/2000/svg" class="banyumas-svg-illustration">
+          <filter id="mendoanGlow" x="-10%" y="-10%" width="120%" height="120%">
+            <feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="#b45309" flood-opacity="0.25"/>
+          </filter>
+          <!-- Plate Base -->
+          <ellipse cx="70" cy="85" rx="62" ry="18" fill="#e2e8f0" stroke="#cbd5e1" stroke-width="3"/>
+          <ellipse cx="70" cy="84" rx="56" ry="14" fill="#f8fafc"/>
+          <ellipse cx="70" cy="84" rx="52" ry="12" fill="#84cc16" opacity="0.45"/> <!-- Banana leaf lining -->
+
+          <!-- Tempe Mendoan Slice 1 (Bottom) -->
+          <g transform="translate(18, 25) rotate(-8)" filter="url(#mendoanGlow)">
+            <rect x="10" y="10" width="70" height="42" rx="8" fill="#fef08a" stroke="#d97706" stroke-width="3"/>
+            <!-- Crispy Batter Crumb Highlights -->
+            <path d="M14 18 Q20 12 30 18 T48 14 T65 20" stroke="#b45309" stroke-width="2" fill="none" opacity="0.6"/>
+            <!-- Green Scallion Bits -->
+            <rect x="22" y="20" width="7" height="4" rx="2" fill="#15803d"/>
+            <rect x="42" y="16" width="6" height="4" rx="2" fill="#16a34a"/>
+            <rect x="58" y="28" width="8" height="4" rx="2" fill="#15803d"/>
+            <rect x="30" y="34" width="7" height="4" rx="2" fill="#16a34a"/>
+          </g>
+
+          <!-- Tempe Mendoan Slice 2 (Top Stacked) -->
+          <g transform="translate(32, 18) rotate(10)" filter="url(#mendoanGlow)">
+            <rect x="10" y="10" width="72" height="44" rx="8" fill="#fde047" stroke="#b45309" stroke-width="3"/>
+            <rect x="14" y="14" width="64" height="36" rx="6" fill="#fef08a" opacity="0.8"/>
+            <!-- Scallions -->
+            <rect x="25" y="22" width="8" height="5" rx="2" fill="#15803d"/>
+            <rect x="45" y="18" width="7" height="4" rx="2" fill="#16a34a"/>
+            <rect x="36" y="32" width="8" height="5" rx="2" fill="#15803d"/>
+            <rect x="58" y="26" width="7" height="4" rx="2" fill="#16a34a"/>
+            <!-- Crispy Edge Flour -->
+            <path d="M12 28 Q8 32 12 38 M78 18 Q84 24 80 32" stroke="#d97706" stroke-width="2.5" stroke-linecap="round"/>
+          </g>
+
+          <!-- Sambal Kecap Dipping Cup -->
+          <ellipse cx="108" cy="68" rx="16" ry="9" fill="#334155" stroke="#0f172a" stroke-width="2"/>
+          <ellipse cx="108" cy="67" rx="14" ry="7" fill="#1c1917"/>
+          <ellipse cx="106" cy="66" rx="10" ry="4" fill="#09090b"/>
+          <!-- Sliced Rawit in Kecap -->
+          <circle cx="104" cy="66" r="2.5" fill="#ef4444"/>
+          <circle cx="111" cy="67" r="2" fill="#22c55e"/>
+
+          <!-- Fresh Green Rawit Chili -->
+          <path d="M22 84 Q32 75 42 86 Q30 92 22 84 Z" fill="#22c55e" stroke="#15803d" stroke-width="2"/>
+          <path d="M22 84 Q18 80 16 81" stroke="#15803d" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      `;
+    }
+
+    if (type === 'getuk_goreng') {
+      return `
+        <svg width="${width}" height="${height}" viewBox="0 0 140 110" fill="none" xmlns="http://www.w3.org/2000/svg" class="banyumas-svg-illustration">
+          <!-- Woven Bamboo Besek Basket -->
+          <path d="M20 55 L30 92 C32 98 108 98 110 92 L120 55 Z" fill="#fde68a" stroke="#b45309" stroke-width="3"/>
+          <!-- Weave Texture -->
+          <g stroke="#d97706" stroke-width="2" opacity="0.6">
+            <line x1="30" y1="65" x2="110" y2="65"/>
+            <line x1="32" y1="78" x2="108" y2="78"/>
+            <line x1="45" y1="56" x2="40" y2="92"/>
+            <line x1="65" y1="56" x2="63" y2="94"/>
+            <line x1="85" y1="56" x2="87" y2="94"/>
+            <line x1="105" y1="56" x2="108" y2="92"/>
+          </g>
+
+          <!-- Golden Brown Sweet Getuk Goreng Cubes Stacked -->
+          <g filter="drop-shadow(0 3px 6px rgba(0,0,0,0.2))">
+            <!-- Cube 1 -->
+            <rect x="32" y="38" width="24" height="22" rx="5" fill="#b45309" stroke="#78350f" stroke-width="2"/>
+            <rect x="34" y="40" width="20" height="18" rx="4" fill="#d97706" opacity="0.9"/>
+            <ellipse cx="44" cy="46" rx="6" ry="3" fill="#fde68a" opacity="0.6"/>
+
+            <!-- Cube 2 -->
+            <rect x="58" y="34" width="26" height="24" rx="5" fill="#92400e" stroke="#78350f" stroke-width="2"/>
+            <rect x="60" y="36" width="22" height="20" rx="4" fill="#b45309" opacity="0.9"/>
+            <ellipse cx="71" cy="42" rx="7" ry="3" fill="#fde68a" opacity="0.5"/>
+
+            <!-- Cube 3 -->
+            <rect x="85" y="40" width="24" height="22" rx="5" fill="#b45309" stroke="#78350f" stroke-width="2"/>
+            <rect x="87" y="42" width="20" height="18" rx="4" fill="#d97706" opacity="0.9"/>
+            <ellipse cx="97" cy="47" rx="6" ry="3" fill="#fde68a" opacity="0.6"/>
+
+            <!-- Top Cube 4 -->
+            <rect x="48" y="18" width="26" height="24" rx="5" fill="#b45309" stroke="#78350f" stroke-width="2.5"/>
+            <rect x="50" y="20" width="22" height="20" rx="4" fill="#d97706"/>
+            <ellipse cx="61" cy="26" rx="7" ry="3" fill="#fef08a" opacity="0.8"/>
+
+            <!-- Top Cube 5 -->
+            <rect x="74" y="16" width="26" height="24" rx="5" fill="#92400e" stroke="#78350f" stroke-width="2.5"/>
+            <rect x="76" y="18" width="22" height="20" rx="4" fill="#b45309"/>
+            <ellipse cx="87" cy="24" rx="7" ry="3" fill="#fde68a" opacity="0.8"/>
+          </g>
+
+          <!-- Sweet Gula Merah Glaze Aroma Steam -->
+          <path d="M60 12 Q56 4 64 0" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.8"/>
+          <path d="M84 10 Q88 2 82 -2" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.8"/>
+        </svg>
+      `;
+    }
+
+    if (type === 'es_dawet') {
+      return `
+        <svg width="${width}" height="${height}" viewBox="0 0 140 110" fill="none" xmlns="http://www.w3.org/2000/svg" class="banyumas-svg-illustration">
+          <!-- Tall Glass Cup -->
+          <path d="M42 22 L48 85 C49 92 85 92 86 85 L92 22 Z" fill="#ffffff" opacity="0.4" stroke="#0284c7" stroke-width="2.5"/>
+          
+          <!-- Layer 1: Gula Jawa / Brown Sugar Syrup (Bottom) -->
+          <path d="M48 85 C49 92 85 92 86 85 L87 70 C70 73 60 70 47 70 Z" fill="#78350f"/>
+          
+          <!-- Layer 2: Santan Kelapa / Coconut Milk Layer (Middle) -->
+          <path d="M47 70 C60 70 70 73 87 70 L90 35 C75 37 55 35 44 35 Z" fill="#fefce8"/>
+
+          <!-- Green Cendol / Dawet Droplets Floating -->
+          <g fill="#16a34a" stroke="#15803d" stroke-width="1">
+            <ellipse cx="58" cy="62" rx="4" ry="7" transform="rotate(25 58 62)"/>
+            <ellipse cx="72" cy="58" rx="5" ry="8" transform="rotate(-15 72 58)"/>
+            <ellipse cx="64" cy="48" rx="4" ry="7" transform="rotate(10 64 48)"/>
+            <ellipse cx="78" cy="66" rx="4" ry="6" transform="rotate(30 78 66)"/>
+            <ellipse cx="54" cy="50" rx="3.5" ry="6" transform="rotate(-20 54 50)"/>
+            <ellipse cx="80" cy="46" rx="4" ry="7" transform="rotate(-10 80 46)"/>
+          </g>
+
+          <!-- Ice Cubes on Top -->
+          <rect x="52" y="26" width="12" height="10" rx="2" fill="#bae6fd" stroke="#38bdf8" stroke-width="1.5" opacity="0.9"/>
+          <rect x="68" y="24" width="14" height="11" rx="2" fill="#e0f2fe" stroke="#38bdf8" stroke-width="1.5" opacity="0.9"/>
+
+          <!-- Drinking Straw -->
+          <path d="M62 4 L68 28 L74 85" stroke="#ef4444" stroke-width="4" stroke-linecap="round" fill="none"/>
+          <path d="M62 4 L68 28 L74 85" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-dasharray="6 6" fill="none"/>
+
+          <!-- Durian Slice on Rim (Right) -->
+          <g transform="translate(86, 15) rotate(15)">
+            <path d="M0 0 C15 -10 32 0 35 18 C25 24 10 20 0 0 Z" fill="#facc15" stroke="#ca8a04" stroke-width="2"/>
+            <!-- Spikes / Husk -->
+            <path d="M30 4 L36 2 L33 9 L40 9 L35 15" stroke="#854d0e" stroke-width="2" fill="none"/>
+            <circle cx="16" cy="10" r="5" fill="#fef08a"/>
+          </g>
+        </svg>
+      `;
+    }
+
+    if (type === 'soto_sokaraja') {
+      return `
+        <svg width="${width}" height="${height}" viewBox="0 0 140 110" fill="none" xmlns="http://www.w3.org/2000/svg" class="banyumas-svg-illustration">
+          <!-- Ceramic Bowl -->
+          <ellipse cx="70" cy="55" rx="55" ry="20" fill="#fef08a" stroke="#ca8a04" stroke-width="2"/> <!-- Soup surface -->
+          <path d="M15 55 C15 95 125 95 125 55 Z" fill="#f8fafc" stroke="#334155" stroke-width="3.5"/>
+          <ellipse cx="70" cy="54" rx="52" ry="18" fill="#f59e0b" opacity="0.85"/> <!-- Rich Soto Broth -->
+
+          <!-- Ketupat Rice Cake Slices in Soup -->
+          <polygon points="38,48 48,42 56,50 46,56" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5"/>
+          <polygon points="52,52 64,46 72,54 60,60" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="1.5"/>
+
+          <!-- Shredded Chicken / Meat -->
+          <path d="M68 46 Q76 40 84 48 T94 45" stroke="#78350f" stroke-width="3" fill="none"/>
+
+          <!-- Sambal Kacang Dollop in Center -->
+          <circle cx="70" cy="55" r="9" fill="#9a3412" stroke="#7c2d12" stroke-width="1.5"/>
+          <circle cx="68" cy="53" r="3" fill="#ea580c"/>
+
+          <!-- Pink Kerupuk Cantir / Kerupuk Soto -->
+          <g transform="translate(85, 30) rotate(-15)">
+            <path d="M0 10 C-5 0 15 -5 20 5 C28 5 25 22 15 20 C5 22 0 18 0 10 Z" fill="#f472b6" stroke="#db2777" stroke-width="2"/>
+            <circle cx="8" cy="8" r="1.5" fill="#fdf2f8"/>
+            <circle cx="14" cy="14" r="1.5" fill="#fdf2f8"/>
+          </g>
+
+          <!-- Green Celery Sprinkles & Fried Onions -->
+          <circle cx="48" cy="50" r="2" fill="#15803d"/>
+          <circle cx="82" cy="58" r="2" fill="#15803d"/>
+          <circle cx="60" cy="44" r="2" fill="#78350f"/>
+
+          <!-- Hot Steaming Waves -->
+          <path d="M50 30 Q46 18 54 10" stroke="#f1f5f9" stroke-width="2.5" stroke-linecap="round" fill="none" opacity="0.8"/>
+          <path d="M70 25 Q74 15 68 8" stroke="#f1f5f9" stroke-width="2.5" stroke-linecap="round" fill="none" opacity="0.8"/>
+          <path d="M90 28 Q86 16 94 10" stroke="#f1f5f9" stroke-width="2.5" stroke-linecap="round" fill="none" opacity="0.8"/>
+        </svg>
+      `;
+    }
+
+    if (type === 'batik_banyumas') {
+      return `
+        <svg width="${width}" height="${height}" viewBox="0 0 140 110" fill="none" xmlns="http://www.w3.org/2000/svg" class="banyumas-svg-illustration">
+          <!-- Draped Traditional Batik Cloth with Jahe Puger Motif -->
+          <g filter="drop-shadow(0 4px 8px rgba(0,0,0,0.25))">
+            <path d="M20 20 C40 15 80 18 115 15 L125 80 C95 85 55 80 25 85 Z" fill="#78350f" stroke="#451a03" stroke-width="3"/>
+            
+            <!-- Traditional Sogan & Indigo Batik Patterns -->
+            <g stroke="#fef08a" stroke-width="2" fill="#b45309" opacity="0.9">
+              <!-- Jahe Puger Ginger Flower Motifs -->
+              <circle cx="45" cy="38" r="8"/>
+              <path d="M45 26 L45 50 M33 38 L57 38"/>
+              
+              <circle cx="90" cy="35" r="8"/>
+              <path d="M90 23 L90 47 M78 35 L102 35"/>
+
+              <circle cx="68" cy="60" r="9"/>
+              <path d="M68 47 L68 73 M55 60 L81 60"/>
+
+              <!-- Lumbon (Taro Leaf) Swirls -->
+              <path d="M30 65 Q42 55 45 68 T38 78" fill="none" stroke="#fde047" stroke-width="2.5"/>
+              <path d="M95 62 Q108 52 110 65 T102 75" fill="none" stroke="#fde047" stroke-width="2.5"/>
+            </g>
+          </g>
+
+          <!-- Traditional Canting Pen with Hot Golden Wax Drop -->
+          <g transform="translate(85, 45) rotate(-35)">
+            <rect x="0" y="8" width="48" height="6" rx="3" fill="#a16207" stroke="#713f12" stroke-width="1.5"/> <!-- Wooden handle -->
+            <path d="M48 5 L60 0 L56 16 Z" fill="#d97706" stroke="#b45309" stroke-width="1.5"/> <!-- Copper wax cup -->
+            <path d="M60 0 L66 -4" stroke="#ca8a04" stroke-width="2.5" stroke-linecap="round"/> <!-- Canting spout -->
+            <circle cx="68" cy="-6" r="2.5" fill="#facc15"/> <!-- Golden wax droplet -->
+          </g>
+        </svg>
+      `;
+    }
+
+    // Default fallback
+    return `
+      <div style="font-size:3rem; text-align:center;">🥘</div>
+    `;
   }
 };
 
 window.Mascots = Mascots;
+
