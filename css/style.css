@@ -2347,96 +2347,702 @@ html, body {
   color: #5b21b6;
 }
 
-.toggle-switch-row {
+/* ==========================================================================
+   APP MAIN SUB-NAVIGATION BAR (Section A)
+   ========================================================================== */
+.app-main-nav {
+  background: linear-gradient(90deg, #1e1b4b 0%, #2e2a72 50%, #312e81 100%);
+  border-bottom: 3px solid #fbbf24;
+  padding: 6px 16px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 8px 0;
-  border-bottom: 1px solid #f1f5f9;
+  gap: 8px;
+  overflow-x: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #fbbf24 #1e1b4b;
+  z-index: 15;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
 }
 
-.toggle-label {
-  font-weight: 600;
-  color: #334155;
-  font-size: 0.9rem;
+.app-main-nav::-webkit-scrollbar {
+  height: 4px;
+}
+.app-main-nav::-webkit-scrollbar-thumb {
+  background: #fbbf24;
+  border-radius: 4px;
 }
 
-/* Diagnostic Concepts Table - Section 40 */
-.diagnostic-box {
-  background: #f8fafc;
+.nav-item {
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  color: #f1f5f9;
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  font-weight: 700;
+  padding: 8px 14px;
   border-radius: var(--radius-md);
-  padding: 14px;
-  border: 2px solid #e2e8f0;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.2);
 }
 
-.diag-item {
+.nav-item:hover {
+  background: rgba(255, 255, 255, 0.22);
+  border-color: #fbbf24;
+  transform: translateY(-2px);
+  color: #ffffff;
+}
+
+.nav-item.active {
+  background: linear-gradient(180deg, #fbbf24 0%, #f59e0b 100%);
+  color: #1e1b4b;
+  border-color: #fde68a;
+  box-shadow: 0 4px 0 #b45309, 0 0 12px rgba(251, 191, 36, 0.5);
+  transform: translateY(-1px);
+}
+
+.nav-icon {
+  font-size: 1.1rem;
+}
+
+/* Header Student Identity Chip (Section N) */
+.header-student-chip {
+  background: rgba(255, 255, 255, 0.15);
+  border: 1.5px solid rgba(255, 255, 255, 0.3);
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.88rem;
+  color: #fef08a;
+  transition: all 0.2s ease;
+}
+
+.header-student-chip:hover {
+  background: rgba(255, 255, 255, 0.25);
+  border-color: #fbbf24;
+  transform: scale(1.03);
+}
+
+/* ==========================================================================
+   FITUR LATIHAN (Section B)
+   ========================================================================== */
+#screen-practice {
+  padding: 20px 30px;
+  background: linear-gradient(180deg, #f0fdf4 0%, #e0f2fe 100%);
+  overflow-y: auto;
+}
+
+.practice-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.practice-focus-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin: 20px 0;
+}
+
+.practice-focus-card {
+  background: #ffffff;
+  border: 3px solid #e2e8f0;
+  border-radius: var(--radius-lg);
+  padding: 18px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 8px;
+  box-shadow: 0 4px 0 #cbd5e1, var(--shadow-sm);
+  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.practice-focus-card:hover {
+  transform: translateY(-4px);
+  border-color: #38bdf8;
+  box-shadow: 0 8px 0 #0284c7, var(--shadow-md);
+}
+
+.practice-focus-card.selected {
+  background: #eff6ff;
+  border-color: #2563eb;
+  box-shadow: 0 6px 0 #1d4ed8, 0 0 15px rgba(37, 99, 235, 0.3);
+  transform: translateY(-2px);
+}
+
+.focus-card-icon {
+  font-size: 2.4rem;
+}
+
+.focus-card-title {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #1e1b4b;
+}
+
+.focus-card-desc {
+  font-size: 0.85rem;
+  color: #64748b;
+  line-height: 1.3;
+}
+
+.count-picker-box {
+  background: #ffffff;
+  border: 2px solid #e2e8f0;
+  border-radius: var(--radius-md);
+  padding: 14px 20px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 8px 0;
-  border-bottom: 1px solid #f1f5f9;
-  font-size: 0.9rem;
-  font-weight: 600;
+  margin: 16px 0 24px;
 }
 
-.diag-status-badge {
+.count-pills {
+  display: flex;
+  gap: 10px;
+}
+
+.count-pill {
+  background: #f1f5f9;
+  border: 2px solid #cbd5e1;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 0.95rem;
+  padding: 8px 20px;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  color: #334155;
+  transition: all 0.15s;
+}
+
+.count-pill.active {
+  background: #10b981;
+  border-color: #059669;
+  color: #ffffff;
+  box-shadow: 0 4px 0 #047857;
+}
+
+/* Practice Active Quiz Card */
+.practice-quiz-box {
+  background: #ffffff;
+  border: 4px solid #cbd5e1;
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  box-shadow: var(--shadow-md);
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.quiz-top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #f1f5f9;
+}
+
+.timer-pill {
+  background: #fef3c7;
+  border: 2px solid #fde68a;
+  color: #92400e;
+  font-family: var(--font-numbers);
+  font-size: 1rem;
+  font-weight: 800;
+  padding: 4px 14px;
+  border-radius: var(--radius-full);
+}
+
+.quiz-progress-bar {
+  height: 10px;
+  background: #e2e8f0;
+  border-radius: 5px;
+  overflow: hidden;
+  margin: 8px 0;
+}
+
+.quiz-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #10b981, #06b6d4);
+  transition: width 0.3s ease;
+}
+
+.quiz-prompt-card {
+  background: #f8fafc;
+  border: 2px solid #e2e8f0;
+  border-radius: var(--radius-md);
+  padding: 20px;
+  text-align: center;
+}
+
+.quiz-prompt-text {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1e1b4b;
+  margin-bottom: 12px;
+}
+
+.quiz-tokens-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin: 14px 0;
+}
+
+.quiz-input-field {
+  font-family: var(--font-numbers);
+  font-size: 2.2rem;
+  font-weight: 900;
+  text-align: center;
+  width: 140px;
+  padding: 8px;
+  border: 3px solid #cbd5e1;
+  border-radius: var(--radius-md);
+  color: #1e1b4b;
+}
+
+.quiz-input-field:focus {
+  border-color: #2563eb;
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.2);
+}
+
+/* Growth Mindset Feedback Box (Section O) */
+.growth-feedback-box {
+  background: #f0fdf4;
+  border: 2px solid #86efac;
+  border-radius: var(--radius-md);
+  padding: 14px 20px;
+  display: none;
+  align-items: center;
+  gap: 14px;
+  animation: fadeIn 0.3s ease;
+}
+
+.growth-feedback-box.show {
+  display: flex;
+}
+
+.growth-feedback-box.correct {
+  background: #f0fdf4;
+  border-color: #34d399;
+  color: #065f46;
+}
+
+.growth-feedback-box.wrong {
+  background: #fff1f2;
+  border-color: #fda4af;
+  color: #9f1239;
+}
+
+.growth-feedback-box.hint {
+  background: #fefce8;
+  border-color: #fde047;
+  color: #854d0e;
+}
+
+/* ==========================================================================
+   FITUR TANTANGAN (Section C)
+   ========================================================================== */
+#screen-challenge {
+  padding: 20px 30px;
+  background: linear-gradient(180deg, #fdf2f8 0%, #e0e7ff 100%);
+  overflow-y: auto;
+}
+
+.challenge-levels-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 14px;
+  margin: 20px 0;
+}
+
+.challenge-level-card {
+  background: #ffffff;
+  border: 3px solid #cbd5e1;
+  border-radius: var(--radius-lg);
+  padding: 18px 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  position: relative;
+  cursor: pointer;
+  box-shadow: 0 4px 0 #cbd5e1, var(--shadow-sm);
+  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.challenge-level-card.unlocked:hover {
+  transform: translateY(-4px);
+  border-color: #ec4899;
+  box-shadow: 0 8px 0 #db2777, var(--shadow-md);
+}
+
+.challenge-level-card.active-level {
+  border-color: #ec4899;
+  background: #fdf2f8;
+  box-shadow: 0 6px 0 #be185d, 0 0 15px rgba(236, 72, 153, 0.35);
+}
+
+.challenge-level-card.locked {
+  opacity: 0.7;
+  background: #f1f5f9;
+  cursor: not-allowed;
+}
+
+.level-num-badge {
+  background: #1e1b4b;
+  color: #fbbf24;
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  font-weight: 800;
   padding: 2px 10px;
+  border-radius: var(--radius-full);
+  margin-bottom: 6px;
+}
+
+.stars-row {
+  display: flex;
+  gap: 4px;
+  margin-top: 6px;
+  font-size: 1.1rem;
+}
+
+/* ==========================================================================
+   PEMBUAT SOAL GURU (Section D)
+   ========================================================================== */
+#screen-builder {
+  padding: 20px 30px;
+  background: linear-gradient(180deg, #f5f3ff 0%, #ede9fe 100%);
+  overflow-y: auto;
+}
+
+.builder-layout {
+  display: grid;
+  grid-template-columns: 340px 1fr;
+  gap: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.builder-card {
+  background: #ffffff;
+  border: 3px solid #c4b5fd;
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  box-shadow: var(--shadow-md);
+}
+
+.builder-table-wrap {
+  overflow-x: auto;
+  max-height: 400px;
+}
+
+.builder-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.builder-table th, .builder-table td {
+  padding: 10px 12px;
+  text-align: left;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.builder-table th {
+  background: #f8fafc;
+  color: #475569;
+  font-weight: 800;
+}
+
+.carry-pill {
+  display: inline-block;
+  padding: 2px 8px;
   border-radius: var(--radius-full);
   font-size: 0.75rem;
   font-weight: 800;
 }
 
-.badge-mastered { background: #d1fae5; color: #047857; }
-.badge-needs-practice { background: #fef3c7; color: #b45309; }
-
-/* ==========================================================================
-   CLICK-TO-MOVE TARGET HIGHLIGHTS & ANIMATIONS
-   ========================================================================== */
-.click-move-active-ball {
-  box-shadow: 0 0 0 4px #fbbf24, 0 0 20px #fbbf24 !important;
-  animation: pulseMove 0.8s infinite alternate !important;
+.carry-pill.yes {
+  background: #fee2e2;
+  color: #dc2626;
 }
 
-@keyframes pulseMove {
-  from { transform: scale(1.08); }
-  to { transform: scale(1.18); }
-}
-
-.click-target-candidate {
-  cursor: pointer !important;
-  border: 3px dashed #10b981 !important;
-  background: rgba(16, 185, 129, 0.15) !important;
-  box-shadow: 0 0 15px rgba(16, 185, 129, 0.4) !important;
-  animation: targetGlow 1s infinite alternate;
-}
-
-@keyframes targetGlow {
-  0% { transform: scale(1); }
-  100% { transform: scale(1.05); }
+.carry-pill.no {
+  background: #d1fae5;
+  color: #059669;
 }
 
 /* ==========================================================================
-   ACCESSIBILITY & RESPONSIVE TWEAKS (PRD Section 43 & 44)
+   PETUNJUK BERMAIN 10 LANGKAH (Section E)
    ========================================================================== */
-@media (max-width: 1100px) {
-  .workspace-body {
-    grid-template-columns: 240px 1fr 260px;
-    gap: 10px;
-    padding: 10px;
+.guide-carousel-box {
+  max-width: 760px;
+  margin: 0 auto;
+  background: #ffffff;
+  border: 4px solid #fbbf24;
+  border-radius: var(--radius-lg);
+  padding: 28px;
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.guide-step-indicator {
+  display: flex;
+  gap: 8px;
+  margin: 16px 0;
+}
+
+.step-indicator-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #e2e8f0;
+  transition: all 0.2s;
+}
+
+.step-indicator-dot.active {
+  background: #fbbf24;
+  transform: scale(1.3);
+  box-shadow: 0 0 8px rgba(251, 191, 36, 0.6);
+}
+
+/* ==========================================================================
+   PANDUAN GURU & DEMONSTRASI (Section F & G)
+   ========================================================================== */
+#screen-teacher-guide, #screen-demo {
+  padding: 20px 30px;
+  background: linear-gradient(180deg, #f8fafc 0%, #ede9fe 100%);
+  overflow-y: auto;
+}
+
+.teacher-guide-sections {
+  max-width: 1000px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+
+.guide-section-card {
+  background: #ffffff;
+  border: 3px solid #cbd5e1;
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  box-shadow: var(--shadow-sm);
+}
+
+.guide-section-card h3 {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  color: #1e1b4b;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.guide-section-card p, .guide-section-card li {
+  font-size: 0.92rem;
+  color: #475569;
+  line-height: 1.5;
+}
+
+.guide-section-card ul {
+  padding-left: 20px;
+}
+
+/* Demo Mode Interactive Stage */
+.demo-stage-box {
+  max-width: 900px;
+  margin: 0 auto;
+  background: #ffffff;
+  border: 4px solid #38bdf8;
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  box-shadow: var(--shadow-md);
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.demo-controls-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 12px;
+  background: #f8fafc;
+  border-radius: var(--radius-md);
+  border: 2px solid #e2e8f0;
+}
+
+/* ==========================================================================
+   HASIL BELAJAR & DASHBOARD DIAGNOSTIK (Section H & I)
+   ========================================================================== */
+#screen-dashboard {
+  padding: 20px 30px;
+  background: linear-gradient(180deg, #f8fafc 0%, #e0f2fe 100%);
+  overflow-y: auto;
+}
+
+.dashboard-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.kpi-card {
+  background: #ffffff;
+  border: 3px solid #e2e8f0;
+  border-radius: var(--radius-md);
+  padding: 16px;
+  text-align: center;
+  box-shadow: var(--shadow-sm);
+}
+
+.kpi-label {
+  font-size: 0.8rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: #64748b;
+  margin-bottom: 4px;
+}
+
+.kpi-val {
+  font-family: var(--font-numbers);
+  font-size: 2rem;
+  font-weight: 900;
+  color: #1e1b4b;
+}
+
+.stages-grid-7 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.stage-card-mini {
+  background: #ffffff;
+  border: 2px solid #cbd5e1;
+  border-radius: var(--radius-sm);
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.stage-card-title {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #334155;
+}
+
+/* ==========================================================================
+   PENGATURAN SCREEN (Section K & L)
+   ========================================================================== */
+#screen-settings {
+  padding: 24px 36px;
+  background: linear-gradient(180deg, #f8fafc 0%, #e0e7ff 100%);
+  overflow-y: auto;
+}
+
+.settings-box {
+  max-width: 700px;
+  margin: 0 auto;
+  background: #ffffff;
+  border: 4px solid #cbd5e1;
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  box-shadow: var(--shadow-md);
+}
+
+.volume-control-group {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.volume-slider {
+  width: 180px;
+  cursor: pointer;
+}
+
+/* No Animation Utility (Section L) */
+body.no-anim *,
+body.no-anim *::before,
+body.no-anim *::after {
+  animation: none !important;
+  transition: none !important;
+}
+
+/* ==========================================================================
+   RESPONSIVE OVERRIDES
+   ========================================================================== */
+@media (max-width: 1024px) {
+  .practice-focus-grid {
+    grid-template-columns: repeat(2, 1fr);
   }
-  .digit-ball {
-    width: 54px;
-    height: 54px;
-    font-size: 1.8rem;
+  .challenge-levels-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .builder-layout {
+    grid-template-columns: 1fr;
+  }
+  .teacher-guide-sections {
+    grid-template-columns: 1fr;
+  }
+  .kpi-grid, .stages-grid-7 {
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
-@media (max-width: 860px) {
-  .home-container, .modes-grid, .teacher-grid, .guide-steps-grid {
+@media (max-width: 768px) {
+  .app-main-nav {
+    padding: 6px 8px;
+    gap: 6px;
+  }
+  .nav-item {
+    font-size: 0.78rem;
+    padding: 6px 10px;
+  }
+  .practice-focus-grid {
     grid-template-columns: 1fr;
   }
-  .workspace-body {
+  .challenge-levels-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .kpi-grid, .stages-grid-7 {
     grid-template-columns: 1fr;
-    overflow-y: auto;
   }
 }
+

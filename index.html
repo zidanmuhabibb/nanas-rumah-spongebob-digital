@@ -35,6 +35,11 @@
         </div>
 
         <div class="header-center-info">
+          <div class="header-student-chip" id="headerStudentChip" title="Klik untuk ubah nama siswa">
+            <span>👤</span>
+            <span id="headerStudentName">Murid Juara</span>
+            <span style="font-size:0.75rem; opacity:0.8;">✏️</span>
+          </div>
           <div class="mode-badge" id="headerModeBadge">
             <span id="headerModeIcon">📚</span>
             <span id="headerModeText">Mode Belajar</span>
@@ -51,11 +56,50 @@
           <button class="header-btn" id="btnHeaderGuide" data-tooltip="Petunjuk Belajar" aria-label="Petunjuk">
             📖
           </button>
-          <button class="header-btn" id="btnHeaderTeacher" data-tooltip="Pengaturan Guru" aria-label="Pengaturan Guru">
+          <button class="header-btn" id="btnHeaderDashboard" data-tooltip="Hasil Belajar" aria-label="Hasil Belajar">
+            📊
+          </button>
+          <button class="header-btn" id="btnHeaderTeacher" data-tooltip="Pengaturan & Guru" aria-label="Pengaturan">
             ⚙️
           </button>
         </div>
       </header>
+
+      <!-- ==========================================================================
+           MAIN SUB-NAVIGATION BAR (Section A)
+           ========================================================================== -->
+      <nav class="app-main-nav" id="appMainNav" aria-label="Navigasi Utama Pembelajaran">
+        <button class="nav-item active" id="navHome" data-screen="screen-home">
+          <span class="nav-icon">🏠</span> BERANDA
+        </button>
+        <button class="nav-item" id="navLearn" data-screen="screen-workspace" data-mode="belajar">
+          <span class="nav-icon">📚</span> MULAI BELAJAR
+        </button>
+        <button class="nav-item" id="navPractice" data-screen="screen-practice">
+          <span class="nav-icon">🎮</span> LATIHAN
+        </button>
+        <button class="nav-item" id="navChallenge" data-screen="screen-challenge">
+          <span class="nav-icon">🏆</span> TANTANGAN
+        </button>
+        <button class="nav-item" id="navBuilder" data-screen="screen-builder">
+          <span class="nav-icon">✏️</span> PEMBUAT SOAL
+        </button>
+        <button class="nav-item" id="navGuide" data-screen="screen-guide">
+          <span class="nav-icon">📖</span> PETUNJUK
+        </button>
+        <button class="nav-item" id="navTeacherGuide" data-screen="screen-teacher-guide">
+          <span class="nav-icon">📋</span> PANDUAN GURU
+        </button>
+        <button class="nav-item" id="navDemo" data-screen="screen-demo">
+          <span class="nav-icon">👀</span> DEMO GURU
+        </button>
+        <button class="nav-item" id="navDashboard" data-screen="screen-dashboard">
+          <span class="nav-icon">📊</span> HASIL BELAJAR
+        </button>
+        <button class="nav-item" id="navSettings" data-screen="screen-settings">
+          <span class="nav-icon">⚙️</span> PENGATURAN
+        </button>
+      </nav>
 
       <!-- ==========================================================================
            SCREEN 1: SPLASH SCREEN (PRD Section 11)
@@ -93,14 +137,14 @@
           <div class="home-menu">
             <div class="home-header-text">
               <h2>Ayo Belajar Menjumlahkan!</h2>
-              <p>Pilih mode aktivitas di bawah ini untuk memulai petualangan matematika:</p>
+              <p>Pilih aktivitas di bawah ini untuk memulai petualangan matematika:</p>
             </div>
 
             <!-- Primary CTA -->
             <div class="menu-card-primary" id="btnHomeLearn">
               <div class="menu-primary-info">
                 <h3><span>📚</span> MULAI BELAJAR</h3>
-                <p>Panduan langkah demi langkah dengan bantuan visual penuh</p>
+                <p>Panduan langkah demi langkah dengan media manipulatif visual penuh</p>
               </div>
               <div class="menu-arrow">➜</div>
             </div>
@@ -110,7 +154,7 @@
                 <div class="menu-sec-icon">🎮</div>
                 <div class="menu-sec-info">
                   <h4>Mode Latihan</h4>
-                  <p>Mengerjakan soal mandiri</p>
+                  <p>6 fokus belajar & 5/10/15 soal</p>
                 </div>
               </div>
 
@@ -118,23 +162,39 @@
                 <div class="menu-sec-icon">🏆</div>
                 <div class="menu-sec-info">
                   <h4>Mode Tantangan</h4>
-                  <p>Kumpulkan skor & bintang</p>
+                  <p>5 level progresif & raih bintang</p>
+                </div>
+              </div>
+
+              <div class="menu-card-sec" id="btnHomeBuilder">
+                <div class="menu-sec-icon">✏️</div>
+                <div class="menu-sec-info">
+                  <h4>Pembuat Soal</h4>
+                  <p>Kustom soal guru & simpan set</p>
                 </div>
               </div>
 
               <div class="menu-card-sec" id="btnHomeGuide">
                 <div class="menu-sec-icon">📖</div>
                 <div class="menu-sec-info">
-                  <h4>Petunjuk</h4>
-                  <p>Cara menggunakan media</p>
+                  <h4>Petunjuk Bermain</h4>
+                  <p>10 langkah mudah menggunakan media</p>
                 </div>
               </div>
 
-              <div class="menu-card-sec btn-guru" id="btnHomeTeacher">
-                <div class="menu-sec-icon">👩‍🏫</div>
+              <div class="menu-card-sec" id="btnHomeDemo">
+                <div class="menu-sec-icon">👀</div>
                 <div class="menu-sec-info">
-                  <h4>Mode Guru</h4>
-                  <p>Kustom soal & diagnostik</p>
+                  <h4>Demo Visual</h4>
+                  <p>Animasi 8 tahap penjumlahan</p>
+                </div>
+              </div>
+
+              <div class="menu-card-sec btn-guru" id="btnHomeDashboard">
+                <div class="menu-sec-icon">📊</div>
+                <div class="menu-sec-info">
+                  <h4>Hasil Belajar</h4>
+                  <p>Diagnostik 7 tahap & riwayat</p>
                 </div>
               </div>
             </div>
@@ -143,73 +203,715 @@
       </section>
 
       <!-- ==========================================================================
-           SCREEN 3: PETUNJUK CARA MENGGUNAKAN (PRD Section 13)
+           SCREEN 3: FITUR LATIHAN (Section B)
+           ========================================================================== -->
+      <section class="view-screen" id="screen-practice">
+        <div class="practice-container">
+          
+          <!-- Practice Setup View -->
+          <div id="practiceSetupView">
+            <div style="text-align: center; margin-bottom: 20px;">
+              <h2 style="font-family: var(--font-display); font-size: 2.2rem; color: #1e1b4b;">🎮 Mode Latihan Mandiri</h2>
+              <p style="color: #475569; font-size: 1.05rem;">Pilih <strong>1 Fokus Belajar</strong> dan <strong>Jumlah Soal</strong> yang ingin kamu kerjakan:</p>
+            </div>
+
+            <!-- 6 Focus Cards -->
+            <div class="practice-focus-grid">
+              <div class="practice-focus-card selected" data-focus="placeValue">
+                <div class="focus-card-icon">🏷️</div>
+                <div class="focus-card-title">1. Nilai Tempat</div>
+                <div class="focus-card-desc">Kenali digit puluhan dan satuan pada bilangan 2-digit.</div>
+              </div>
+
+              <div class="practice-focus-card" data-focus="onesAddition">
+                <div class="focus-card-icon">➕</div>
+                <div class="focus-card-title">2. Penjumlahan Satuan</div>
+                <div class="focus-card-desc">Jumlahkan angka-angka pada kolom satuan terlebih dahulu.</div>
+              </div>
+
+              <div class="practice-focus-card" data-focus="regrouping">
+                <div class="focus-card-icon">🔄</div>
+                <div class="focus-card-title">3. Regrouping</div>
+                <div class="focus-card-desc">Pisahkan hasil satuan menjadi 1 puluhan simpan dan satuan sisa.</div>
+              </div>
+
+              <div class="practice-focus-card" data-focus="carryDigit">
+                <div class="focus-card-icon">🐧</div>
+                <div class="focus-card-title">4. Angka Simpan</div>
+                <div class="focus-card-desc">Kirim dan tempatkan angka simpan di atas kolom puluhan.</div>
+              </div>
+
+              <div class="practice-focus-card" data-focus="withCarry">
+                <div class="focus-card-icon">⭐</div>
+                <div class="focus-card-title">5. Penjumlahan Menyimpan</div>
+                <div class="focus-card-desc">Selesaikan penjumlahan 2-digit lengkap dengan teknik menyimpan.</div>
+              </div>
+
+              <div class="practice-focus-card" data-focus="wordProblems">
+                <div class="focus-card-icon">📖</div>
+                <div class="focus-card-title">6. Soal Cerita</div>
+                <div class="focus-card-desc">Pahami soal cerita matematika kehidupan sehari-hari anak SD.</div>
+              </div>
+            </div>
+
+            <!-- Question Count Picker -->
+            <div class="count-picker-box">
+              <div style="display:flex; align-items:center; gap:8px;">
+                <span style="font-size:1.4rem;">🔢</span>
+                <span style="font-family:var(--font-display); font-weight:800; font-size:1.1rem; color:#1e1b4b;">Pilih Jumlah Soal:</span>
+              </div>
+              <div class="count-pills">
+                <button class="count-pill active" data-count="5">5 Soal</button>
+                <button class="count-pill" data-count="10">10 Soal</button>
+                <button class="count-pill" data-count="15">15 Soal</button>
+              </div>
+            </div>
+
+            <div style="display:flex; justify-content:center; gap:16px;">
+              <button class="btn btn-secondary" id="btnPracticeBack">← Kembali</button>
+              <button class="btn btn-primary btn-lg" id="btnStartPracticeQuiz">
+                <span>▶</span> MULAI LATIHAN SEKARANG
+              </button>
+            </div>
+          </div>
+
+          <!-- Practice Active Quiz View -->
+          <div id="practiceQuizView" style="display: none;">
+            <div class="practice-quiz-box">
+              
+              <!-- Quiz Top Bar -->
+              <div class="quiz-top-bar">
+                <div style="display:flex; align-items:center; gap:10px;">
+                  <span class="phase-pill" id="practiceQuizFocusBadge" style="background:#2563eb;">Fokus: Nilai Tempat</span>
+                  <span style="font-weight:800; color:#1e1b4b; font-size:1.1rem;" id="practiceQuizCounter">Soal 1 dari 5</span>
+                </div>
+                <div style="display:flex; align-items:center; gap:14px;">
+                  <div class="timer-pill" id="practiceTimer">⏱️ 00:00</div>
+                  <div class="timer-pill" style="background:#ecfdf5; border-color:#a7f3d0; color:#065f46;" id="practiceScoreBadge">⭐ Skor: 0</div>
+                </div>
+              </div>
+
+              <!-- Progress Bar -->
+              <div class="quiz-progress-bar">
+                <div class="quiz-progress-fill" id="practiceProgressFill" style="width: 20%;"></div>
+              </div>
+
+              <!-- Quiz Question Area -->
+              <div class="quiz-prompt-card">
+                <div class="quiz-prompt-text" id="practicePromptText">
+                  Berapakah nilai tempat puluhan dari bilangan <strong>47</strong>?
+                </div>
+                <div id="practiceVisualCard" style="margin: 12px 0;"></div>
+                
+                <div class="quiz-tokens-row" id="practiceInputArea">
+                  <input type="number" id="practiceInputAnswer" class="quiz-input-field" placeholder="?" autocomplete="off">
+                </div>
+
+                <!-- Choice Options (for multiple choice questions) -->
+                <div id="practiceChoiceOptions" style="display:none; grid-template-columns: 1fr 1fr; gap:12px; max-width:500px; margin: 0 auto;"></div>
+              </div>
+
+              <!-- Growth Mindset Feedback Box -->
+              <div class="growth-feedback-box" id="practiceFeedbackBox">
+                <span id="practiceFeedbackIcon" style="font-size: 1.8rem;">💡</span>
+                <span id="practiceFeedbackText" style="font-weight:700; font-size:1rem; line-height:1.4;">
+                  Hebat! Kamu sudah memahami nilai tempat dengan sangat baik.
+                </span>
+              </div>
+
+              <!-- Quiz Action Buttons -->
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-top:6px;">
+                <button class="control-btn btn-help" id="btnPracticeHint">
+                  <span>💡</span> PETUNJUK (<span id="practiceHintLevel">Lv 1</span>)
+                </button>
+                <div style="display:flex; gap:12px;">
+                  <button class="btn btn-secondary" id="btnPracticeQuit">Keluar Latihan</button>
+                  <button class="btn btn-green" id="btnPracticeCheck">
+                    <span>✅</span> PERIKSA JAWABAN
+                  </button>
+                  <button class="btn btn-primary" id="btnPracticeNext" style="display: none;">
+                    SOAL BERIKUTNYA ➜
+                  </button>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Practice Summary View -->
+          <div id="practiceSummaryView" style="display: none;">
+            <div class="practice-quiz-box" style="text-align: center; align-items: center;">
+              <div style="font-size: 4.5rem; animation: bounceSlow 2s infinite;">🎉</div>
+              <h2 style="font-family: var(--font-display); font-size: 2.2rem; color: #1e1b4b;">LATIHAN SELESAI!</h2>
+              <p style="font-size: 1.1rem; color: #475569;" id="practiceSummarySubtitle">Kerja bagus, kamu telah menyelesaikan sesi latihan dengan gigih!</p>
+
+              <div class="kpi-grid" style="width:100%; margin: 20px 0;">
+                <div class="kpi-card">
+                  <div class="kpi-label">Benar</div>
+                  <div class="kpi-val" style="color:#059669;" id="sumPracCorrect">5</div>
+                </div>
+                <div class="kpi-card">
+                  <div class="kpi-label">Salah</div>
+                  <div class="kpi-val" style="color:#dc2626;" id="sumPracWrong">0</div>
+                </div>
+                <div class="kpi-card">
+                  <div class="kpi-label">Skor Akhir</div>
+                  <div class="kpi-val" style="color:#d97706;" id="sumPracScore">100</div>
+                </div>
+                <div class="kpi-card">
+                  <div class="kpi-label">Waktu</div>
+                  <div class="kpi-val" style="color:#2563eb;" id="sumPracTime">01:15</div>
+                </div>
+              </div>
+
+              <div style="display:flex; gap:14px;">
+                <button class="btn btn-secondary" id="btnSummaryRetry">Ulangi Latihan</button>
+                <button class="btn btn-purple" id="btnSummaryDashboard">Lihat Hasil Belajar ➜</button>
+                <button class="btn btn-primary" id="btnSummaryChallenge">Ayo Main Tantangan! 🏆</button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ==========================================================================
+           SCREEN 4: FITUR TANTANGAN (Section C)
+           ========================================================================== -->
+      <section class="view-screen" id="screen-challenge">
+        <div style="max-width: 1000px; margin: 0 auto; width: 100%;">
+          
+          <!-- Challenge Level Picker View -->
+          <div id="challengePickerView">
+            <div style="text-align: center; margin-bottom: 20px;">
+              <h2 style="font-family: var(--font-display); font-size: 2.2rem; color: #9f1239;">🏆 Mode Tantangan 5 Level</h2>
+              <p style="color: #475569; font-size: 1.05rem;">Selesaikan setiap level untuk membuka level berikutnya dan kumpulkan bintang prestasi!</p>
+            </div>
+
+            <!-- 5 Level Cards -->
+            <div class="challenge-levels-grid">
+              <!-- Level 1 -->
+              <div class="challenge-level-card unlocked" data-level="1" id="cardLevel1">
+                <span class="level-num-badge">LEVEL 1</span>
+                <div style="font-size:2.4rem; margin:6px 0;">⚡</div>
+                <h4 style="font-family:var(--font-display); font-size:1.15rem; color:#1e1b4b;">Dua Digit</h4>
+                <p style="font-size:0.8rem; color:#64748b; margin:4px 0;">Penjumlahan 2-digit tanpa simpan</p>
+                <div class="stars-row" id="starsLevel1">⭐⭐⭐</div>
+              </div>
+
+              <!-- Level 2 -->
+              <div class="challenge-level-card locked" data-level="2" id="cardLevel2">
+                <span class="level-num-badge">LEVEL 2</span>
+                <div style="font-size:2.4rem; margin:6px 0;" id="iconLevel2">🔒</div>
+                <h4 style="font-family:var(--font-display); font-size:1.15rem; color:#1e1b4b;">Dua Digit Menyimpan</h4>
+                <p style="font-size:0.8rem; color:#64748b; margin:4px 0;">Menyimpan 1 puluhan via Penguin</p>
+                <div class="stars-row" id="starsLevel2">☆☆☆</div>
+              </div>
+
+              <!-- Level 3 -->
+              <div class="challenge-level-card locked" data-level="3" id="cardLevel3">
+                <span class="level-num-badge">LEVEL 3</span>
+                <div style="font-size:2.4rem; margin:6px 0;" id="iconLevel3">🔒</div>
+                <h4 style="font-family:var(--font-display); font-size:1.15rem; color:#1e1b4b;">Tiga Digit</h4>
+                <p style="font-size:0.8rem; color:#64748b; margin:4px 0;">Ratusan, puluhan, dan satuan</p>
+                <div class="stars-row" id="starsLevel3">☆☆☆</div>
+              </div>
+
+              <!-- Level 4 -->
+              <div class="challenge-level-card locked" data-level="4" id="cardLevel4">
+                <span class="level-num-badge">LEVEL 4</span>
+                <div style="font-size:2.4rem; margin:6px 0;" id="iconLevel4">🔒</div>
+                <h4 style="font-family:var(--font-display); font-size:1.15rem; color:#1e1b4b;">Simpan Bertingkat</h4>
+                <p style="font-size:0.8rem; color:#64748b; margin:4px 0;">Menyimpan beruntun di 2 tempat</p>
+                <div class="stars-row" id="starsLevel4">☆☆☆</div>
+              </div>
+
+              <!-- Level 5 -->
+              <div class="challenge-level-card locked" data-level="5" id="cardLevel5">
+                <span class="level-num-badge">LEVEL 5</span>
+                <div style="font-size:2.4rem; margin:6px 0;" id="iconLevel5">🔒</div>
+                <h4 style="font-family:var(--font-display); font-size:1.15rem; color:#1e1b4b;">Soal Cerita</h4>
+                <p style="font-size:0.8rem; color:#64748b; margin:4px 0;">Tantangan cerita kontekstual</p>
+                <div class="stars-row" id="starsLevel5">☆☆☆</div>
+              </div>
+            </div>
+
+            <!-- Challenge Level Description Banner -->
+            <div style="background:#ffffff; border:3px solid #fbcfe8; border-radius:var(--radius-md); padding:18px; display:flex; align-items:center; justify-content:space-between; margin-bottom:20px;">
+              <div style="display:flex; align-items:center; gap:14px;">
+                <span style="font-size:2.5rem;">🌟</span>
+                <div>
+                  <h4 style="font-family:var(--font-display); font-size:1.2rem; color:#9f1239;" id="selectedLevelTitle">Level 1: Dua Digit Dasar</h4>
+                  <p style="font-size:0.9rem; color:#64748b;" id="selectedLevelDesc">Selesaikan 5 soal penjumlahan 2-digit untuk membuka Level 2!</p>
+                </div>
+              </div>
+              <button class="btn btn-purple" id="btnStartSelectedLevel">
+                <span>▶</span> MAIN LEVEL INI
+              </button>
+            </div>
+
+            <div style="display:flex; justify-content:center;">
+              <button class="btn btn-secondary" id="btnChallengeBack">← Kembali ke Beranda</button>
+            </div>
+          </div>
+
+          <!-- Challenge Active Quiz View -->
+          <div id="challengeQuizView" style="display:none;">
+            <div class="practice-quiz-box">
+              <div class="quiz-top-bar">
+                <div style="display:flex; align-items:center; gap:10px;">
+                  <span class="phase-pill" id="challengeLevelBadge" style="background:#db2777;">LEVEL 1</span>
+                  <span style="font-weight:800; color:#1e1b4b; font-size:1.1rem;" id="challengeQuizCounter">Soal 1 / 5</span>
+                </div>
+                <div style="display:flex; align-items:center; gap:14px;">
+                  <div class="timer-pill" id="challengeTimer">⏱️ 00:00</div>
+                  <div class="timer-pill" style="background:#fdf2f8; border-color:#fbcfe8; color:#9f1239;" id="challengeScoreVal">⭐ 0</div>
+                </div>
+              </div>
+
+              <div class="quiz-progress-bar">
+                <div class="quiz-progress-fill" id="challengeProgressFill" style="background: linear-gradient(90deg, #ec4899, #f43f5e); width: 20%;"></div>
+              </div>
+
+              <div class="quiz-prompt-card">
+                <div class="quiz-prompt-text" id="challengePromptText">34 + 25 = ?</div>
+                <div class="quiz-tokens-row">
+                  <input type="number" id="challengeInputAnswer" class="quiz-input-field" placeholder="?" autocomplete="off">
+                </div>
+              </div>
+
+              <div class="growth-feedback-box" id="challengeFeedbackBox">
+                <span id="challengeFeedbackIcon" style="font-size:1.8rem;">✨</span>
+                <span id="challengeFeedbackText" style="font-weight:700; font-size:1rem;">Jawaban tepat!</span>
+              </div>
+
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-top:6px;">
+                <button class="control-btn btn-help" id="btnChallengeHint">
+                  <span>💡</span> PETUNJUK
+                </button>
+                <div style="display:flex; gap:12px;">
+                  <button class="btn btn-secondary" id="btnChallengeQuit">Keluar</button>
+                  <button class="btn btn-green" id="btnChallengeCheck">
+                    <span>✅</span> PERIKSA
+                  </button>
+                  <button class="btn btn-primary" id="btnChallengeNext" style="display:none;">
+                    LANJUT ➜
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ==========================================================================
+           SCREEN 5: PEMBUAT SOAL GURU (Section D)
+           ========================================================================== -->
+      <section class="view-screen" id="screen-builder">
+        <div style="max-width: 1200px; margin: 0 auto; width: 100%;">
+          <div style="text-align: center; margin-bottom: 20px;">
+            <h2 style="font-family: var(--font-display); font-size: 2.2rem; color: #5b21b6;">✏️ Pembuat Soal Guru</h2>
+            <p style="color: #475569; font-size: 1rem;">Buat, atur, dan simpan paket soal kustom untuk digunakan murid di mode latihan atau belajar.</p>
+          </div>
+
+          <div class="builder-layout">
+            
+            <!-- Left: Builder Controls Form -->
+            <div class="builder-card">
+              <h3 style="font-family:var(--font-display); font-size:1.3rem; color:#5b21b6; margin-bottom:14px;">
+                ⚙️ Pengaturan Soal
+              </h3>
+
+              <div class="teacher-input-group">
+                <div class="input-row">
+                  <label for="bldNum1">Bilangan Pertama:</label>
+                  <input type="number" id="bldNum1" class="input-number-field" min="0" max="999" value="27">
+                </div>
+
+                <div class="input-row">
+                  <label for="bldNum2">Bilangan Kedua:</label>
+                  <input type="number" id="bldNum2" class="input-number-field" min="0" max="999" value="18">
+                </div>
+
+                <div class="input-row">
+                  <label for="bldCount">Jumlah Soal:</label>
+                  <select id="bldCount" class="input-number-field" style="width: 110px; font-size: 1rem;">
+                    <option value="5">5 Soal</option>
+                    <option value="10" selected>10 Soal</option>
+                    <option value="15">15 Soal</option>
+                    <option value="20">20 Soal</option>
+                  </select>
+                </div>
+
+                <div class="input-row">
+                  <label for="bldDifficulty">Tingkat Kesulitan:</label>
+                  <select id="bldDifficulty" class="input-number-field" style="width: 110px; font-size: 1rem;">
+                    <option value="mudah">Mudah</option>
+                    <option value="sedang" selected>Sedang</option>
+                    <option value="sulit">Sulit</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Carry Indicator Badge -->
+              <div style="background:#eff6ff; border:2px solid #bfdbfe; border-radius:var(--radius-sm); padding:10px; margin-bottom:16px; text-align:center;">
+                <div style="font-size:0.8rem; font-weight:700; color:#1e40af;">Status Operasi:</div>
+                <div style="font-family:var(--font-display); font-size:0.95rem; font-weight:800; color:#1d4ed8; margin-top:2px;" id="bldCarryIndicator">
+                  Mode: Penjumlahan dengan Menyimpan (7 + 8 ≥ 10)
+                </div>
+              </div>
+
+              <div style="display:flex; flex-direction:column; gap:10px;">
+                <button class="btn btn-purple" id="btnBldGenerate">
+                  <span>⚡</span> BUAT SOAL OTOMATIS
+                </button>
+                <div style="display:flex; gap:8px;">
+                  <button class="control-btn" id="btnBldRandomize" style="flex:1;">🎲 Randomize</button>
+                  <button class="control-btn" id="btnBldShuffle" style="flex:1;">🔀 Acak Urutan</button>
+                  <button class="control-btn" id="btnBldReset" style="flex:1;">↺ Reset</button>
+                </div>
+                <button class="btn btn-green" id="btnBldSaveSet">
+                  <span>💾</span> Simpan Paket Soal
+                </button>
+                <button class="btn btn-primary" id="btnBldUseInPractice">
+                  <span>🚀</span> Gunakan di Mode Latihan Murid
+                </button>
+              </div>
+            </div>
+
+            <!-- Right: Generated Problems Table & Preview -->
+            <div class="builder-card">
+              <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
+                <h3 style="font-family:var(--font-display); font-size:1.3rem; color:#1e1b4b;">
+                  📋 Daftar Soal Terbuat (<span id="bldTableCount">5</span> Soal)
+                </h3>
+                <span class="col-tag" style="background:#d1fae5; color:#065f46;">Preview Guru</span>
+              </div>
+
+              <div class="builder-table-wrap">
+                <table class="builder-table" id="bldTable">
+                  <thead>
+                    <tr>
+                      <th>No</th>
+                      <th>Soal</th>
+                      <th>Kunci Jawaban</th>
+                      <th>Menyimpan?</th>
+                      <th>Aksi</th>
+                    </tr>
+                  </thead>
+                  <tbody id="bldTableBody">
+                    <!-- Dynamic Generated Rows -->
+                  </tbody>
+                </table>
+              </div>
+
+              <div style="margin-top: 14px; background:#f8fafc; border:1px solid #e2e8f0; border-radius:var(--radius-sm); padding:10px 14px; display:flex; align-items:center; justify-content:space-between;">
+                <span style="font-size:0.85rem; color:#64748b;">Kunci jawaban hanya tampil di mode guru dan tidak terlihat langsung oleh murid saat berlatih.</span>
+                <button class="btn btn-secondary btn-sm" id="btnBldAddSingle">+ Tambah Soal Manual</button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- ==========================================================================
+           SCREEN 6: FITUR PETUNJUK BERMAIN 10 LANGKAH (Section E)
            ========================================================================== -->
       <section class="view-screen" id="screen-guide">
-        <div class="guide-header">
-          <h2>Petunjuk & Cara Kerja Media</h2>
-          <p>Tiga langkah mudah memahami konsep penjumlahan dengan teknik menyimpan:</p>
-        </div>
-
-        <div class="guide-steps-grid">
-          <div class="guide-step-card step-1">
-            <span class="step-number-badge">Langkah 1</span>
-            <div class="step-icon-area">
-              <div style="display:flex; gap:10px;">
-                <div class="digit-ball digit-ball-purple" style="width:50px; height:50px; font-size:1.6rem;">2</div>
-                <div class="digit-ball digit-ball-amber" style="width:50px; height:50px; font-size:1.6rem;">7</div>
-              </div>
+        <div class="guide-carousel-box">
+          <div style="display:flex; align-items:center; justify-content:space-between; width:100%; border-bottom:2px solid #f1f5f9; padding-bottom:12px;">
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span style="font-size:1.8rem;">📖</span>
+              <h2 style="font-family:var(--font-display); font-size:1.6rem; color:#1e1b4b; margin:0;">Petunjuk Bermain (10 Langkah)</h2>
             </div>
-            <h3>1. Nilai Tempat</h3>
-            <p>Kenali digit <strong>Puluhan</strong> (ungu) dan digit <strong>Satuan</strong> (oranye/kuning). Jumlahkan selalu dari kolom satuan terlebih dahulu.</p>
+            <span class="step-number-badge" id="guideStepBadge">Langkah 1 / 10</span>
           </div>
 
-          <div class="guide-step-card step-2">
-            <span class="step-number-badge">Langkah 2</span>
-            <div class="step-icon-area">
-              <div style="display:flex; gap:8px; align-items:center;">
-                <div class="digit-ball digit-ball-blue" style="width:48px; height:48px; font-size:1.5rem;">1</div>
-                <span style="font-weight:800; font-size:1.3rem;">+</span>
-                <div class="digit-ball digit-ball-amber" style="width:48px; height:48px; font-size:1.5rem;">5</div>
-              </div>
-            </div>
-            <h3>2. Pisahkan Hasil</h3>
-            <p>Jika hasil satuan adalah <strong>15</strong>, angka <strong>5</strong> tetap di satuan, dan angka <strong>1</strong> adalah puluhan yang harus disimpan.</p>
+          <!-- Step Progress Dots -->
+          <div class="guide-step-indicator" id="guideStepDots">
+            <!-- 10 dots injected via JS -->
           </div>
 
-          <div class="guide-step-card step-3">
-            <span class="step-number-badge">Langkah 3</span>
-            <div class="step-icon-area">
-              <div style="display:flex; gap:10px; align-items:center;">
-                <span style="font-size:2rem;">🐧</span>
-                <span style="font-size:1.5rem;">➜</span>
-                <div class="digit-ball digit-ball-carry" style="width:48px; height:48px; font-size:1.5rem;">1</div>
-              </div>
-            </div>
-            <h3>3. Simpan ke Puluhan</h3>
-            <p>Bawa angka <strong>1</strong> ke Penguin untuk disimpan, lalu geser ke <strong>Slot Simpan Puluhan</strong> dan jumlahkan bersama puluhan lainnya!</p>
-          </div>
-        </div>
-
-        <div class="guide-demo-box">
-          <div class="guide-demo-text">
-            <span style="font-size: 2rem;">💡</span>
-            <div>
-              <strong>Prinsip Inti Pembelajaran:</strong>
-              <div style="font-size: 0.95rem; opacity: 0.9;">“Angka yang disimpan tidak hilang, melainkan berpindah ke kolom puluhan sesuai nilai tempatnya.”</div>
+          <!-- Step Content Area -->
+          <div style="margin: 20px 0; min-height: 220px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:16px;">
+            <div id="guideStepIcon" style="font-size: 4.5rem; animation: pulseLight 2s infinite;">📚</div>
+            <h3 id="guideStepTitle" style="font-family:var(--font-display); font-size:1.6rem; color:#1e1b4b; margin:0;">1. Pilih MULAI BELAJAR</h3>
+            <p id="guideStepDesc" style="font-size:1.15rem; color:#475569; max-width:600px; line-height:1.5;">
+              Buka menu <strong>MULAI BELAJAR</strong> dari beranda untuk masuk ke papan permainan matematika interaktif.
+            </p>
+            <div id="guideStepVisual" style="background:#f8fafc; border:2px dashed #cbd5e1; border-radius:var(--radius-md); padding:12px 24px; font-family:var(--font-display); font-size:1.1rem; color:#2563eb;">
+              ✨ Siap menjadi jagoan matematika bersama SpongeBob & Penguin!
             </div>
           </div>
-          <div class="demo-formula">7 + 8 = 15 ➜ 1 Simpan + 5 Satuan</div>
-        </div>
 
-        <div class="guide-footer-actions">
-          <button class="btn btn-secondary" id="btnGuideBack">← Kembali</button>
-          <button class="btn btn-primary" id="btnGuideToWorkspace">Mulai Praktik Sekarang ➜</button>
+          <!-- Navigation Controls -->
+          <div style="display:flex; justify-content:space-between; width:100%; border-top:2px solid #f1f5f9; padding-top:16px;">
+            <button class="btn btn-secondary" id="btnGuidePrev" disabled>◀ SEBELUMNYA</button>
+            <div style="display:flex; gap:10px;">
+              <button class="btn btn-secondary" id="btnGuideHome">Ke Beranda</button>
+              <button class="btn btn-primary" id="btnGuideNext">SELANJUTNYA ▶</button>
+            </div>
+          </div>
         </div>
       </section>
 
       <!-- ==========================================================================
-           SCREEN 4: MODE SELECTOR (PRD Section 14)
+           SCREEN 7: PANDUAN GURU (Section F)
+           ========================================================================== -->
+      <section class="view-screen" id="screen-teacher-guide">
+        <div style="max-width: 1000px; margin: 0 auto; width: 100%;">
+          <div style="text-align: center; margin-bottom: 20px;">
+            <h2 style="font-family: var(--font-display); font-size: 2.2rem; color: #1e1b4b;">📋 Panduan Kurikulum Guru</h2>
+            <p style="color: #475569; font-size: 1.05rem;">Pedoman implementasi pembelajaran matematika penjumlahan dengan menyimpan kelas 3 SD.</p>
+          </div>
+
+          <div class="teacher-guide-sections">
+            <!-- Section 1: Tujuan & Sasaran -->
+            <div class="guide-section-card">
+              <h3><span>🎯</span> 1. Tujuan & Sasaran</h3>
+              <p>Siswa kelas 3 Sekolah Dasar memahami konsep nilai tempat, pengelompokan ulang (regrouping), dan algoritma penjumlahan dua digit dengan teknik menyimpan secara bermakna (konseptual), bukan hafalan mekanis.</p>
+            </div>
+
+            <!-- Section 2: Materi Pokok -->
+            <div class="guide-section-card">
+              <h3><span>📚</span> 2. Materi Pokok</h3>
+              <ul>
+                <li><strong>Nilai Tempat:</strong> Membedakan digit puluhan dan satuan.</li>
+                <li><strong>Grouping:</strong> Menggabungkan satuan atas dan satuan bawah.</li>
+                <li><strong>Regrouping:</strong> Memisahkan 10 satuan menjadi 1 puluhan simpan.</li>
+                <li><strong>Hasil Akhir:</strong> Menjumlahkan puluhan awal dengan angka simpan.</li>
+              </ul>
+            </div>
+
+            <!-- Section 3: Penggunaan Media -->
+            <div class="guide-section-card">
+              <h3><span>🎮</span> 3. Penggunaan Media Manipulatif</h3>
+              <p>Gunakan kartu angka warna (Ungu = Puluhan, Oranye = Satuan), fitur Drag & Drop bola angka, maskot Penguin pada Jalur Simpan tengah, dan validasi cek proses bertahap.</p>
+            </div>
+
+            <!-- Section 4: Remedial -->
+            <div class="guide-section-card">
+              <h3><span>🔄</span> 4. Strategi Remedial</h3>
+              <p>Murid yang belum menguasai tahap tertentu (berdasarkan checklist diagnosa) diarahkan mengulang fokus belajar spesifik di Mode Latihan dengan bantuan bertingkat (Hint Lv 1 - 4).</p>
+            </div>
+
+            <!-- Section 5: Pengayaan -->
+            <div class="guide-section-card">
+              <h3><span>🚀</span> 5. Strategi Pengayaan</h3>
+              <p>Murid yang telah mahir dapat ditantang dengan:</p>
+              <ul>
+                <li>Penjumlahan bilangan 3 digit (Ratusan)</li>
+                <li>Simpan bertingkat (Level 4 Tantangan)</li>
+                <li>Soal cerita matematika tingkat lanjut</li>
+              </ul>
+            </div>
+
+            <!-- Section 6: Observasi & Hasil Siswa -->
+            <div class="guide-section-card">
+              <h3><span>📊</span> 6. Observasi Hasil Siswa</h3>
+              <p>Pantau dashboard Hasil Belajar untuk menganalisis akurasi jawaban, kecepatan pengerjaan, frekuensi penggunaan hint, dan 7 tahap kemampuan diagnostik.</p>
+            </div>
+          </div>
+
+          <div style="display:flex; justify-content:center; margin-top:24px; gap:16px;">
+            <button class="btn btn-secondary" id="btnTeacherGuideBack">← Kembali ke Beranda</button>
+            <button class="btn btn-purple" id="btnTeacherGuideToDemo">Buka Mode Demo Guru 👀</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==========================================================================
+           SCREEN 8: MODE DEMONSTRASI GURU (Section G)
+           ========================================================================== -->
+      <section class="view-screen" id="screen-demo">
+        <div style="max-width: 960px; margin: 0 auto; width: 100%;">
+          <div style="text-align: center; margin-bottom: 20px;">
+            <h2 style="font-family: var(--font-display); font-size: 2.2rem; color: #0284c7;">👀 Mode Demonstrasi Interaktif Guru</h2>
+            <p style="color: #475569; font-size: 1.05rem;">Animasi visual 8 tahap penjumlahan dengan teknik menyimpan untuk presentasi di depan kelas.</p>
+          </div>
+
+          <div class="demo-stage-box">
+            
+            <!-- Demo Step Banner -->
+            <div style="display:flex; align-items:center; justify-content:space-between; border-bottom:2px solid #e2e8f0; padding-bottom:12px;">
+              <span class="phase-pill" id="demoStepPill" style="background:#0284c7; font-size:1rem;">Tahap 1: Mengenali Bilangan</span>
+              <div style="font-family:var(--font-numbers); font-size:1.8rem; font-weight:900; color:#1e1b4b;" id="demoFormulaDisplay">
+                27 + 18 = 45
+              </div>
+            </div>
+
+            <!-- Visual Animation Stage Display -->
+            <div style="background:#f8fafc; border:3px solid #cbd5e1; border-radius:var(--radius-md); padding:24px; min-height:220px; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; position:relative;" id="demoVisualStage">
+              <!-- Demo animation content injected by JS -->
+            </div>
+
+            <!-- Detailed Explanation Text -->
+            <div style="background:#eff6ff; border:2px solid #bfdbfe; border-radius:var(--radius-sm); padding:14px 20px; font-size:1.05rem; font-weight:600; color:#1e40af; line-height:1.4;" id="demoDescText">
+              1. Mengenali bilangan: 27 (2 Puluhan, 7 Satuan) dan 18 (1 Puluhan, 8 Satuan).
+            </div>
+
+            <!-- Demo Player Controls Row -->
+            <div class="demo-controls-row">
+              <button class="control-btn" id="btnDemoPrev">⏮ LANGKAH SEBELUMNYA</button>
+              <button class="btn btn-green" id="btnDemoPlay">▶ PUTAR OTOMATIS</button>
+              <button class="btn btn-secondary" id="btnDemoPause" style="display:none;">⏸ PAUSE</button>
+              <button class="control-btn" id="btnDemoNext">LANGKAH BERIKUTNYA ⏭</button>
+              <button class="control-btn" id="btnDemoReset">↺ RESET</button>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- ==========================================================================
+           SCREEN 9: HASIL BELAJAR & DASHBOARD DIAGNOSTIK (Section H & I)
+           ========================================================================== -->
+      <section class="view-screen" id="screen-dashboard">
+        <div class="dashboard-container">
+          <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom: 20px; flex-wrap:wrap; gap:12px;">
+            <div>
+              <h2 style="font-family: var(--font-display); font-size: 2.2rem; color: #1e1b4b;">📊 Dashboard Hasil Belajar</h2>
+              <p style="color: #475569; font-size: 1rem;">Rekapitulasi pencapaian siswa, efektivitas belajar, dan diagnostik 7 tahapan kemampuan.</p>
+            </div>
+            <div style="display:flex; gap:10px;">
+              <button class="btn btn-secondary btn-sm" id="btnExportCSV">📥 Export CSV</button>
+              <button class="btn btn-purple btn-sm" id="btnPrintReport">🖨️ Cetak Raport</button>
+              <button class="btn btn-secondary btn-sm" id="btnClearHistory">🗑️ Bersihkan Data</button>
+            </div>
+          </div>
+
+          <!-- Summary KPI Cards -->
+          <div class="kpi-grid">
+            <div class="kpi-card">
+              <div class="kpi-label">Total Soal Selesai</div>
+              <div class="kpi-val" id="dashTotalProblems">0</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-label">Akurasi Rata-rata</div>
+              <div class="kpi-val" style="color:#059669;" id="dashAccuracy">0%</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-label">Rata-rata Skor</div>
+              <div class="kpi-val" style="color:#d97706;" id="dashAvgScore">0</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-label">Status Kemampuan</div>
+              <div class="kpi-val" style="font-size:1.3rem; color:#2563eb;" id="dashStudentStatus">Belum Ada Aktivitas</div>
+            </div>
+          </div>
+
+          <!-- 7-Stage Competency Diagnostic Breakdown (Section I) -->
+          <div style="background:#ffffff; border:3px solid #cbd5e1; border-radius:var(--radius-lg); padding:20px; margin-bottom:20px; box-shadow:var(--shadow-sm);">
+            <h3 style="font-family:var(--font-display); font-size:1.25rem; color:#1e1b4b; margin-bottom:12px; display:flex; align-items:center; gap:8px;">
+              <span>🩺</span> Analisis Penguasaan 7 Tahapan Konsep
+            </h3>
+
+            <div class="stages-grid-7" id="diagnosticStagesGrid">
+              <!-- Injected by JS with ✓ Dikuasai, △ Perlu Latihan, ✕ Belum Dikuasai -->
+            </div>
+          </div>
+
+          <!-- Student Activity Session Table -->
+          <div style="background:#ffffff; border:3px solid #cbd5e1; border-radius:var(--radius-lg); padding:20px; box-shadow:var(--shadow-sm);">
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:14px;">
+              <h3 style="font-family:var(--font-display); font-size:1.25rem; color:#1e1b4b;">
+                📝 Riwayat Sesi Aktivitas Murid
+              </h3>
+              <span style="font-size:0.85rem; color:#64748b;" id="dashSessionCount">0 Sesi Tercatat</span>
+            </div>
+
+            <div class="builder-table-wrap">
+              <table class="builder-table" id="tableSessionHistory">
+                <thead>
+                  <tr>
+                    <th>Nama Siswa</th>
+                    <th>Waktu / Tanggal</th>
+                    <th>Mode & Fokus</th>
+                    <th>Soal</th>
+                    <th>Benar / Salah</th>
+                    <th>Skor</th>
+                    <th>Durasi</th>
+                    <th>Petunjuk</th>
+                    <th>Status Tahap</th>
+                  </tr>
+                </thead>
+                <tbody id="sessionHistoryBody">
+                  <tr>
+                    <td colspan="9" style="text-align:center; color:#94a3b8; padding:24px;">Belum ada riwayat aktivitas belajar. Ayo mulai latihan atau tantangan!</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ==========================================================================
+           SCREEN 10: PENGATURAN SCREEN (Section K, L, M)
+           ========================================================================== -->
+      <section class="view-screen" id="screen-settings">
+        <div class="settings-box">
+          <div style="text-align: center; margin-bottom: 20px;">
+            <h2 style="font-family: var(--font-display); font-size: 2rem; color: #1e1b4b;">⚙️ Pengaturan Aplikasi</h2>
+            <p style="color: #64748b; font-size: 0.95rem;">Sesuaikan audio, volume suara, animasi visual, dan preferensi pembelajaran.</p>
+          </div>
+
+          <!-- Audio Switch -->
+          <div class="toggle-switch-row">
+            <span class="toggle-label">🔊 Suara Efek Web Audio</span>
+            <input type="checkbox" id="chkSettingSound" checked style="transform:scale(1.3); cursor:pointer;">
+          </div>
+
+          <!-- Volume Slider -->
+          <div class="volume-control-group">
+            <span class="toggle-label">🎚️ Volume Suara Efek</span>
+            <input type="range" id="sliderSettingVolume" class="volume-slider" min="0" max="1" step="0.1" value="0.8">
+          </div>
+
+          <!-- Voice Narration Switch -->
+          <div class="toggle-switch-row">
+            <span class="toggle-label">🗣️ Suara Narasi Guru (Bahasa Indonesia)</span>
+            <input type="checkbox" id="chkSettingVoice" checked style="transform:scale(1.3); cursor:pointer;">
+          </div>
+
+          <!-- Animation Switch (Section L) -->
+          <div class="toggle-switch-row">
+            <span class="toggle-label">✨ Animasi Visual & Transisi Kartu</span>
+            <input type="checkbox" id="chkSettingAnim" checked style="transform:scale(1.3); cursor:pointer;">
+          </div>
+
+          <!-- Teacher Override: Unlock All Challenge Levels -->
+          <div class="toggle-switch-row">
+            <span class="toggle-label">🔓 Buka Semua Level Tantangan (Mode Guru)</span>
+            <input type="checkbox" id="chkSettingUnlockLevels" style="transform:scale(1.3); cursor:pointer;">
+          </div>
+
+          <!-- Student Name Edit -->
+          <div style="padding: 12px 0; border-bottom: 1px solid #f1f5f9; display:flex; align-items:center; justify-content:space-between;">
+            <span class="toggle-label">👤 Nama Siswa Aktif</span>
+            <div style="display:flex; gap:8px;">
+              <input type="text" id="inputSettingStudentName" style="padding:6px 10px; border-radius:var(--radius-sm); border:2px solid #cbd5e1; font-weight:700;" value="Murid Juara">
+              <button class="btn btn-secondary btn-sm" id="btnSaveStudentName">Simpan</button>
+            </div>
+          </div>
+
+          <!-- Data Reset -->
+          <div style="margin-top: 20px; display:flex; justify-content:space-between; align-items:center;">
+            <button class="btn btn-secondary btn-sm" id="btnResetAllData" style="color:#dc2626; border-color:#fca5a5;">
+              🗑️ Reset Semua Data Belajar
+            </button>
+            <button class="btn btn-primary" id="btnSettingsBack">
+              Simpan & Kembali
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==========================================================================
+           SCREEN 11: MODE SELECTOR (PRD Section 14)
            ========================================================================== -->
       <section class="view-screen" id="screen-modes">
         <div style="text-align: center; margin-bottom: 20px;">
@@ -231,7 +933,7 @@
             <div class="mode-card-icon">🎮</div>
             <div class="mode-card-content">
               <h3>Mode Latihan</h3>
-              <p>Mengerjakan serangkaian soal dengan bantuan mandiri tanpa paksaan langkah.</p>
+              <p>6 fokus belajar & 5/10/15 soal mandiri dengan feedback pertumbuhan.</p>
               <span class="mode-card-badge" style="background:#a7f3d0; color:#065f46;">Latihan Mandiri</span>
             </div>
           </div>
@@ -240,7 +942,7 @@
             <div class="mode-card-icon">🏆</div>
             <div class="mode-card-content">
               <h3>Mode Tantangan</h3>
-              <p>Uji kemampuanmu! Selesaikan soal, kumpulkan skor, dan raih medali Bintang Bawah Laut.</p>
+              <p>5 level bertingkat, kumpulkan bintang, skor, dan medali Bawah Laut!</p>
               <span class="mode-card-badge" style="background:#fbcfe8; color:#9f1239;">Skor & Medali</span>
             </div>
           </div>
@@ -249,7 +951,7 @@
             <div class="mode-card-icon">👩‍🏫</div>
             <div class="mode-card-content">
               <h3>Mode Guru</h3>
-              <p>Pengaturan kustom bilangan (0-99), saklar bantuan, dan diagnostik pemahaman konsep.</p>
+              <p>Pembuat paket soal kustom, panduan kurikulum, dan rekap diagnostik.</p>
               <span class="mode-card-badge" style="background:#ddd6fe; color:#5b21b6;">Panel Pendidik</span>
             </div>
           </div>
@@ -261,7 +963,7 @@
       </section>
 
       <!-- ==========================================================================
-           SCREEN 5: WORKSPACE UTAMA (PRD Section 15, 49, 61)
+           SCREEN 12: WORKSPACE UTAMA (PRD Section 15, 49, 61)
            ========================================================================== -->
       <section class="view-screen" id="screen-workspace">
         
@@ -513,10 +1215,7 @@
 
         </div>
 
-        <!-- ==========================================================================
-             BOTTOM MANIPULATION CONTROL BAR (PRD Section 15, 49)
-             🖐 PINDAH │ 💡 BANTUAN │ 👀 CONTOH │ ↩ UNDO │ ↺ RESET │ ✅ CEK
-             ========================================================================== -->
+        <!-- BOTTOM MANIPULATION CONTROL BAR -->
         <footer class="manipulation-bar">
           <div class="manip-left-actions">
             <button class="control-btn" id="btnToggleInteractionMode" data-tooltip="Klik untuk beralih mode interaksi">
@@ -544,7 +1243,7 @@
           </div>
         </footer>
 
-        <!-- Formative Toast Notification (PRD Section 31) -->
+        <!-- Formative Toast Notification -->
         <div class="formative-toast" id="formativeToast">
           <span id="toastIcon">✨</span>
           <span id="toastMessage">Bagus! Angka 5 tetap pada tempat satuan.</span>
@@ -553,7 +1252,7 @@
       </section>
 
       <!-- ==========================================================================
-           SCREEN 6: MODE GURU & DASHBOARD (PRD Section 39 & 40)
+           SCREEN 13: QUICK TEACHER PRESET & DIAGNOSTICS (PRD Section 39 & 40)
            ========================================================================== -->
       <section class="view-screen" id="screen-teacher">
         <div style="text-align: center; margin-bottom: 20px;">
@@ -596,7 +1295,7 @@
             </button>
           </div>
 
-          <!-- Class Controls & Pedagogical Diagnostics (PRD Section 40) -->
+          <!-- Class Controls & Pedagogical Diagnostics -->
           <div class="teacher-card">
             <h3><span>📊</span> Diagnostik Penguasaan Konsep</h3>
             
@@ -636,7 +1335,7 @@
               <input type="checkbox" id="chkTeacherSound" checked style="transform:scale(1.3); cursor:pointer;">
             </div>
             <div class="toggle-switch-row">
-              <span class="toggle-label">Suara Narasi Suara Bahasa Indonesia</span>
+              <span class="toggle-label">Suara Narasi Bahasa Indonesia</span>
               <input type="checkbox" id="chkTeacherVoice" checked style="transform:scale(1.3); cursor:pointer;">
             </div>
 
@@ -654,7 +1353,7 @@
       </section>
 
       <!-- ==========================================================================
-           SCREEN 7: CHALLENGE COMPLETE SCREEN
+           SCREEN 14: CHALLENGE COMPLETE SCREEN
            ========================================================================== -->
       <section class="view-screen" id="screen-challenge-complete">
         <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; flex:1; text-align:center; padding:30px;">
@@ -729,6 +1428,54 @@
       <button class="btn btn-primary" id="btnModalHintClose" style="width: 100%;">
         Paham, Lanjutkan!
       </button>
+    </div>
+  </div>
+
+  <!-- Modal Student Name (Section N) -->
+  <div class="modal-backdrop" id="modalStudentName">
+    <div class="modal-card" style="max-width: 440px;">
+      <div style="font-size: 3.5rem; margin-bottom: 8px;">👤</div>
+      <h2 class="modal-title" style="font-size:1.8rem; margin-bottom:4px;">Halo Bintang Juara!</h2>
+      <p style="color:#64748b; font-size:0.95rem; margin-bottom:16px;">Tuliskan nama lengkapmu untuk mencatat hasil belajar dan medali prestasimu:</p>
+      
+      <input type="text" id="inputModalStudentName" placeholder="Contoh: Budi Santoso" style="width:100%; padding:12px 16px; font-size:1.2rem; font-weight:700; border:3px solid #cbd5e1; border-radius:var(--radius-md); text-align:center; margin-bottom:18px;">
+
+      <button class="btn btn-primary" id="btnSubmitStudentName" style="width:100%;">
+        Mulai Petualangan ➜
+      </button>
+    </div>
+  </div>
+
+  <!-- Modal Achievement & Level Up (Section C & P) -->
+  <div class="modal-backdrop" id="modalAchievement">
+    <div class="modal-card" style="max-width: 480px;">
+      <div style="font-size: 4rem; animation: bounceSlow 1.5s infinite;" id="achieveIcon">⭐</div>
+      <h2 class="modal-title" style="color:#d97706; font-size:2rem;" id="achieveTitle">LEVEL 2 TERBUKA!</h2>
+      <p style="font-size:1.1rem; color:#475569; margin:10px 0 20px;" id="achieveDesc">
+        Hebat! Kamu berhasil menyimpan angka dengan benar dan membuka level baru.
+      </p>
+      <button class="btn btn-purple" id="btnCloseAchievement" style="width:100%;">
+        Luar Biasa, Terima Kasih! 🌟
+      </button>
+    </div>
+  </div>
+
+  <!-- Modal Edit Manual Problem (Section D) -->
+  <div class="modal-backdrop" id="modalEditProblem">
+    <div class="modal-card" style="max-width: 440px;">
+      <div style="font-size: 3rem; margin-bottom: 8px;">✏️</div>
+      <h3 class="modal-title" style="font-size:1.6rem;">Ubah Soal</h3>
+      
+      <div style="display:flex; gap:12px; margin: 16px 0; justify-content:center; align-items:center;">
+        <input type="number" id="editNum1" class="input-number-field" min="0" max="999" style="width:90px;">
+        <span style="font-weight:800; font-size:1.5rem;">+</span>
+        <input type="number" id="editNum2" class="input-number-field" min="0" max="999" style="width:90px;">
+      </div>
+
+      <div style="display:flex; gap:10px; justify-content:center;">
+        <button class="btn btn-secondary" id="btnCancelEditProb">Batal</button>
+        <button class="btn btn-green" id="btnSaveEditProb">Simpan Perubahan</button>
+      </div>
     </div>
   </div>
 

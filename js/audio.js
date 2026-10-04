@@ -9,6 +9,7 @@ class SoundEngine {
     this.ctx = null;
     this.soundEnabled = true;
     this.voiceEnabled = true;
+    this.volume = 0.8;
     this.synth = window.speechSynthesis || null;
   }
 
@@ -35,6 +36,10 @@ class SoundEngine {
     }
   }
 
+  setVolume(val) {
+    this.volume = Math.max(0, Math.min(1, parseFloat(val) || 0.8));
+  }
+
   // Token Pickup / Click (Pop)
   playPop() {
     if (!this.soundEnabled) return;
@@ -49,7 +54,7 @@ class SoundEngine {
     osc.frequency.setValueAtTime(450, now);
     osc.frequency.exponentialRampToValueAtTime(880, now + 0.08);
 
-    gain.gain.setValueAtTime(0.3, now);
+    gain.gain.setValueAtTime(0.3 * this.volume, now);
     gain.gain.exponentialRampToValueAtTime(0.01, now + 0.08);
 
     osc.connect(gain);
@@ -246,7 +251,7 @@ class SoundEngine {
       osc.type = 'triangle';
       osc.frequency.setValueAtTime(item.f, startTime);
 
-      gain.gain.setValueAtTime(0.3, startTime);
+      gain.gain.setValueAtTime(0.3 * this.volume, startTime);
       gain.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
 
       osc.connect(gain);
@@ -255,6 +260,62 @@ class SoundEngine {
       osc.start(startTime);
       osc.stop(startTime + duration + 0.05);
     });
+  }
+
+  // Correct answer cheerful chime
+  playCorrect() {
+    if (!this.soundEnabled) return;
+    this.init();
+    if (!this.ctx) return;
+
+    const notes = [587.33, 880]; // D5, A5
+    const now = this.ctx.currentTime;
+    notes.forEach((freq, idx) => {
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      const start = now + idx * 0.09;
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, start);
+      gain.gain.setValueAtTime(0.25 * this.volume, start);
+      gain.gain.exponentialRampToValueAtTime(0.001, start + 0.2);
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+      osc.start(start);
+      osc.stop(start + 0.22);
+    });
+  }
+
+  // Wrong answer soft boing
+  playWrong() {
+    this.playErrorBounce();
+  }
+
+  // Level Up triumphant chime
+  playLevelUp() {
+    if (!this.soundEnabled) return;
+    this.init();
+    if (!this.ctx) return;
+
+    const notes = [440, 554.37, 659.25, 880]; // A4, C#5, E5, A5
+    const now = this.ctx.currentTime;
+    notes.forEach((freq, idx) => {
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      const start = now + idx * 0.08;
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(freq, start);
+      gain.gain.setValueAtTime(0.3 * this.volume, start);
+      gain.gain.exponentialRampToValueAtTime(0.001, start + 0.35);
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+      osc.start(start);
+      osc.stop(start + 0.36);
+    });
+  }
+
+  // Achievement unlock fanfare
+  playAchievement() {
+    this.playSuccessFanfare();
   }
 
   // Indonesian voice narration
