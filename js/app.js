@@ -316,6 +316,9 @@ class NRSDApp {
 
     document.getElementById('navLearn')?.addEventListener('click', () => {
       window.soundEngine.playPop();
+      this.isPracticeSession = false;
+      const counter = document.getElementById('wsProblemCounter');
+      if (counter) counter.style.display = 'none';
       this.setMode('belajar');
       this.startProblem(27, 18);
       this.showScreen('screen-workspace');
@@ -393,6 +396,9 @@ class NRSDApp {
     // Home Screen Quick Cards
     document.getElementById('btnHomeLearn')?.addEventListener('click', () => {
       window.soundEngine.playPop();
+      this.isPracticeSession = false;
+      const counter = document.getElementById('wsProblemCounter');
+      if (counter) counter.style.display = 'none';
       this.setMode('belajar');
       this.startProblem(27, 18);
       this.showScreen('screen-workspace');
@@ -601,6 +607,8 @@ class NRSDApp {
         this.startPlaceValueInteractive();
       } else if (this.practiceFocus === 'regrouping' || this.practiceFocus === 'carryDigit') {
         this.startRegroupingInteractive(this.practiceFocus);
+      } else if (this.practiceFocus === 'withCarry' || this.practiceFocus === 'wordProblems') {
+        this.startWorkspacePractice(this.practiceFocus, this.practiceCount);
       } else {
         this.startPracticeQuiz();
       }
@@ -668,7 +676,11 @@ class NRSDApp {
     // Summary buttons
     document.getElementById('btnSummaryRetry')?.addEventListener('click', () => {
       window.soundEngine.playPop();
-      this.startPracticeQuiz();
+      if (this.practiceFocus === 'withCarry' || this.practiceFocus === 'wordProblems') {
+        this.startWorkspacePractice(this.practiceFocus, this.practiceCount);
+      } else {
+        this.startPracticeQuiz();
+      }
     });
 
     document.getElementById('btnSummaryDashboard')?.addEventListener('click', () => {
@@ -924,7 +936,99 @@ class NRSDApp {
     }
   }
 
-  /* --- Fitur 3, 4, 5: Practice Quiz Modes (Angka Simpan, Penjumlahan Menyimpan, Soal Cerita) --- */
+  /* --- Fitur 4 & 5: Penjumlahan Menyimpan & Soal Cerita via Workspace Manipulatif --- */
+  startWorkspacePractice(focus, count = 5) {
+    this.isPracticeSession = true;
+    this.practiceFocus = focus;
+    this.practiceQuestions = this.generatePracticeQuestions(focus, count);
+    this.practiceIndex = 0;
+    this.practiceCorrectCount = 0;
+    this.practiceWrongCount = 0;
+    this.practiceScore = 0;
+    this.practiceHintsUsed = 0;
+    this.practiceStartTime = Date.now();
+
+    this.setMode('latihan');
+    this.showScreen('screen-workspace');
+
+    this.loadCurrentPracticeWorkspaceProblem();
+  }
+
+  loadCurrentPracticeWorkspaceProblem() {
+    const q = this.practiceQuestions[this.practiceIndex];
+    if (!q) {
+      this.finishPracticeSession();
+      return;
+    }
+
+    const counter = document.getElementById('wsProblemCounter');
+    if (counter) {
+      counter.style.display = 'block';
+      counter.textContent = `Soal ${this.practiceIndex + 1} / ${this.practiceQuestions.length}`;
+    }
+
+    this.startProblem(q.a, q.b);
+
+    if (this.practiceFocus === 'wordProblems') {
+      const instructionText = document.getElementById('wsInstructionText');
+      if (instructionText) instructionText.textContent = `📖 Soal Cerita: ${q.prompt}`;
+      const spongeSpeech = document.getElementById('wsSpongeSpeech');
+      if (spongeSpeech) spongeSpeech.innerHTML = `Mari kita selesaikan soal cerita ini bersama-sama! Hitung angka satuan <strong>${this.onesA} + ${this.onesB}</strong> di Rumah Satuan (Pink) ya!`;
+    } else {
+      const instructionText = document.getElementById('wsInstructionText');
+      if (instructionText) instructionText.textContent = `Latihan ${this.practiceIndex + 1}: Hitung ${q.a} + ${q.b} dengan Rumah Nanas & Penguin!`;
+      const spongeSpeech = document.getElementById('wsSpongeSpeech');
+      if (spongeSpeech) spongeSpeech.innerHTML = `Mulai dari Rumah Satuan (Pink) ya! Berapa hasil dari <strong>${this.onesA} + ${this.onesB}</strong>?`;
+    }
+  }
+
+  finishPracticeSession() {
+    this.isPracticeSession = false;
+    const elapsed = Math.floor((Date.now() - this.practiceStartTime) / 1000);
+    const score = Math.round((this.practiceCorrectCount / this.practiceQuestions.length) * 100);
+
+    this.recordSession({
+      mode: 'latihan',
+      focus: this.practiceFocus,
+      focusTitle: this.practiceFocus === 'wordProblems' ? 'Soal Cerita' : 'Penjumlahan Menyimpan',
+      total: this.practiceQuestions.length,
+      correct: this.practiceCorrectCount,
+      wrong: this.practiceWrongCount,
+      score: score,
+      durationSec: elapsed,
+      hintsUsed: this.practiceHintsUsed || 0
+    });
+
+    this.showScreen('screen-practice');
+    document.getElementById('practiceSetupView').style.display = 'none';
+    document.getElementById('practicePlaceValueView').style.display = 'none';
+    document.getElementById('practiceRegroupingView').style.display = 'none';
+    document.getElementById('practiceQuizView').style.display = 'none';
+    document.getElementById('practiceSummaryView').style.display = 'block';
+
+    const sumCorrect = document.getElementById('sumPracCorrect');
+    const sumWrong = document.getElementById('sumPracWrong');
+    const sumScore = document.getElementById('sumPracScore');
+    const sumTime = document.getElementById('sumPracTime');
+    const sumSub = document.getElementById('practiceSummarySubtitle');
+
+    if (sumCorrect) sumCorrect.textContent = this.practiceCorrectCount;
+    if (sumWrong) sumWrong.textContent = this.practiceWrongCount;
+    if (sumScore) sumScore.textContent = score;
+
+    const mins = String(Math.floor(elapsed / 60)).padStart(2, '0');
+    const secs = String(elapsed % 60).padStart(2, '0');
+    if (sumTime) sumTime.textContent = `${mins}:${secs}`;
+
+    if (sumSub) {
+      sumSub.textContent = `Hebat ${this.state.studentName || 'Murid Juara'}! Kamu telah menuntaskan seluruh latihan manipulatif bersama Penguin!`;
+    }
+
+    window.soundEngine.playLevelUp();
+    this.showAchievementModal('🎉 LATIHAN SELESAI!', `Hebat! Kamu telah menuntaskan seluruh soal latihan manipulatif dengan skor ${score}!`);
+  }
+
+  /* --- Fitur 3: Practice Quiz Mode (Angka Simpan) --- */
   startPracticeQuiz() {
     this.practiceQuestions = this.generatePracticeQuestions(this.practiceFocus, this.practiceCount);
     this.practiceIndex = 0;
