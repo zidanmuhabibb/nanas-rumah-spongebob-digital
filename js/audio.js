@@ -1,6 +1,6 @@
 /* ==========================================================================
    NANAS RUMAH SPONGEBOB DIGITAL - AUDIO & SOUND ENGINE
-   Web Audio API Synthesizer & Speech Synthesis
+   Web Audio API Synthesizer & Speech Synthesis & Ocean Ambience Engine
    No external audio files required! 100% reliable, standalone & lightweight.
    ========================================================================== */
 
@@ -9,8 +9,13 @@ class SoundEngine {
     this.ctx = null;
     this.soundEnabled = true;
     this.voiceEnabled = true;
+    this.oceanAmbienceEnabled = true;
     this.volume = 0.8;
     this.synth = window.speechSynthesis || null;
+
+    // Ocean ambience procedural nodes
+    this.ambientGain = null;
+    this.ambientInterval = null;
   }
 
   init() {
@@ -27,6 +32,11 @@ class SoundEngine {
 
   setSoundEnabled(enabled) {
     this.soundEnabled = enabled;
+    if (!enabled && this.ambientInterval) {
+      this.stopOceanAmbience();
+    } else if (enabled && this.oceanAmbienceEnabled) {
+      this.startOceanAmbience();
+    }
   }
 
   setVoiceEnabled(enabled) {
@@ -38,6 +48,95 @@ class SoundEngine {
 
   setVolume(val) {
     this.volume = Math.max(0, Math.min(1, parseFloat(val) || 0.8));
+    if (this.ambientGain && this.ctx) {
+      this.ambientGain.gain.setValueAtTime(0.08 * this.volume, this.ctx.currentTime);
+    }
+  }
+
+  setOceanAmbienceEnabled(enabled) {
+    this.oceanAmbienceEnabled = enabled;
+    if (enabled && this.soundEnabled) {
+      this.startOceanAmbience();
+    } else {
+      this.stopOceanAmbience();
+    }
+  }
+
+  // 🌊 Ocean Ambience Generator (Gentle water harmonics & spontaneous bubble pops)
+  startOceanAmbience() {
+    if (!this.soundEnabled || !this.oceanAmbienceEnabled) return;
+    this.init();
+    if (!this.ctx) return;
+
+    if (this.ambientInterval) return; // already active
+
+    // Periodically generate gentle, relaxing undersea water bubbles & soothing harmonic trickle
+    this.ambientInterval = setInterval(() => {
+      if (!this.soundEnabled || !this.oceanAmbienceEnabled) return;
+      if (Math.random() > 0.35) {
+        this.playBubblePop(true);
+      }
+    }, 2800);
+  }
+
+  stopOceanAmbience() {
+    if (this.ambientInterval) {
+      clearInterval(this.ambientInterval);
+      this.ambientInterval = null;
+    }
+  }
+
+  // Undersea bubble pop sound
+  playBubblePop(isGentle = false) {
+    if (!this.soundEnabled) return;
+    this.init();
+    if (!this.ctx) return;
+
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    const now = this.ctx.currentTime;
+
+    const baseFreq = 500 + Math.random() * 400; // 500 - 900 Hz
+    const endFreq = baseFreq + 350 + Math.random() * 200;
+
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(baseFreq, now);
+    osc.frequency.exponentialRampToValueAtTime(endFreq, now + 0.09);
+
+    const targetGain = isGentle ? (0.08 * this.volume) : (0.2 * this.volume);
+    gain.gain.setValueAtTime(targetGain, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.09);
+
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+
+    osc.start(now);
+    osc.stop(now + 0.1);
+  }
+
+  // Fish swimming gentle water flutter
+  playFishSwim() {
+    if (!this.soundEnabled) return;
+    this.init();
+    if (!this.ctx) return;
+
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    const now = this.ctx.currentTime;
+
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(320, now);
+    osc.frequency.linearRampToValueAtTime(480, now + 0.06);
+    osc.frequency.exponentialRampToValueAtTime(220, now + 0.14);
+
+    gain.gain.setValueAtTime(0.12 * this.volume, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.14);
+
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+
+    osc.start(now);
+    osc.stop(now + 0.15);
   }
 
   // Token Pickup / Click (Pop)
@@ -78,7 +177,7 @@ class SoundEngine {
     osc.frequency.setValueAtTime(520, now);
     osc.frequency.exponentialRampToValueAtTime(260, now + 0.1);
 
-    gain.gain.setValueAtTime(0.35, now);
+    gain.gain.setValueAtTime(0.35 * this.volume, now);
     gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
 
     osc.connect(gain);
@@ -104,7 +203,7 @@ class SoundEngine {
     osc.frequency.exponentialRampToValueAtTime(1800, now + 0.06);
     osc.frequency.exponentialRampToValueAtTime(1400, now + 0.15);
 
-    gain.gain.setValueAtTime(0.25, now);
+    gain.gain.setValueAtTime(0.25 * this.volume, now);
     gain.gain.exponentialRampToValueAtTime(0.01, now + 0.18);
 
     osc.connect(gain);
@@ -119,7 +218,7 @@ class SoundEngine {
     osc2.frequency.setValueAtTime(1600, now + 0.08);
     osc2.frequency.exponentialRampToValueAtTime(2200, now + 0.2);
 
-    gain2.gain.setValueAtTime(0.2, now + 0.08);
+    gain2.gain.setValueAtTime(0.2 * this.volume, now + 0.08);
     gain2.gain.exponentialRampToValueAtTime(0.01, now + 0.22);
 
     osc2.connect(gain2);
@@ -144,7 +243,7 @@ class SoundEngine {
     osc.frequency.linearRampToValueAtTime(500, now + 0.3);
 
     gain.gain.setValueAtTime(0.01, now);
-    gain.gain.linearRampToValueAtTime(0.2, now + 0.12);
+    gain.gain.linearRampToValueAtTime(0.22 * this.volume, now + 0.12);
     gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
 
     osc.connect(gain);
@@ -170,7 +269,7 @@ class SoundEngine {
       osc.type = 'sine';
       osc.frequency.setValueAtTime(freq, startTime);
 
-      gain.gain.setValueAtTime(0.2, startTime);
+      gain.gain.setValueAtTime(0.25 * this.volume, startTime);
       gain.gain.exponentialRampToValueAtTime(0.001, startTime + 0.25);
 
       osc.connect(gain);
@@ -195,7 +294,7 @@ class SoundEngine {
     osc.frequency.setValueAtTime(700, now);
     osc.frequency.exponentialRampToValueAtTime(400, now + 0.04);
 
-    gain.gain.setValueAtTime(0.15, now);
+    gain.gain.setValueAtTime(0.15 * this.volume, now);
     gain.gain.exponentialRampToValueAtTime(0.01, now + 0.04);
 
     osc.connect(gain);
@@ -204,7 +303,7 @@ class SoundEngine {
     osc.stop(now + 0.05);
   }
 
-  // Gentle boing on error
+  // Error boing
   playErrorBounce() {
     if (!this.soundEnabled) return;
     this.init();
@@ -218,7 +317,7 @@ class SoundEngine {
     osc.frequency.setValueAtTime(240, now);
     osc.frequency.exponentialRampToValueAtTime(140, now + 0.18);
 
-    gain.gain.setValueAtTime(0.3, now);
+    gain.gain.setValueAtTime(0.3 * this.volume, now);
     gain.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
 
     osc.connect(gain);

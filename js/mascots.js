@@ -1,25 +1,77 @@
 /* ==========================================================================
    NANAS RUMAH SPONGEBOB DIGITAL - SVG MASCOTS & GRAPHICS GENERATOR
-   Rich, responsive, playful vector illustrations
+   Rich vector illustrations: SpongeBob, Penguin, Pineapple Houses, Corals & Fishes
    ========================================================================== */
 
 const Mascots = {
   // 🍍 Rumah Nanas (Pineapple Palace)
-  getPineappleHouseSvg(width = 120, height = 140) {
+  // variant: 'tens' (Orange-Kuning + Daun Hijau) | 'ones' (Pink-Cream + Daun Biru) | 'default'
+  getPineappleHouseSvg(width = 140, height = 160, variant = 'tens') {
+    const isTens = variant === 'tens';
+    const isOnes = variant === 'ones';
+
+    // Leaves Colors
+    const leafPrimary = isTens ? '#16a34a' : (isOnes ? '#0284c7' : '#16a34a');
+    const leafSecondary = isTens ? '#22c55e' : (isOnes ? '#38bdf8' : '#22c55e');
+    const leafDark = isTens ? '#15803d' : (isOnes ? '#0369a1' : '#15803d');
+    const leafLight = isTens ? '#4ade80' : (isOnes ? '#7dd3fc' : '#4ade80');
+
+    // Body Gradient Colors
+    const gradId = isTens ? 'pineTensGrad' : (isOnes ? 'pineOnesGrad' : 'pineDefaultGrad');
+    const strokeBody = isTens ? '#b45309' : (isOnes ? '#db2777' : '#b45309');
+    const hatchColor = isTens ? '#d97706' : (isOnes ? '#f472b6' : '#d97706');
+
+    // Porthole window colors
+    const windowGlass = isTens ? '#67e8f9' : '#fef08a';
+    const windowFrame = isTens ? '#334155' : '#831843';
+
+    // Door Colors
+    const doorColor = isTens ? '#78350f' : '#4c1d95';
+    const doorBorder = isTens ? '#451a03' : '#2e1065';
+    const doorKnob = isTens ? '#facc15' : '#fbbf24';
+
     return `
       <svg width="${width}" height="${height}" viewBox="0 0 160 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <!-- Leaves on top -->
-        <g id="leaves" filter="drop-shadow(0 4px 6px rgba(0,0,0,0.15))">
-          <path d="M80 50 C65 20 40 10 30 15 C38 28 55 38 70 52 Z" fill="#22c55e" />
-          <path d="M80 50 C95 20 120 10 130 15 C122 28 105 38 90 52 Z" fill="#16a34a" />
-          <path d="M80 48 C75 10 80 0 80 0 C85 0 90 10 85 48 Z" fill="#15803d" />
-          <path d="M78 50 C50 30 45 40 40 45 C55 52 70 54 78 50 Z" fill="#4ade80" />
-          <path d="M82 50 C110 30 115 40 120 45 C105 52 90 54 82 50 Z" fill="#16a34a" />
+        <defs>
+          <!-- Tens Pineapple Body Gradient (Orange - Kuning) -->
+          <radialGradient id="pineTensGrad" cx="40%" cy="35%" r="70%">
+            <stop offset="0%" stop-color="#fef08a" />
+            <stop offset="35%" stop-color="#fde047" />
+            <stop offset="70%" stop-color="#f59e0b" />
+            <stop offset="100%" stop-color="#d97706" />
+          </radialGradient>
+
+          <!-- Ones Pineapple Body Gradient (Pink - Cream) -->
+          <radialGradient id="pineOnesGrad" cx="40%" cy="35%" r="70%">
+            <stop offset="0%" stop-color="#fff1f2" />
+            <stop offset="35%" stop-color="#ffe4e6" />
+            <stop offset="70%" stop-color="#fbcfe8" />
+            <stop offset="100%" stop-color="#f472b6" />
+          </radialGradient>
+
+          <!-- Default Pineapple Body Gradient -->
+          <radialGradient id="pineDefaultGrad" cx="40%" cy="35%" r="70%">
+            <stop offset="0%" stop-color="#fde047" />
+            <stop offset="60%" stop-color="#f59e0b" />
+            <stop offset="100%" stop-color="#d97706" />
+          </radialGradient>
+        </defs>
+
+        <!-- Leaves Crown on top -->
+        <g id="leaves" filter="drop-shadow(0 4px 6px rgba(0,0,0,0.18))">
+          <path d="M80 50 C65 20 40 10 30 15 C38 28 55 38 70 52 Z" fill="${leafSecondary}" />
+          <path d="M80 50 C95 20 120 10 130 15 C122 28 105 38 90 52 Z" fill="${leafPrimary}" />
+          <path d="M80 48 C75 10 80 0 80 0 C85 0 90 10 85 48 Z" fill="${leafDark}" />
+          <path d="M78 50 C50 30 45 40 40 45 C55 52 70 54 78 50 Z" fill="${leafLight}" />
+          <path d="M82 50 C110 30 115 40 120 45 C105 52 90 54 82 50 Z" fill="${leafPrimary}" />
+          <path d="M80 45 C65 25 70 12 75 12 C78 22 80 35 80 45 Z" fill="${leafLight}" opacity="0.8"/>
         </g>
+
         <!-- Pineapple Main Body -->
-        <ellipse cx="80" cy="120" rx="55" ry="65" fill="url(#pineappleGrad)" stroke="#b45309" stroke-width="4"/>
-        <!-- Pineapple Crosshatch Lines -->
-        <g stroke="#d97706" stroke-width="2.5" opacity="0.6">
+        <ellipse cx="80" cy="120" rx="56" ry="66" fill="url(#${gradId})" stroke="${strokeBody}" stroke-width="4"/>
+
+        <!-- Pineapple Crosshatch Textures -->
+        <g stroke="${hatchColor}" stroke-width="2.5" opacity="0.65">
           <line x1="45" y1="80" x2="115" y2="160" />
           <line x1="30" y1="110" x2="100" y2="180" />
           <line x1="70" y1="60" x2="130" y2="130" />
@@ -27,25 +79,21 @@ const Mascots = {
           <line x1="130" y1="110" x2="60" y2="180" />
           <line x1="90" y1="60" x2="30" y2="130" />
         </g>
+
         <!-- Round Porthole Window -->
-        <circle cx="55" cy="105" r="14" fill="#67e8f9" stroke="#334155" stroke-width="3.5"/>
-        <circle cx="55" cy="105" r="11" fill="none" stroke="#e0f2fe" stroke-width="2"/>
-        <path d="M44 105 L66 105 M55 94 L55 116" stroke="#334155" stroke-width="2.5"/>
+        <circle cx="55" cy="105" r="14" fill="${windowGlass}" stroke="${windowFrame}" stroke-width="3.5"/>
+        <circle cx="55" cy="105" r="11" fill="none" stroke="#ffffff" stroke-width="2" opacity="0.8"/>
+        <path d="M44 105 L66 105 M55 94 L55 116" stroke="${windowFrame}" stroke-width="2.5"/>
+
         <!-- Chimney Tube -->
         <path d="M120 100 L140 85 L145 92 L128 106 Z" fill="#64748b" stroke="#334155" stroke-width="2.5"/>
+
         <!-- Cozy Door -->
-        <path d="M68 185 L68 150 C68 142 92 142 92 150 L92 185 Z" fill="#78350f" stroke="#451a03" stroke-width="3"/>
-        <circle cx="86" cy="165" r="2.5" fill="#facc15" />
+        <path d="M68 185 L68 150 C68 142 92 142 92 150 L92 185 Z" fill="${doorColor}" stroke="${doorBorder}" stroke-width="3"/>
+        <circle cx="86" cy="165" r="2.5" fill="${doorKnob}" />
+
         <!-- Highlights -->
-        <ellipse cx="60" cy="75" rx="8" ry="4" fill="#fef08a" opacity="0.6" transform="rotate(-20 60 75)"/>
-        
-        <defs>
-          <radialGradient id="pineappleGrad" cx="40%" cy="35%" r="70%">
-            <stop offset="0%" stop-color="#fde047" />
-            <stop offset="60%" stop-color="#f59e0b" />
-            <stop offset="100%" stop-color="#d97706" />
-          </radialGradient>
-        </defs>
+        <ellipse cx="60" cy="75" rx="8" ry="4" fill="#ffffff" opacity="0.5" transform="rotate(-20 60 75)"/>
       </svg>
     `;
   },
@@ -166,6 +214,73 @@ const Mascots = {
         <!-- Cheeks -->
         <circle cx="48" cy="54" r="5" fill="#fb7185" opacity="0.5"/>
         <circle cx="92" cy="54" r="5" fill="#fb7185" opacity="0.5"/>
+      </svg>
+    `;
+  },
+
+  // 🪸 Terumbu Karang Undersea Decorations (Left / Right Margins)
+  getCoralReefSvg(side = 'left') {
+    const isLeft = side === 'left';
+    return `
+      <svg width="180" height="260" viewBox="0 0 180 260" fill="none" xmlns="http://www.w3.org/2000/svg" class="coral-reef-svg ${isLeft ? 'coral-left' : 'coral-right'}">
+        <!-- Background Kelp / Seaweeds -->
+        <path d="${isLeft ? 'M20 260 Q10 180 30 130 T15 40' : 'M160 260 Q170 180 150 130 T165 40'}" stroke="#059669" stroke-width="14" stroke-linecap="round" fill="none" opacity="0.75" class="seaweed-sway-1"/>
+        <path d="${isLeft ? 'M45 260 Q55 190 35 120 T50 60' : 'M135 260 Q125 190 145 120 T130 60'}" stroke="#10b981" stroke-width="12" stroke-linecap="round" fill="none" opacity="0.85" class="seaweed-sway-2"/>
+        <path d="${isLeft ? 'M70 260 Q60 200 80 150 T65 90' : 'M110 260 Q120 200 100 150 T115 90'}" stroke="#34d399" stroke-width="10" stroke-linecap="round" fill="none" opacity="0.9" class="seaweed-sway-3"/>
+
+        <!-- Coral Branches (Pink/Orange/Purple) -->
+        <g class="coral-branch" filter="drop-shadow(0 4px 8px rgba(0,0,0,0.15))">
+          <path d="${isLeft ? 'M10 260 C25 210 15 160 35 140 C45 130 60 140 50 165 C70 145 85 155 75 185 C95 175 105 190 90 220 L95 260 Z' : 'M170 260 C155 210 165 160 145 140 C135 130 120 140 130 165 C110 145 95 155 105 185 C85 175 75 190 90 220 L85 260 Z'}" fill="#f43f5e" stroke="#be123c" stroke-width="3"/>
+          <circle cx="${isLeft ? '35' : '145'}" cy="138" r="6" fill="#fb7185"/>
+          <circle cx="${isLeft ? '50' : '130'}" cy="162" r="5" fill="#fb7185"/>
+          <circle cx="${isLeft ? '75' : '105'}" cy="182" r="5" fill="#fb7185"/>
+        </g>
+
+        <!-- Round Sponge Coral (Yellow/Amber) -->
+        <g class="coral-tube">
+          <rect x="${isLeft ? '55' : '90'}" y="190" width="22" height="70" rx="10" fill="#f59e0b" stroke="#b45309" stroke-width="2.5"/>
+          <ellipse cx="${isLeft ? '66' : '101'}" cy="190" rx="11" ry="5" fill="#fde68a" stroke="#b45309" stroke-width="2"/>
+          
+          <rect x="${isLeft ? '80' : '65'}" y="205" width="18" height="55" rx="8" fill="#fbbf24" stroke="#d97706" stroke-width="2.5"/>
+          <ellipse cx="${isLeft ? '89' : '74'}" cy="205" rx="9" ry="4" fill="#fef08a" stroke="#d97706" stroke-width="2"/>
+        </g>
+
+        <!-- Sea Anemone (Purple/Violet) -->
+        <g class="anemone">
+          <ellipse cx="${isLeft ? '40' : '140'}" cy="240" rx="26" ry="14" fill="#8b5cf6" stroke="#6d28d9" stroke-width="2"/>
+          <path d="${isLeft ? 'M25 240 Q18 220 28 215 M32 238 Q30 215 38 210 M42 238 Q45 212 50 212 M50 238 Q58 218 60 216' : 'M155 240 Q162 220 152 215 M148 238 Q150 215 142 210 M138 238 Q135 212 130 212 M130 238 Q122 218 120 216'}" stroke="#c4b5fd" stroke-width="3" stroke-linecap="round"/>
+        </g>
+
+        <!-- Starfish on Coral -->
+        <g transform="translate(${isLeft ? '30, 235' : '120, 235'}) scale(0.6)">
+          <path d="M20 0 L25 15 L40 18 L28 28 L32 42 L20 33 L8 42 L12 28 L0 18 L15 15 Z" fill="#fb923c" stroke="#c2410c" stroke-width="2"/>
+          <circle cx="20" cy="20" r="3" fill="#fed7aa"/>
+        </g>
+      </svg>
+    `;
+  },
+
+  // 🐟 Cute Swimming Fish Vector
+  getCuteFishSvg(color = '#38bdf8', direction = 'right') {
+    const isRight = direction === 'right';
+    return `
+      <svg width="48" height="32" viewBox="0 0 60 40" fill="none" xmlns="http://www.w3.org/2000/svg" class="swimming-fish-svg ${isRight ? 'swim-right' : 'swim-left'}">
+        <!-- Tail Fin -->
+        <polygon points="${isRight ? '15,20 0,6 0,34' : '45,20 60,6 60,34'}" fill="${color}" stroke="#0369a1" stroke-width="2" class="fish-tail-wag"/>
+        <!-- Dorsal Fin -->
+        <path d="${isRight ? 'M28 10 Q35 0 44 10 Z' : 'M32 10 Q25 0 16 10 Z'}" fill="${color}" opacity="0.85"/>
+        <!-- Body -->
+        <ellipse cx="32" cy="20" rx="20" ry="13" fill="${color}" stroke="#0369a1" stroke-width="2.5"/>
+        <!-- Belly Highlight -->
+        <ellipse cx="32" cy="24" rx="14" ry="6" fill="#ffffff" opacity="0.5"/>
+        <!-- Eye -->
+        <circle cx="${isRight ? '42' : '22'}" cy="16" r="4.5" fill="#ffffff" stroke="#1e293b" stroke-width="1.5"/>
+        <circle cx="${isRight ? '43' : '21'}" cy="16" r="2.5" fill="#0f172a"/>
+        <circle cx="${isRight ? '44' : '20'}" cy="15" r="1" fill="#ffffff"/>
+        <!-- Cute Smile -->
+        <path d="${isRight ? 'M46 22 Q43 25 40 23' : 'M14 22 Q17 25 20 23'}" stroke="#0369a1" stroke-width="1.8" stroke-linecap="round"/>
+        <!-- Pectoral Fin -->
+        <ellipse cx="${isRight ? '30' : '34'}" cy="22" rx="5" ry="3" fill="#ffffff" opacity="0.75" class="fish-fin-flutter"/>
       </svg>
     `;
   }

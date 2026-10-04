@@ -1,10 +1,11 @@
 /* ==========================================================================
    NANAS RUMAH SPONGEBOB DIGITAL (NRSD)
-   Comprehensive Learning Ecosystem & Pedagogical Engine
+   Penguin Penyimpan Angka Pintar di Nanas Rumah SpongeBob
+   by LIDYA CHOIRUN NISA
    ========================================================================== */
 
 document.addEventListener('DOMContentLoaded', () => {
-  // Initialize SVG Mascots
+  // Initialize SVG Mascots & Ocean Elements
   initMascots();
   initBubbles();
 
@@ -14,23 +15,49 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Render Dynamic SVGs across screens
 function initMascots() {
+  // Splash Mascots
   const splashSponge = document.getElementById('splashSponge');
   if (splashSponge) splashSponge.innerHTML = Mascots.getSpongeMascotSvg(120, 130);
+
+  const splashPineapple = document.getElementById('splashPineappleHouse');
+  if (splashPineapple) splashPineapple.innerHTML = Mascots.getPineappleHouseSvg(130, 150, 'tens');
 
   const splashPenguin = document.getElementById('splashPenguin');
   if (splashPenguin) splashPenguin.innerHTML = Mascots.getPenguinMascotSvg(120, 130, 'waving');
 
+  // Home Hero Mascot Triad
   const homeSponge = document.getElementById('homeSpongeContainer');
   if (homeSponge) homeSponge.innerHTML = Mascots.getSpongeMascotSvg(130, 140);
 
-  const homePenguin = document.getElementById('homePenguinContainer');
-  if (homePenguin) homePenguin.innerHTML = Mascots.getPenguinMascotSvg(110, 120, 'neutral');
+  const homePineapple = document.getElementById('homePineappleContainer');
+  if (homePineapple) homePineapple.innerHTML = Mascots.getPineappleHouseSvg(140, 160, 'tens');
 
+  const homePenguin = document.getElementById('homePenguinContainer');
+  if (homePenguin) homePenguin.innerHTML = Mascots.getPenguinMascotSvg(120, 130, 'neutral');
+
+  // Workspace Mascots
   const wsSponge = document.getElementById('wsSpongeAvatar');
   if (wsSponge) wsSponge.innerHTML = Mascots.getSpongeMascotSvg(55, 60);
 
   const wsPenguin = document.getElementById('wsPenguinContainer');
-  if (wsPenguin) wsPenguin.innerHTML = Mascots.getPenguinMascotSvg(120, 130, 'neutral');
+  if (wsPenguin) wsPenguin.innerHTML = Mascots.getPenguinMascotSvg(100, 105, 'neutral');
+
+  // Ocean Margin Decorations (Left & Right Coral Reefs)
+  const decorLeft = document.getElementById('decorCoralLeft');
+  if (decorLeft) decorLeft.innerHTML = Mascots.getCoralReefSvg('left');
+
+  const decorRight = document.getElementById('decorCoralRight');
+  if (decorRight) decorRight.innerHTML = Mascots.getCoralReefSvg('right');
+
+  // Cute Swimming Fishes in Ocean
+  const fish1 = document.getElementById('oceanFish1');
+  if (fish1) fish1.innerHTML = Mascots.getCuteFishSvg('#38bdf8', 'right');
+
+  const fish2 = document.getElementById('oceanFish2');
+  if (fish2) fish2.innerHTML = Mascots.getCuteFishSvg('#fbbf24', 'left');
+
+  const fish3 = document.getElementById('oceanFish3');
+  if (fish3) fish3.innerHTML = Mascots.getCuteFishSvg('#f472b6', 'right');
 }
 
 // Background Animated Bubbles
@@ -38,14 +65,14 @@ function initBubbles() {
   const container = document.getElementById('bubbleContainer');
   if (!container) return;
 
-  const bubbleCount = 15;
+  const bubbleCount = 18;
   for (let i = 0; i < bubbleCount; i++) {
     const bubble = document.createElement('div');
     bubble.className = 'bubble';
-    const size = Math.random() * 30 + 15;
+    const size = Math.random() * 32 + 12;
     bubble.style.width = `${size}px`;
     bubble.style.height = `${size}px`;
-    bubble.style.left = `${Math.random() * 95}%`;
+    bubble.style.left = `${Math.random() * 96}%`;
     bubble.style.animationDuration = `${Math.random() * 8 + 6}s`;
     bubble.style.animationDelay = `${Math.random() * 5}s`;
     container.appendChild(bubble);
@@ -83,7 +110,7 @@ class NRSDApp {
     this.keypadBuffer = '';
     this.history = [];
 
-    // Practice Mode State
+    // Practice Mode State (5 Focus Areas)
     this.practiceFocus = 'placeValue';
     this.practiceCount = 5;
     this.practiceQuestions = [];
@@ -95,7 +122,12 @@ class NRSDApp {
     this.practiceTimerInterval = null;
     this.practiceHintsUsed = 0;
 
-    // Challenge Mode State
+    // Place Value Interactive Explorer State
+    this.pvCurrentNumber = 47;
+    this.pvTensPlaced = false;
+    this.pvOnesPlaced = false;
+
+    // Challenge Mode State (3 Levels Only)
     this.challengeCurrentLevel = 1;
     this.challengeQuestions = [];
     this.challengeIndex = 0;
@@ -120,7 +152,7 @@ class NRSDApp {
     // Load Local Storage
     this.loadState();
 
-    // Bind All Controllers
+    // Bind Controllers
     this.bindNavigation();
     this.bindStudentIdentity();
     this.bindWorkspaceEvents();
@@ -142,7 +174,7 @@ class NRSDApp {
   }
 
   /* ==========================================================================
-     STORAGE MANAGEMENT (Section M)
+     STORAGE MANAGEMENT
      ========================================================================== */
   getDefaultState() {
     return {
@@ -153,6 +185,7 @@ class NRSDApp {
       customProblemSets: [],
       settings: {
         sound: true,
+        oceanSound: true,
         volume: 0.8,
         voice: true,
         anim: true,
@@ -166,7 +199,6 @@ class NRSDApp {
       const raw = localStorage.getItem(this.STORAGE_KEY);
       if (raw) {
         this.state = JSON.parse(raw);
-        // Ensure default properties exist
         const def = this.getDefaultState();
         this.state.settings = { ...def.settings, ...this.state.settings };
         if (!Array.isArray(this.state.sessions)) this.state.sessions = [];
@@ -218,13 +250,13 @@ class NRSDApp {
     };
 
     this.state.sessions.unshift(sessionData);
-    if (this.state.sessions.length > 50) this.state.sessions.pop(); // keep last 50
+    if (this.state.sessions.length > 50) this.state.sessions.pop();
     this.saveState();
     this.renderDashboard();
   }
 
   /* ==========================================================================
-     NAVIGATION & SCREEN SWITCHING (Section A)
+     NAVIGATION & SCREEN SWITCHING
      ========================================================================== */
   showScreen(screenId) {
     document.querySelectorAll('.view-screen').forEach(s => s.classList.remove('active'));
@@ -243,12 +275,10 @@ class NRSDApp {
       }
     });
 
-    // Stop demo autoplay if leaving demo screen
     if (screenId !== 'screen-demo' && this.demoIsPlaying) {
       this.pauseDemoAutoPlay();
     }
 
-    // Scroll view to top
     if (target) target.scrollTop = 0;
   }
 
@@ -410,36 +440,7 @@ class NRSDApp {
       }
     });
 
-    // Modes Screen Buttons
-    document.getElementById('btnModesBack')?.addEventListener('click', () => {
-      window.soundEngine.playPop();
-      this.showScreen('screen-home');
-    });
-
-    document.getElementById('cardModeBelajar')?.addEventListener('click', () => {
-      window.soundEngine.playPop();
-      this.setMode('belajar');
-      this.startProblem(27, 18);
-      this.showScreen('screen-workspace');
-    });
-
-    document.getElementById('cardModeLatihan')?.addEventListener('click', () => {
-      window.soundEngine.playPop();
-      this.openPracticeSetup();
-    });
-
-    document.getElementById('cardModeTantangan')?.addEventListener('click', () => {
-      window.soundEngine.playPop();
-      this.openChallengePicker();
-    });
-
-    document.getElementById('cardModeGuru')?.addEventListener('click', () => {
-      window.soundEngine.playPop();
-      this.showScreen('screen-builder');
-      this.generateBuilderProblems();
-    });
-
-    // Pedagogical Teacher Guide Screen Back & Demo Button
+    // Teacher Guide Back & Demo
     document.getElementById('btnTeacherGuideBack')?.addEventListener('click', () => {
       window.soundEngine.playPop();
       this.showScreen('screen-home');
@@ -459,7 +460,7 @@ class NRSDApp {
   }
 
   /* ==========================================================================
-     STUDENT IDENTITY CONTROLLER (Section N)
+     STUDENT IDENTITY CONTROLLER
      ========================================================================== */
   updateStudentNameUI() {
     const name = this.state.studentName || 'Murid Juara';
@@ -514,17 +515,19 @@ class NRSDApp {
   }
 
   /* ==========================================================================
-     FITUR LATIHAN CONTROLLER (Section B)
+     FITUR LATIHAN CONTROLLER (5 FITUR KHUSUS)
      ========================================================================== */
   openPracticeSetup() {
     this.showScreen('screen-practice');
     document.getElementById('practiceSetupView').style.display = 'block';
+    document.getElementById('practicePlaceValueView').style.display = 'none';
+    document.getElementById('practiceRegroupingView').style.display = 'none';
     document.getElementById('practiceQuizView').style.display = 'none';
     document.getElementById('practiceSummaryView').style.display = 'none';
   }
 
   bindPracticeController() {
-    // Focus selection cards
+    // 5 Focus Selection Cards
     document.querySelectorAll('.practice-focus-card').forEach(card => {
       card.addEventListener('click', (e) => {
         document.querySelectorAll('.practice-focus-card').forEach(c => c.classList.remove('selected'));
@@ -532,10 +535,16 @@ class NRSDApp {
         target.classList.add('selected');
         this.practiceFocus = target.getAttribute('data-focus') || 'placeValue';
         window.soundEngine.playPop();
+
+        // Show/hide count picker depending on focus
+        const countBox = document.getElementById('practiceCountBox');
+        if (countBox) {
+          countBox.style.display = (this.practiceFocus === 'withCarry' || this.practiceFocus === 'wordProblems') ? 'flex' : 'none';
+        }
       });
     });
 
-    // Count pills (5, 10, 15)
+    // Count pills
     document.querySelectorAll('.count-pill').forEach(pill => {
       pill.addEventListener('click', (e) => {
         document.querySelectorAll('.count-pill').forEach(p => p.classList.remove('active'));
@@ -546,35 +555,75 @@ class NRSDApp {
       });
     });
 
-    // Back button
     document.getElementById('btnPracticeBack')?.addEventListener('click', () => {
       window.soundEngine.playPop();
       this.showScreen('screen-home');
     });
 
-    // Start Quiz button
+    // Start Practice button routing to specific interactive view
     document.getElementById('btnStartPracticeQuiz')?.addEventListener('click', () => {
       window.soundEngine.playPop();
-      this.startPracticeQuiz();
+      if (this.practiceFocus === 'placeValue') {
+        this.startPlaceValueInteractive();
+      } else if (this.practiceFocus === 'regrouping' || this.practiceFocus === 'carryDigit') {
+        this.startRegroupingInteractive(this.practiceFocus);
+      } else {
+        this.startPracticeQuiz();
+      }
     });
 
-    // Practice Quiz Check Answer button
+    // Place Value View buttons
+    document.getElementById('btnPVQuit')?.addEventListener('click', () => {
+      this.openPracticeSetup();
+    });
+
+    document.getElementById('btnPVReset')?.addEventListener('click', () => {
+      this.setupPlaceValueNumber(this.pvCurrentNumber);
+      window.soundEngine.playPop();
+    });
+
+    document.getElementById('btnPVNext')?.addEventListener('click', () => {
+      window.soundEngine.playPop();
+      const numbers = [58, 36, 92, 24, 71, 63, 85, 49];
+      const nextNum = numbers[Math.floor(Math.random() * numbers.length)];
+      this.setupPlaceValueNumber(nextNum);
+    });
+
+    // Regrouping View buttons
+    document.getElementById('btnRGQuit')?.addEventListener('click', () => {
+      this.openPracticeSetup();
+    });
+
+    document.getElementById('btnRGReset')?.addEventListener('click', () => {
+      window.soundEngine.playPop();
+      this.setupRegroupingExample(27, 18);
+    });
+
+    document.getElementById('btnRGNext')?.addEventListener('click', () => {
+      window.soundEngine.playPop();
+      const pairs = [{ a: 38, b: 27 }, { a: 46, b: 17 }, { a: 58, b: 24 }, { a: 67, b: 15 }];
+      const nextPair = pairs[Math.floor(Math.random() * pairs.length)];
+      this.setupRegroupingExample(nextPair.a, nextPair.b);
+    });
+
+    document.getElementById('btnRGRunPenguin')?.addEventListener('click', () => {
+      this.animatePenguinGlideToCarry(1);
+    });
+
+    // Quiz Mode buttons
     document.getElementById('btnPracticeCheck')?.addEventListener('click', () => {
       this.checkPracticeAnswer();
     });
 
-    // Practice Quiz Next Question button
     document.getElementById('btnPracticeNext')?.addEventListener('click', () => {
       window.soundEngine.playPop();
       this.advancePracticeQuestion();
     });
 
-    // Practice Quiz Hint button
     document.getElementById('btnPracticeHint')?.addEventListener('click', () => {
       this.triggerPracticeHint();
     });
 
-    // Practice Quit button
     document.getElementById('btnPracticeQuit')?.addEventListener('click', () => {
       if (confirm('Apakah kamu yakin ingin keluar dari sesi latihan ini?')) {
         clearInterval(this.practiceTimerInterval);
@@ -599,7 +648,6 @@ class NRSDApp {
       this.openChallengePicker();
     });
 
-    // Keydown Enter on practice answer input
     document.getElementById('practiceInputAnswer')?.addEventListener('keydown', (e) => {
       if (e.key === 'Enter') {
         const nextBtn = document.getElementById('btnPracticeNext');
@@ -612,178 +660,138 @@ class NRSDApp {
     });
   }
 
-  generatePracticeQuestions(focus, count) {
-    const list = [];
-    const usedPairs = new Set();
+  /* --- Fitur 1: Nilai Tempat Interactive Stage --- */
+  startPlaceValueInteractive() {
+    document.getElementById('practiceSetupView').style.display = 'none';
+    document.getElementById('practicePlaceValueView').style.display = 'block';
+    document.getElementById('practiceRegroupingView').style.display = 'none';
+    document.getElementById('practiceQuizView').style.display = 'none';
+    document.getElementById('practiceSummaryView').style.display = 'none';
 
-    for (let i = 0; i < count; i++) {
-      let q = null;
-      let attempts = 0;
-
-      while (attempts < 50) {
-        attempts++;
-        if (focus === 'placeValue') {
-          const num = Math.floor(Math.random() * 80) + 15;
-          const tens = Math.floor(num / 10);
-          const ones = num % 10;
-          const askTens = Math.random() > 0.5;
-          const key = `pv_${num}_${askTens}`;
-          if (!usedPairs.has(key)) {
-            usedPairs.add(key);
-            q = {
-              type: 'placeValue',
-              prompt: `Berapakah nilai tempat <strong>${askTens ? 'PULUHAN' : 'SATUAN'}</strong> dari bilangan <strong>${num}</strong>?`,
-              visual: `<div style="display:flex; justify-content:center; gap:12px;">
-                <div class="digit-ball digit-ball-purple" style="font-size:2rem; width:56px; height:56px;">${tens}</div>
-                <div class="digit-ball digit-ball-amber" style="font-size:2rem; width:56px; height:56px;">${ones}</div>
-              </div>`,
-              answer: askTens ? tens : ones,
-              hint1: `Ingat, angka sebelah kiri adalah Puluhan dan sebelah kanan adalah Satuan.`,
-              hint2: `Perhatikan posisi digit ${askTens ? 'sebelah kiri' : 'sebelah kanan'}.`,
-              hint3: `Jawabannya adalah ${askTens ? tens : ones}.`
-            };
-            break;
-          }
-        }
-        else if (focus === 'onesAddition') {
-          const o1 = Math.floor(Math.random() * 6) + 4; // 4 - 9
-          const o2 = Math.floor(Math.random() * 6) + 4; // 4 - 9
-          const key = `oa_${o1}_${o2}`;
-          if (!usedPairs.has(key)) {
-            usedPairs.add(key);
-            const sum = o1 + o2;
-            q = {
-              type: 'onesAddition',
-              prompt: `Hitunglah penjumlahan digit satuan berikut: <strong>${o1} + ${o2} = ?</strong>`,
-              visual: `<div style="display:flex; justify-content:center; align-items:center; gap:10px;">
-                <div class="digit-ball digit-ball-amber" style="font-size:1.8rem; width:52px; height:52px;">${o1}</div>
-                <span style="font-size:1.8rem; font-weight:800;">+</span>
-                <div class="digit-ball digit-ball-amber" style="font-size:1.8rem; width:52px; height:52px;">${o2}</div>
-              </div>`,
-              answer: sum,
-              hint1: `Hitung dengan menjumlahkan kedua angka satuan.`,
-              hint2: `Mulai dari ${o1}, lalu tambahkan ${o2}.`,
-              hint3: `${o1} + ${o2} menghasilkan ${sum}.`
-            };
-            break;
-          }
-        }
-        else if (focus === 'regrouping') {
-          const sum = Math.floor(Math.random() * 9) + 11; // 11 - 19
-          const carry = 1;
-          const ones = sum % 10;
-          const key = `rg_${sum}`;
-          if (!usedPairs.has(key)) {
-            usedPairs.add(key);
-            q = {
-              type: 'regrouping',
-              prompt: `Hasil satuan adalah <strong>${sum}</strong>. Berapakah angka <strong>SATUAN</strong> yang tetap tinggal di kolom satuan?`,
-              visual: `<div style="display:flex; justify-content:center; align-items:center; gap:12px;">
-                <div style="background:#1e1b4b; color:#fbbf24; padding:8px 18px; border-radius:8px; font-family:var(--font-numbers); font-size:1.8rem; font-weight:800;">Hasil = ${sum}</div>
-              </div>`,
-              answer: ones,
-              hint1: `Pisahkan puluhan (1) dan satuannya (${ones}).`,
-              hint2: `Angka 1 disimpan ke puluhan, dan angka ${ones} tetap di satuan.`,
-              hint3: `Jawabannya adalah digit satuan: ${ones}.`
-            };
-            break;
-          }
-        }
-        else if (focus === 'carryDigit') {
-          const n1 = Math.floor(Math.random() * 40) + 16;
-          const n2 = Math.floor(Math.random() * 40) + 15;
-          if ((n1 % 10) + (n2 % 10) >= 10) {
-            const key = `cd_${n1}_${n2}`;
-            if (!usedPairs.has(key)) {
-              usedPairs.add(key);
-              q = {
-                type: 'carryDigit',
-                prompt: `Pada penjumlahan <strong>${n1} + ${n2}</strong>, berapakah <strong>angka simpan</strong> yang dibawa ke atas puluhan?`,
-                visual: `<div style="font-family:var(--font-numbers); font-size:1.8rem; font-weight:800; color:#1e1b4b;">${n1} + ${n2}</div>`,
-                answer: 1,
-                hint1: `Jumlahkan satuannya: ${n1 % 10} + ${n2 % 10} = ${(n1 % 10) + (n2 % 10)}.`,
-                hint2: `Karena hasilnya ≥ 10, ada 1 puluhan yang disimpan.`,
-                hint3: `Angka simpan yang dibawa ke puluhan selalu bernilai 1.`
-              };
-              break;
-            }
-          }
-        }
-        else if (focus === 'withCarry') {
-          const t1 = Math.floor(Math.random() * 4) + 1; // 1 - 4
-          const t2 = Math.floor(Math.random() * 4) + 1; // 1 - 4
-          const o1 = Math.floor(Math.random() * 5) + 5; // 5 - 9
-          const o2 = Math.floor(Math.random() * 5) + 5; // 5 - 9
-          const a = t1 * 10 + o1;
-          const b = t2 * 10 + o2;
-          const key = `wc_${a}_${b}`;
-          if (!usedPairs.has(key)) {
-            usedPairs.add(key);
-            q = {
-              type: 'withCarry',
-              prompt: `Berapakah hasil dari <strong>${a} + ${b}</strong>?`,
-              visual: `<div style="font-family:var(--font-numbers); font-size:2rem; font-weight:900; color:#1e1b4b; background:#f1f5f9; padding:6px 20px; border-radius:8px; display:inline-block;">${a} + ${b}</div>`,
-              answer: a + b,
-              hint1: `Jumlahkan satuan: ${o1} + ${o2} = ${o1 + o2}. Simpan 1 ke puluhan.`,
-              hint2: `Jumlahkan puluhan: 1 (simpan) + ${t1} + ${t2} = ${1 + t1 + t2}.`,
-              hint3: `Gabungkan hasilnya: ${a + b}.`
-            };
-            break;
-          }
-        }
-        else if (focus === 'wordProblems') {
-          const templates = [
-            {
-              txt: (a, b) => `SpongeBob menangkap ${a} ubur-ubur di pagi hari dan ${b} ubur-ubur di sore hari. Berapa jumlah seluruh ubur-ubur yang ditangkap SpongeBob?`,
-              a: Math.floor(Math.random() * 30) + 18,
-              b: Math.floor(Math.random() * 30) + 15
-            },
-            {
-              txt: (a, b) => `Krusty Krab membuat ${a} Krabby Patty rasa keju dan ${b} Krabby Patty rasa pedas. Berapa total Krabby Patty yang dibuat?`,
-              a: Math.floor(Math.random() * 30) + 26,
-              b: Math.floor(Math.random() * 30) + 17
-            },
-            {
-              txt: (a, b) => `Patrick mengumpulkan ${a} batu bintang laut dan Squidward mengumpulkan ${b} kerang mutiara. Berapa jumlah seluruh koleksi mereka?`,
-              a: Math.floor(Math.random() * 30) + 19,
-              b: Math.floor(Math.random() * 30) + 18
-            }
-          ];
-          const tpl = templates[Math.floor(Math.random() * templates.length)];
-          const key = `wp_${tpl.a}_${tpl.b}`;
-          if (!usedPairs.has(key)) {
-            usedPairs.add(key);
-            q = {
-              type: 'wordProblems',
-              prompt: tpl.txt(tpl.a, tpl.b),
-              visual: `<div style="font-size:1.8rem;">🍔 🌊 🍍</div>`,
-              answer: tpl.a + tpl.b,
-              hint1: `Soal cerita ini menanyakan total (penjumlahan: ${tpl.a} + ${tpl.b}).`,
-              hint2: `Hitung satuan: ${tpl.a % 10} + ${tpl.b % 10} = ${(tpl.a % 10) + (tpl.b % 10)}.`,
-              hint3: `Hasil akhirnya adalah ${tpl.a + tpl.b}.`
-            };
-            break;
-          }
-        }
-      }
-
-      // Fallback
-      if (!q) {
-        q = {
-          type: focus,
-          prompt: `Hitunglah: <strong>27 + 18 = ?</strong>`,
-          visual: '',
-          answer: 45,
-          hint1: `Jumlahkan satuannya dulu: 7 + 8 = 15.`,
-          hint2: `Simpan 1 ke puluhan: 1 + 2 + 1 = 4.`,
-          hint3: `Jawabannya 45.`
-        };
-      }
-      list.push(q);
-    }
-    return list;
+    this.setupPlaceValueNumber(47);
   }
 
+  setupPlaceValueNumber(num) {
+    this.pvCurrentNumber = num;
+    this.pvTensPlaced = false;
+    this.pvOnesPlaced = false;
+
+    const numDisplay = document.getElementById('pvNumberDisplay');
+    if (numDisplay) numDisplay.textContent = num;
+
+    const tens = Math.floor(num / 10);
+    const ones = num % 10;
+
+    const ballsContainer = document.getElementById('pvAvailableBalls');
+    if (ballsContainer) {
+      ballsContainer.innerHTML = `
+        <div class="digit-ball digit-ball-purple" id="pvBallTens" data-type="tens" data-digit="${tens}" style="cursor:pointer; width:60px; height:60px; font-size:2rem;" title="Klik untuk tempatkan ke Rumah Puluhan">${tens}</div>
+        <div class="digit-ball digit-ball-amber" id="pvBallOnes" data-type="ones" data-digit="${ones}" style="cursor:pointer; width:60px; height:60px; font-size:2rem;" title="Klik untuk tempatkan ke Rumah Satuan">${ones}</div>
+      `;
+    }
+
+    const tensSlot = document.getElementById('pvTensSlot');
+    const onesSlot = document.getElementById('pvOnesSlot');
+    if (tensSlot) tensSlot.innerHTML = `<span style="color:#92400e; font-weight:700; font-size:0.9rem;">Letakkan digit puluhan (${tens}) di sini</span>`;
+    if (onesSlot) onesSlot.innerHTML = `<span style="color:#9f1239; font-weight:700; font-size:0.9rem;">Letakkan digit satuan (${ones}) di sini</span>`;
+
+    const fbBox = document.getElementById('pvFeedbackBox');
+    if (fbBox) fbBox.style.display = 'none';
+
+    // Bind click interactivity
+    const ballT = document.getElementById('pvBallTens');
+    const ballO = document.getElementById('pvBallOnes');
+    const dropT = document.getElementById('pvDropTens');
+    const dropO = document.getElementById('pvDropOnes');
+
+    ballT?.addEventListener('click', () => {
+      this.placePVDigit('tens', tens);
+    });
+
+    ballO?.addEventListener('click', () => {
+      this.placePVDigit('ones', ones);
+    });
+
+    dropT?.addEventListener('click', () => {
+      if (!this.pvTensPlaced) this.placePVDigit('tens', tens);
+    });
+
+    dropO?.addEventListener('click', () => {
+      if (!this.pvOnesPlaced) this.placePVDigit('ones', ones);
+    });
+  }
+
+  placePVDigit(type, val) {
+    window.soundEngine.playSnap();
+    const tens = Math.floor(this.pvCurrentNumber / 10);
+    const ones = this.pvCurrentNumber % 10;
+
+    if (type === 'tens') {
+      this.pvTensPlaced = true;
+      document.getElementById('pvBallTens')?.remove();
+      const tensSlot = document.getElementById('pvTensSlot');
+      if (tensSlot) {
+        tensSlot.innerHTML = `<div class="digit-ball digit-ball-purple locked" style="width:60px; height:60px; font-size:2rem;">${val}</div>`;
+      }
+    } else {
+      this.pvOnesPlaced = true;
+      document.getElementById('pvBallOnes')?.remove();
+      const onesSlot = document.getElementById('pvOnesSlot');
+      if (onesSlot) {
+        onesSlot.innerHTML = `<div class="digit-ball digit-ball-amber locked" style="width:60px; height:60px; font-size:2rem;">${val}</div>`;
+      }
+    }
+
+    if (this.pvTensPlaced && this.pvOnesPlaced) {
+      window.soundEngine.playSuccessFanfare();
+      const fbBox = document.getElementById('pvFeedbackBox');
+      const fbText = document.getElementById('pvFeedbackText');
+      if (fbBox && fbText) {
+        fbBox.className = 'growth-feedback-box correct show';
+        fbBox.style.display = 'flex';
+        fbText.innerHTML = `<strong>Hebat!</strong> Pada bilangan <strong>${this.pvCurrentNumber}</strong>: Angka <strong>${tens}</strong> menempati Rumah Puluhan (${tens * 10}) dan Angka <strong>${ones}</strong> menempati Rumah Satuan (${ones})!`;
+      }
+      window.soundEngine.speak(`Hebat! ${tens} adalah puluhan dan ${ones} adalah satuan.`);
+    }
+  }
+
+  /* --- Fitur 2 & 3: Regrouping & Angka Simpan Interactive Stage --- */
+  startRegroupingInteractive(mode) {
+    document.getElementById('practiceSetupView').style.display = 'none';
+    document.getElementById('practicePlaceValueView').style.display = 'none';
+    document.getElementById('practiceRegroupingView').style.display = 'block';
+    document.getElementById('practiceQuizView').style.display = 'none';
+    document.getElementById('practiceSummaryView').style.display = 'none';
+
+    this.setupRegroupingExample(27, 18);
+  }
+
+  setupRegroupingExample(a, b) {
+    const o1 = a % 10;
+    const o2 = b % 10;
+    const onesSum = o1 + o2;
+    const onesRemain = onesSum % 10;
+
+    const title = document.getElementById('rgTitle');
+    const subtitle = document.getElementById('rgSubtitle');
+
+    if (title) {
+      title.innerHTML = `Hasil Penjumlahan Satuan: <span style="font-family:var(--font-numbers); color:#d97706; font-size:2.2rem; font-weight:900;">${o1} + ${o2} = ${onesSum} Satuan</span>`;
+    }
+    if (subtitle) {
+      subtitle.innerHTML = `Karena ${onesSum} &ge; 10, kelompokkan <strong>10 Satuan</strong> menjadi <strong>1 Puluhan</strong> yang siap dibawa Penguin ke rumah Puluhan!`;
+    }
+
+    const carryBall = document.getElementById('rgCarryBall');
+    const onesBall = document.getElementById('rgOnesBall');
+    if (carryBall) carryBall.textContent = '1';
+    if (onesBall) onesBall.textContent = `${onesRemain}`;
+
+    const fbBox = document.getElementById('rgFeedbackBox');
+    if (fbBox) fbBox.style.display = 'none';
+  }
+
+  /* --- Fitur 4 & 5: Penjumlahan Menyimpan & Soal Cerita Quiz Mode --- */
   startPracticeQuiz() {
     this.practiceQuestions = this.generatePracticeQuestions(this.practiceFocus, this.practiceCount);
     this.practiceIndex = 0;
@@ -794,22 +802,19 @@ class NRSDApp {
     this.practiceStartTime = Date.now();
 
     document.getElementById('practiceSetupView').style.display = 'none';
+    document.getElementById('practicePlaceValueView').style.display = 'none';
+    document.getElementById('practiceRegroupingView').style.display = 'none';
     document.getElementById('practiceQuizView').style.display = 'block';
     document.getElementById('practiceSummaryView').style.display = 'none';
 
-    // Focus Badge text
     const focusTitles = {
-      placeValue: '1. Nilai Tempat',
-      onesAddition: '2. Penjumlahan Satuan',
-      regrouping: '3. Regrouping',
-      carryDigit: '4. Angka Simpan',
-      withCarry: '5. Penjumlahan Menyimpan',
-      wordProblems: '6. Soal Cerita'
+      withCarry: '4. Penjumlahan Menyimpan',
+      wordProblems: '5. Soal Cerita',
+      customTeacher: 'Kustom Guru'
     };
     const badge = document.getElementById('practiceQuizFocusBadge');
     if (badge) badge.textContent = `Fokus: ${focusTitles[this.practiceFocus] || 'Latihan'}`;
 
-    // Start Timer
     clearInterval(this.practiceTimerInterval);
     const timerElem = document.getElementById('practiceTimer');
     this.practiceTimerInterval = setInterval(() => {
@@ -822,30 +827,97 @@ class NRSDApp {
     this.renderCurrentPracticeQuestion();
   }
 
+  generatePracticeQuestions(focus, count) {
+    const list = [];
+    const used = new Set();
+
+    for (let i = 0; i < count; i++) {
+      let q = null;
+      let attempts = 0;
+
+      while (attempts < 50) {
+        attempts++;
+        if (focus === 'wordProblems') {
+          const templates = [
+            { txt: (a, b) => `SpongeBob menangkap ${a} ubur-ubur di pagi hari dan ${b} ubur-ubur di sore hari. Berapa total seluruh ubur-ubur yang ditangkap SpongeBob?`, a: 28, b: 17 },
+            { txt: (a, b) => `Krusty Krab membuat ${a} Krabby Patty keju dan ${b} Krabby Patty pedas. Berapa total Krabby Patty yang dibuat?`, a: 36, b: 28 },
+            { txt: (a, b) => `Patrick mengumpulkan ${a} kerang laut dan Squidward mengumpulkan ${b} batu karang. Berapa total koleksi mereka?`, a: 45, b: 38 },
+            { txt: (a, b) => `Tuan Krab menghitung ${a} koin perak dan ${b} koin emas di peti harta karun. Berapa total seluruh koin?`, a: 54, b: 29 }
+          ];
+          const tpl = templates[i % templates.length];
+          const a = tpl.a + (i * 2);
+          const b = tpl.b + (i * 3);
+          const key = `wp_${a}_${b}`;
+          if (!used.has(key)) {
+            used.add(key);
+            q = {
+              prompt: tpl.txt(a, b),
+              visual: `<div style="font-size:1.8rem; text-align:center;">🍔 🌊 🍍</div>`,
+              answer: a + b,
+              hint1: `Soal cerita ini menanyakan jumlah total (penjumlahan: ${a} + ${b}).`,
+              hint2: `Hitung satuan: ${a % 10} + ${b % 10} = ${(a % 10) + (b % 10)}. Simpan 1 ke puluhan.`,
+              hint3: `Hasil akhirnya adalah ${a + b}.`
+            };
+            break;
+          }
+        } else {
+          // Penjumlahan Menyimpan (2-digit with carry)
+          const t1 = Math.floor(Math.random() * 4) + 1;
+          const t2 = Math.floor(Math.random() * 4) + 1;
+          const o1 = Math.floor(Math.random() * 5) + 5; // 5-9
+          const o2 = Math.floor(Math.random() * 5) + 5; // 5-9
+          const a = t1 * 10 + o1;
+          const b = t2 * 10 + o2;
+          const key = `wc_${a}_${b}`;
+          if (!used.has(key)) {
+            used.add(key);
+            q = {
+              prompt: `Berapakah hasil dari <strong>${a} + ${b}</strong>?`,
+              visual: `<div style="font-family:var(--font-numbers); font-size:2rem; font-weight:900; color:#1e1b4b; background:#f1f5f9; padding:6px 20px; border-radius:8px; display:inline-block;">${a} + ${b}</div>`,
+              answer: a + b,
+              hint1: `Jumlahkan satuan: ${o1} + ${o2} = ${o1 + o2}. Simpan 1 ke puluhan.`,
+              hint2: `Jumlahkan puluhan: 1 (simpan) + ${t1} + ${t2} = ${1 + t1 + t2}.`,
+              hint3: `Gabungkan hasilnya: ${a + b}.`
+            };
+            break;
+          }
+        }
+      }
+
+      if (!q) {
+        q = {
+          prompt: `Hitunglah: <strong>27 + 18 = ?</strong>`,
+          visual: '',
+          answer: 45,
+          hint1: `Jumlahkan satuan: 7 + 8 = 15.`,
+          hint2: `Simpan 1 ke puluhan: 1 + 2 + 1 = 4.`,
+          hint3: `Hasil akhirnya 45.`
+        };
+      }
+      list.push(q);
+    }
+    return list;
+  }
+
   renderCurrentPracticeQuestion() {
     const q = this.practiceQuestions[this.practiceIndex];
     if (!q) return;
 
-    // Counter & Score
     const counter = document.getElementById('practiceQuizCounter');
     if (counter) counter.textContent = `Soal ${this.practiceIndex + 1} dari ${this.practiceQuestions.length}`;
 
     const scoreBadge = document.getElementById('practiceScoreBadge');
     if (scoreBadge) scoreBadge.textContent = `⭐ Skor: ${this.practiceScore}`;
 
-    // Progress bar
-    const progress = ((this.practiceIndex) / this.practiceQuestions.length) * 100;
     const progFill = document.getElementById('practiceProgressFill');
-    if (progFill) progFill.style.width = `${Math.max(5, progress)}%`;
+    if (progFill) progFill.style.width = `${((this.practiceIndex) / this.practiceQuestions.length) * 100}%`;
 
-    // Prompt and Visual
     const promptText = document.getElementById('practicePromptText');
     if (promptText) promptText.innerHTML = q.prompt;
 
     const visualCard = document.getElementById('practiceVisualCard');
     if (visualCard) visualCard.innerHTML = q.visual || '';
 
-    // Input Field
     const inputAnswer = document.getElementById('practiceInputAnswer');
     if (inputAnswer) {
       inputAnswer.value = '';
@@ -853,22 +925,13 @@ class NRSDApp {
       inputAnswer.focus();
     }
 
-    // Reset Feedback and buttons
     const feedbackBox = document.getElementById('practiceFeedbackBox');
-    if (feedbackBox) {
-      feedbackBox.className = 'growth-feedback-box';
-      feedbackBox.style.display = 'none';
-    }
+    if (feedbackBox) feedbackBox.style.display = 'none';
 
     const btnCheck = document.getElementById('btnPracticeCheck');
     const btnNext = document.getElementById('btnPracticeNext');
     if (btnCheck) btnCheck.style.display = 'inline-flex';
     if (btnNext) btnNext.style.display = 'none';
-
-    // Reset Hint Level
-    this.currentPracticeHintLevel = 1;
-    const hintBadge = document.getElementById('practiceHintLevel');
-    if (hintBadge) hintBadge.textContent = 'Lv 1';
   }
 
   checkPracticeAnswer() {
@@ -889,7 +952,6 @@ class NRSDApp {
     const btnNext = document.getElementById('btnPracticeNext');
 
     if (userVal === q.answer) {
-      // Correct!
       window.soundEngine.playCorrect();
       this.practiceCorrectCount++;
       const points = Math.round(100 / this.practiceQuestions.length);
@@ -899,7 +961,7 @@ class NRSDApp {
         feedbackBox.className = 'growth-feedback-box correct show';
         feedbackBox.style.display = 'flex';
         feedbackIcon.textContent = '✨';
-        feedbackText.innerHTML = `<strong>Luar biasa!</strong> Jawabanmu <strong>${userVal}</strong> tepat sekali! Kamu memahami konsep dengan sangat baik.`;
+        feedbackText.innerHTML = `<strong>Luar biasa!</strong> Jawabanmu <strong>${userVal}</strong> tepat sekali! Kamu memahami penjumlahan dengan menyimpan dengan sangat baik.`;
       }
 
       if (inputElem) inputElem.disabled = true;
@@ -911,7 +973,6 @@ class NRSDApp {
 
       window.soundEngine.speak('Hebat! Jawabanmu benar.');
     } else {
-      // Incorrect - Growth Mindset Feedback (Section O)
       window.soundEngine.playWrong();
       this.practiceWrongCount++;
 
@@ -919,7 +980,7 @@ class NRSDApp {
         feedbackBox.className = 'growth-feedback-box wrong show';
         feedbackBox.style.display = 'flex';
         feedbackIcon.textContent = '🌱';
-        feedbackText.innerHTML = `<strong>Belum tepat, tapi jangan menyerah!</strong> Coba periksa kembali hitunganmu atau klik tombol 💡 PETUNJUK untuk bantuan.`;
+        feedbackText.innerHTML = `<strong>Belum tepat, tapi jangan menyerah!</strong> Periksa kembali penjumlahan satuan dan angka simpanmu.`;
       }
 
       window.soundEngine.speak('Belum tepat. Coba periksa lagi.');
@@ -933,14 +994,6 @@ class NRSDApp {
     window.soundEngine.playPop();
     this.practiceHintsUsed++;
 
-    const hints = [
-      q.hint1 || 'Ayo perhatikan angka satuannya terlebih dahulu.',
-      q.hint2 || 'Jumlahkan angka satuan dengan teliti.',
-      q.hint3 || `Jawaban yang benar adalah ${q.answer}.`
-    ];
-
-    const hintMsg = hints[this.currentPracticeHintLevel - 1] || hints[hints.length - 1];
-    
     const feedbackBox = document.getElementById('practiceFeedbackBox');
     const feedbackIcon = document.getElementById('practiceFeedbackIcon');
     const feedbackText = document.getElementById('practiceFeedbackText');
@@ -949,13 +1002,7 @@ class NRSDApp {
       feedbackBox.className = 'growth-feedback-box hint show';
       feedbackBox.style.display = 'flex';
       feedbackIcon.textContent = '💡';
-      feedbackText.innerHTML = `<strong>Petunjuk Level ${this.currentPracticeHintLevel}:</strong> ${hintMsg}`;
-    }
-
-    if (this.currentPracticeHintLevel < 3) {
-      this.currentPracticeHintLevel++;
-      const hintBadge = document.getElementById('practiceHintLevel');
-      if (hintBadge) hintBadge.textContent = `Lv ${this.currentPracticeHintLevel}`;
+      feedbackText.innerHTML = `<strong>Petunjuk:</strong> ${q.hint1 || 'Jumlahkan satuan terlebih dahulu lalu simpan 1 ke puluhan.'}`;
     }
   }
 
@@ -976,58 +1023,32 @@ class NRSDApp {
     const mins = String(Math.floor(elapsed / 60)).padStart(2, '0');
     const secs = String(elapsed % 60).padStart(2, '0');
     const timeStr = `${mins}:${secs}`;
-
-    // Normalize final score to 0 - 100
     const finalScore = Math.min(100, Math.round((this.practiceCorrectCount / this.practiceQuestions.length) * 100));
 
-    // Populate Summary
     document.getElementById('sumPracCorrect').textContent = this.practiceCorrectCount;
     document.getElementById('sumPracWrong').textContent = this.practiceWrongCount;
     document.getElementById('sumPracScore').textContent = finalScore;
     document.getElementById('sumPracTime').textContent = timeStr;
 
-    // Check achievement unlock
-    if (!this.state.achievements.includes('badge_pemula')) {
-      this.state.achievements.push('badge_pemula');
-      this.showAchievementModal('⭐ Penjumlah Pemula', 'Kamu telah menyelesaikan sesi latihan pertamamu!');
-    }
-    if (finalScore === 100 && !this.state.achievements.includes('badge_ahli_satuan')) {
-      this.state.achievements.push('badge_ahli_satuan');
-      this.showAchievementModal('⭐ Ahli Satuan', 'Luar biasa! Kamu menyelesaikan semua soal latihan dengan skor sempurna 100!');
-    }
-
-    // Record session
-    const focusTitles = {
-      placeValue: 'Nilai Tempat',
-      onesAddition: 'Penjumlahan Satuan',
-      regrouping: 'Regrouping',
-      carryDigit: 'Angka Simpan',
-      withCarry: 'Penjumlahan Menyimpan',
-      wordProblems: 'Soal Cerita'
-    };
-
-    const isMastered = finalScore >= 70;
-    const stagesObj = {
-      placeValue: this.practiceFocus === 'placeValue' ? isMastered : true,
-      onesAddition: this.practiceFocus === 'onesAddition' ? isMastered : true,
-      regrouping: this.practiceFocus === 'regrouping' ? isMastered : true,
-      carryDigit: this.practiceFocus === 'carryDigit' ? isMastered : true,
-      withCarry: this.practiceFocus === 'withCarry' ? isMastered : true,
-      tensAddition: true,
-      finalResult: isMastered
-    };
-
     this.recordSession({
       mode: 'latihan',
       focus: this.practiceFocus,
-      focusTitle: focusTitles[this.practiceFocus] || 'Latihan Mandiri',
+      focusTitle: this.practiceFocus === 'wordProblems' ? 'Soal Cerita' : 'Penjumlahan Menyimpan',
       total: this.practiceQuestions.length,
       correct: this.practiceCorrectCount,
       wrong: this.practiceWrongCount,
       score: finalScore,
       durationSec: elapsed,
       hintsUsed: this.practiceHintsUsed,
-      stages: stagesObj
+      stages: {
+        placeValue: true,
+        onesAddition: true,
+        regrouping: true,
+        carryDigit: true,
+        withCarry: finalScore >= 70,
+        tensAddition: true,
+        finalResult: finalScore >= 70
+      }
     });
 
     document.getElementById('practiceQuizView').style.display = 'none';
@@ -1035,7 +1056,7 @@ class NRSDApp {
   }
 
   /* ==========================================================================
-     FITUR TANTANGAN CONTROLLER (Section C)
+     FITUR TANTANGAN (LEVEL 1 - 3 & BANYUMAS CULTURE)
      ========================================================================== */
   openChallengePicker() {
     this.showScreen('screen-challenge');
@@ -1046,16 +1067,16 @@ class NRSDApp {
 
   renderChallengeLevelCards() {
     const unlocked = this.state.settings?.unlockAllLevels 
-      ? [1, 2, 3, 4, 5] 
+      ? [1, 2, 3] 
       : (this.state.unlockedLevels || [1]);
 
-    for (let lvl = 1; lvl <= 5; lvl++) {
+    for (let lvl = 1; lvl <= 3; lvl++) {
       const card = document.getElementById(`cardLevel${lvl}`);
       const icon = document.getElementById(`iconLevel${lvl}`);
       if (card) {
         if (unlocked.includes(lvl)) {
           card.className = 'challenge-level-card unlocked' + (this.challengeCurrentLevel === lvl ? ' active-level' : '');
-          if (icon) icon.textContent = lvl === 2 ? '🐧' : lvl === 3 ? '⚡' : lvl === 4 ? '🔥' : '👑';
+          if (icon) icon.textContent = lvl === 1 ? '⚡' : (lvl === 2 ? '🐧' : '🍘');
         } else {
           card.className = 'challenge-level-card locked';
           if (icon) icon.textContent = '🔒';
@@ -1065,11 +1086,10 @@ class NRSDApp {
   }
 
   bindChallengeController() {
-    // Level Card click
-    for (let lvl = 1; lvl <= 5; lvl++) {
+    for (let lvl = 1; lvl <= 3; lvl++) {
       document.getElementById(`cardLevel${lvl}`)?.addEventListener('click', () => {
         const unlocked = this.state.settings?.unlockAllLevels 
-          ? [1, 2, 3, 4, 5] 
+          ? [1, 2, 3] 
           : (this.state.unlockedLevels || [1]);
 
         if (!unlocked.includes(lvl)) {
@@ -1083,11 +1103,9 @@ class NRSDApp {
         this.renderChallengeLevelCards();
 
         const levelInfo = [
-          { title: 'Level 1: Dua Digit Dasar', desc: 'Selesaikan 5 soal penjumlahan 2-digit tanpa simpan untuk membuka Level 2!' },
-          { title: 'Level 2: Dua Digit Menyimpan', desc: 'Gunakan teknik menyimpan 1 puluhan bersama Penguin!' },
-          { title: 'Level 3: Tiga Digit', desc: 'Tantangan penjumlahan tiga digit ratusan, puluhan, dan satuan.' },
-          { title: 'Level 4: Simpan Bertingkat', desc: 'Simpan angka pada kolom satuan dan kolom puluhan beruntun!' },
-          { title: 'Level 5: Soal Cerita Master', desc: 'Taklukkan seluruh soal cerita matematika dan jadilah Master Penjumlahan!' }
+          { title: 'Level 1: Dua Digit Tanpa Simpan', desc: 'Hitung penjumlahan bentuk susun langsung tanpa bantuan (tanpa Penguin).' },
+          { title: 'Level 2: Dua Digit Menyimpan', desc: 'Penjumlahan bentuk susun dengan angka simpan di atas kolom puluhan.' },
+          { title: 'Level 3: Soal Cerita Budaya Banyumas', desc: 'Hitung total makanan & kerajinan khas Banyumas (Mendoan, Getuk Goreng, Es Dawet) dengan lembar bersusun!' }
         ];
 
         const info = levelInfo[lvl - 1];
@@ -1098,19 +1116,16 @@ class NRSDApp {
       });
     }
 
-    // Start Level Button
     document.getElementById('btnStartSelectedLevel')?.addEventListener('click', () => {
       window.soundEngine.playPop();
       this.startChallengeLevel(this.challengeCurrentLevel);
     });
 
-    // Challenge Back button
     document.getElementById('btnChallengeBack')?.addEventListener('click', () => {
       window.soundEngine.playPop();
       this.showScreen('screen-home');
     });
 
-    // Quiz Buttons
     document.getElementById('btnChallengeCheck')?.addEventListener('click', () => {
       this.checkChallengeAnswer();
     });
@@ -1130,57 +1145,71 @@ class NRSDApp {
         this.openChallengePicker();
       }
     });
-
-    // Enter key
-    document.getElementById('challengeInputAnswer')?.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') {
-        const nextBtn = document.getElementById('btnChallengeNext');
-        if (nextBtn && nextBtn.style.display !== 'none') {
-          this.advanceChallengeQuestion();
-        } else {
-          this.checkChallengeAnswer();
-        }
-      }
-    });
   }
 
   generateChallengeQuestions(lvl) {
     const list = [];
     if (lvl === 1) {
-      // 2-digit without carry
-      list.push({ a: 23, b: 14, ans: 37, prompt: '23 + 14 = ?' });
-      list.push({ a: 31, b: 25, ans: 56, prompt: '31 + 25 = ?' });
-      list.push({ a: 42, b: 34, ans: 76, prompt: '42 + 34 = ?' });
-      list.push({ a: 53, b: 24, ans: 77, prompt: '53 + 24 = ?' });
-      list.push({ a: 61, b: 18, ans: 79, prompt: '61 + 18 = ?' });
+      // Level 1: 2-digit without carry
+      list.push({ a: 23, b: 14, ans: 37, prompt: '23 + 14 = __' });
+      list.push({ a: 31, b: 25, ans: 56, prompt: '31 + 25 = __' });
+      list.push({ a: 42, b: 34, ans: 76, prompt: '42 + 34 = __' });
+      list.push({ a: 53, b: 24, ans: 77, prompt: '53 + 24 = __' });
+      list.push({ a: 61, b: 18, ans: 79, prompt: '61 + 18 = __' });
     } else if (lvl === 2) {
-      // 2-digit with 1 carry
-      list.push({ a: 27, b: 18, ans: 45, prompt: '27 + 18 = ?' });
-      list.push({ a: 38, b: 27, ans: 65, prompt: '38 + 27 = ?' });
-      list.push({ a: 46, b: 17, ans: 63, prompt: '46 + 17 = ?' });
-      list.push({ a: 58, b: 24, ans: 82, prompt: '58 + 24 = ?' });
-      list.push({ a: 67, b: 15, ans: 82, prompt: '67 + 15 = ?' });
-    } else if (lvl === 3) {
-      // 3-digit addition
-      list.push({ a: 127, b: 118, ans: 245, prompt: '127 + 118 = ?' });
-      list.push({ a: 238, b: 125, ans: 363, prompt: '238 + 125 = ?' });
-      list.push({ a: 346, b: 117, ans: 463, prompt: '346 + 117 = ?' });
-      list.push({ a: 458, b: 224, ans: 682, prompt: '458 + 224 = ?' });
-      list.push({ a: 519, b: 135, ans: 654, prompt: '519 + 135 = ?' });
-    } else if (lvl === 4) {
-      // Multi-step carry
-      list.push({ a: 178, b: 246, ans: 424, prompt: '178 + 246 = ?' });
-      list.push({ a: 287, b: 155, ans: 442, prompt: '287 + 155 = ?' });
-      list.push({ a: 396, b: 238, ans: 634, prompt: '396 + 238 = ?' });
-      list.push({ a: 489, b: 175, ans: 664, prompt: '489 + 175 = ?' });
-      list.push({ a: 568, b: 287, ans: 855, prompt: '568 + 287 = ?' });
+      // Level 2: 2-digit with carry
+      list.push({ a: 26, b: 37, ans: 63, prompt: '26 + 37 = __', carry: 1 });
+      list.push({ a: 38, b: 27, ans: 65, prompt: '38 + 27 = __', carry: 1 });
+      list.push({ a: 46, b: 17, ans: 63, prompt: '46 + 17 = __', carry: 1 });
+      list.push({ a: 58, b: 24, ans: 82, prompt: '58 + 24 = __', carry: 1 });
+      list.push({ a: 67, b: 15, ans: 82, prompt: '67 + 15 = __', carry: 1 });
     } else {
-      // Level 5: Word problems
-      list.push({ a: 38, b: 27, ans: 65, prompt: 'Di dasar laut ada 38 ubur-ubur kuning dan 27 ubur-ubur merah muda. Berapa total seluruh ubur-ubur?' });
-      list.push({ a: 45, b: 38, ans: 83, prompt: 'SpongeBob memasak 45 Krabby Patty di sesi pagi dan 38 di sesi siang. Berapa total Krabby Patty?' });
-      list.push({ a: 56, b: 29, ans: 85, prompt: 'Sandy mengumpulkan 56 kacang di kubah dan 29 buah beri. Berapa total makanan yang dikumpulkan Sandy?' });
-      list.push({ a: 64, b: 28, ans: 92, prompt: 'Tuan Krab menghitung 64 koin emas di brankas A dan 28 koin di brankas B. Berapa total koin emas?' });
-      list.push({ a: 47, b: 39, ans: 86, prompt: 'Patrick memiliki 47 gelembung sabun dan meniup 39 gelembung lagi. Berapa total gelembung Patrick?' });
+      // Level 3: Banyumas Culture Story Problems
+      list.push({
+        type: 'banyumas',
+        cultureName: 'Tempe Mendoan Sokaraja',
+        icon: '🍘',
+        story: 'Ibu menggoreng 28 potong Tempe Mendoan hangat di pagi hari dan 17 potong lagi di sore hari untuk pesanan wisatawan. Berapa total seluruh tempe mendoan yang digoreng Ibu?',
+        a: 28,
+        b: 17,
+        ans: 45
+      });
+      list.push({
+        type: 'banyumas',
+        cultureName: 'Getuk Goreng Khas Sokaraja',
+        icon: '🥮',
+        story: 'Toko oleh-oleh Banyumas menjual 36 kotak Getuk Goreng rasa gula kelapa dan 28 kotak Getuk Goreng rasa cokelat. Berapa total kotak getuk goreng yang terjual?',
+        a: 36,
+        b: 28,
+        ans: 64
+      });
+      list.push({
+        type: 'banyumas',
+        cultureName: 'Es Dawet Segar & Es Durian',
+        icon: '🍧',
+        story: 'Warung minuman khas Banyumas menjual 45 mangkuk Es Dawet segar dan 38 porsi Es Durian lezat. Berapa total porsi minuman khas yang terjual?',
+        a: 45,
+        b: 38,
+        ans: 83
+      });
+      list.push({
+        type: 'banyumas',
+        cultureName: 'Soto Sokaraja dengan Ketupat',
+        icon: '🍲',
+        story: 'Warung Soto Sokaraja menyiapkan 54 mangkuk Soto Daging dan 29 mangkuk Soto Ayam dengan sambal kacang gurih. Berapa total mangkuk soto yang disiapkan?',
+        a: 54,
+        b: 29,
+        ans: 83
+      });
+      list.push({
+        type: 'banyumas',
+        cultureName: 'Kain Batik Banyumasan',
+        icon: '🎨',
+        story: 'Pengrajin Batik Banyumas berhasil membuat 38 lembar kain motif Jahe Puger dan 27 lembar kain motif Lumbon. Berapa total kain batik yang dibuat?',
+        a: 38,
+        b: 27,
+        ans: 65
+      });
     }
     return list;
   }
@@ -1222,26 +1251,125 @@ class NRSDApp {
     if (scoreVal) scoreVal.textContent = `⭐ ${this.challengeScore}`;
 
     const progFill = document.getElementById('challengeProgressFill');
-    if (progFill) {
-      const p = (this.challengeIndex / this.challengeQuestions.length) * 100;
-      progFill.style.width = `${Math.max(10, p)}%`;
-    }
+    if (progFill) progFill.style.width = `${((this.challengeIndex) / this.challengeQuestions.length) * 100}%`;
 
-    const promptElem = document.getElementById('challengePromptText');
-    if (promptElem) promptElem.textContent = q.prompt;
+    const stageContainer = document.getElementById('challengeStageContainer');
+    if (!stageContainer) return;
+
+    if (this.challengeCurrentLevel === 1) {
+      // Level 1: Clean Vertical Board (Tanpa Simpan, No Penguin)
+      stageContainer.innerHTML = `
+        <div class="clean-vertical-board">
+          <div class="math-sentence-display">${q.a} + ${q.b} = __</div>
+          <div style="display:grid; grid-template-columns: 32px 50px 50px; row-gap:6px; font-family:var(--font-numbers); font-size:2.2rem; font-weight:900; color:#1e1b4b; align-items:center; justify-items:center;">
+            <div style="grid-column:2; font-size:0.8rem; color:#64748b; font-weight:700;">PUL</div>
+            <div style="grid-column:3; font-size:0.8rem; color:#64748b; font-weight:700;">SAT</div>
+            
+            <div style="grid-column:2;">${Math.floor(q.a / 10)}</div>
+            <div style="grid-column:3;">${q.a % 10}</div>
+
+            <div style="grid-column:1; color:#64748b;">+</div>
+            <div style="grid-column:2;">${Math.floor(q.b / 10)}</div>
+            <div style="grid-column:3;">${q.b % 10}</div>
+
+            <div style="grid-column:1/span 3; width:100%; height:4px; background:#1e1b4b; margin:2px 0;"></div>
+
+            <div style="grid-column:2/span 2; display:flex; justify-content:center; width:100%;">
+              <input type="number" id="challengeInputAnswer" class="quiz-input-field" placeholder="?" autocomplete="off" style="width:120px;">
+            </div>
+          </div>
+        </div>
+      `;
+    } else if (this.challengeCurrentLevel === 2) {
+      // Level 2: Clean Vertical Board With Carry Slot
+      stageContainer.innerHTML = `
+        <div class="clean-vertical-board">
+          <div class="math-sentence-display">${q.a} + ${q.b} = __</div>
+          <div style="display:grid; grid-template-columns: 32px 50px 50px; row-gap:6px; font-family:var(--font-numbers); font-size:2.2rem; font-weight:900; color:#1e1b4b; align-items:center; justify-items:center;">
+            <div style="grid-column:2; font-size:0.8rem; color:#64748b; font-weight:700;">PUL</div>
+            <div style="grid-column:3; font-size:0.8rem; color:#64748b; font-weight:700;">SAT</div>
+            
+            <!-- Carry Box -->
+            <div style="grid-column:2; width:44px; height:44px; border:2px dashed #b45309; border-radius:50%; background:#fef3c7; display:flex; align-items:center; justify-content:center; font-size:1.4rem; color:#b45309;" title="Angka Simpan">+1</div>
+
+            <div style="grid-column:2;">${Math.floor(q.a / 10)}</div>
+            <div style="grid-column:3;">${q.a % 10}</div>
+
+            <div style="grid-column:1; color:#64748b;">+</div>
+            <div style="grid-column:2;">${Math.floor(q.b / 10)}</div>
+            <div style="grid-column:3;">${q.b % 10}</div>
+
+            <div style="grid-column:1/span 3; width:100%; height:4px; background:#1e1b4b; margin:2px 0;"></div>
+
+            <div style="grid-column:2/span 2; display:flex; justify-content:center; width:100%;">
+              <input type="number" id="challengeInputAnswer" class="quiz-input-field" placeholder="?" autocomplete="off" style="width:120px;">
+            </div>
+          </div>
+        </div>
+      `;
+    } else {
+      // Level 3: Banyumas Culture Story Problem Worksheet
+      stageContainer.innerHTML = `
+        <div style="background:#ffffff; border:3px solid #fde68a; border-radius:var(--radius-lg); padding:20px; box-shadow:var(--shadow-md);">
+          <div class="banyumas-culture-badge">${q.icon} Kebudayaan & Kuliner Khas Banyumas: ${q.cultureName}</div>
+          <p style="font-size:1.15rem; font-weight:700; color:#1e1b4b; line-height:1.5; margin-bottom:16px;">
+            ${q.story}
+          </p>
+
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px;">
+            <!-- Worksheet Column 1: Tentukan Bilangan -->
+            <div class="banyumas-worksheet-step">
+              <div class="banyumas-step-title">1. Tentukan Nilai Bilangan:</div>
+              <div style="display:flex; flex-direction:column; gap:8px;">
+                <div>Bilangan Pertama: <strong style="color:#2563eb; font-size:1.2rem;">${q.a}</strong> (${Math.floor(q.a/10)} Puluhan + ${q.a%10} Satuan)</div>
+                <div>Bilangan Kedua: <strong style="color:#d97706; font-size:1.2rem;">${q.b}</strong> (${Math.floor(q.b/10)} Puluhan + ${q.b%10} Satuan)</div>
+              </div>
+            </div>
+
+            <!-- Worksheet Column 2: Penjumlahan Bersusun -->
+            <div class="banyumas-worksheet-step" style="display:flex; flex-direction:column; align-items:center;">
+              <div class="banyumas-step-title">2. Hitung Penjumlahan Bersusun:</div>
+              <div style="display:grid; grid-template-columns: 24px 44px 44px; row-gap:4px; font-family:var(--font-numbers); font-size:1.8rem; font-weight:900; align-items:center; justify-items:center;">
+                <div style="grid-column:2; font-size:0.75rem; color:#854d0e;">(Simpan 1)</div>
+                <div style="grid-column:2;">${Math.floor(q.a/10)}</div>
+                <div style="grid-column:3;">${q.a%10}</div>
+                <div style="grid-column:1; color:#64748b;">+</div>
+                <div style="grid-column:2;">${Math.floor(q.b/10)}</div>
+                <div style="grid-column:3;">${q.b%10}</div>
+                <div style="grid-column:1/span 3; width:100%; height:3px; background:#1e1b4b;"></div>
+              </div>
+            </div>
+          </div>
+
+          <div style="text-align:center; margin-top:16px;">
+            <label for="challengeInputAnswer" style="font-family:var(--font-display); font-weight:800; font-size:1.15rem; color:#1e1b4b; display:block; margin-bottom:6px;">
+              Tuliskan Hasil Total Akhir:
+            </label>
+            <input type="number" id="challengeInputAnswer" class="quiz-input-field" placeholder="?" autocomplete="off" style="width:140px;">
+          </div>
+        </div>
+      `;
+    }
 
     const inputElem = document.getElementById('challengeInputAnswer');
     if (inputElem) {
       inputElem.value = '';
       inputElem.disabled = false;
       inputElem.focus();
+      inputElem.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          const nextBtn = document.getElementById('btnChallengeNext');
+          if (nextBtn && nextBtn.style.display !== 'none') {
+            this.advanceChallengeQuestion();
+          } else {
+            this.checkChallengeAnswer();
+          }
+        }
+      });
     }
 
     const fbBox = document.getElementById('challengeFeedbackBox');
-    if (fbBox) {
-      fbBox.className = 'growth-feedback-box';
-      fbBox.style.display = 'none';
-    }
+    if (fbBox) fbBox.style.display = 'none';
 
     const btnCheck = document.getElementById('btnChallengeCheck');
     const btnNext = document.getElementById('btnChallengeNext');
@@ -1292,7 +1420,7 @@ class NRSDApp {
         fbBox.className = 'growth-feedback-box wrong show';
         fbBox.style.display = 'flex';
         fbIcon.textContent = '⚠️';
-        fbText.innerHTML = `<strong>Belum tepat.</strong> Coba hitung kembali nilai satuan dan puluhanmu.`;
+        fbText.innerHTML = `<strong>Belum tepat.</strong> Coba periksa kembali penjumlahan satuan dan angka simpanmu.`;
       }
     }
   }
@@ -1308,7 +1436,11 @@ class NRSDApp {
       fbBox.className = 'growth-feedback-box hint show';
       fbBox.style.display = 'flex';
       fbIcon.textContent = '💡';
-      fbText.innerHTML = `<strong>Petunjuk:</strong> Jumlahkan digit satuan terlebih dahulu (${q.a % 10} + ${q.b % 10}), lalu simpan 1 jika hasilnya ≥ 10.`;
+      if (this.challengeCurrentLevel === 1) {
+        fbText.innerHTML = `<strong>Petunjuk:</strong> Jumlahkan satuan ${q.a % 10} + ${q.b % 10} = ${(q.a % 10) + (q.b % 10)}, lalu jumlahkan puluhan ${Math.floor(q.a / 10)} + ${Math.floor(q.b / 10)} = ${Math.floor(q.a / 10) + Math.floor(q.b / 10)}.`;
+      } else {
+        fbText.innerHTML = `<strong>Petunjuk:</strong> Satuan ${q.a % 10} + ${q.b % 10} = ${(q.a % 10) + (q.b % 10)} &ge; 10 (simpan 1 ke puluhan). Total puluhan = 1 + ${Math.floor(q.a / 10)} + ${Math.floor(q.b / 10)}.`;
+      }
     }
   }
 
@@ -1329,7 +1461,7 @@ class NRSDApp {
     const passed = score >= 60;
     const nextLvl = this.challengeCurrentLevel + 1;
 
-    if (passed && nextLvl <= 5) {
+    if (passed && nextLvl <= 3) {
       if (!this.state.unlockedLevels.includes(nextLvl)) {
         this.state.unlockedLevels.push(nextLvl);
         this.saveState();
@@ -1338,17 +1470,16 @@ class NRSDApp {
       }
     }
 
-    if (passed && this.challengeCurrentLevel === 5) {
-      if (!this.state.achievements.includes('badge_master')) {
-        this.state.achievements.push('badge_master');
+    if (passed && this.challengeCurrentLevel === 3) {
+      if (!this.state.achievements.includes('badge_master_banyumas')) {
+        this.state.achievements.push('badge_master_banyumas');
         this.saveState();
-        this.showAchievementModal('👑 MASTER PENJUMLAHAN', 'Selamat! Kamu telah menaklukkan seluruh 5 level tantangan dengan gemilang!');
+        this.showAchievementModal('👑 BINTANG MASTER BANYUMAS', 'Selamat! Kamu telah menuntaskan seluruh tantangan matematika dan memecahkan Soal Cerita Budaya Banyumas!');
       }
       this.showScreen('screen-challenge-complete');
       return;
     }
 
-    // Record session
     this.recordSession({
       mode: 'tantangan',
       focus: `level_${this.challengeCurrentLevel}`,
@@ -1384,10 +1515,9 @@ class NRSDApp {
   }
 
   /* ==========================================================================
-     PEMBUAT SOAL GURU CONTROLLER (Section D)
+     PEMBUAT SOAL GURU CONTROLLER
      ========================================================================== */
   bindBuilderController() {
-    // Inputs change carry indicator
     const n1 = document.getElementById('bldNum1');
     const n2 = document.getElementById('bldNum2');
     const updateCarryInd = () => {
@@ -1409,13 +1539,11 @@ class NRSDApp {
     n1?.addEventListener('input', updateCarryInd);
     n2?.addEventListener('input', updateCarryInd);
 
-    // Generate Button
     document.getElementById('btnBldGenerate')?.addEventListener('click', () => {
       window.soundEngine.playPop();
       this.generateBuilderProblems();
     });
 
-    // Randomize Operands
     document.getElementById('btnBldRandomize')?.addEventListener('click', () => {
       window.soundEngine.playPop();
       if (n1) n1.value = Math.floor(Math.random() * 70) + 15;
@@ -1424,7 +1552,6 @@ class NRSDApp {
       this.generateBuilderProblems();
     });
 
-    // Shuffle table order
     document.getElementById('btnBldShuffle')?.addEventListener('click', () => {
       window.soundEngine.playPop();
       this.builderProblems.sort(() => Math.random() - 0.5);
@@ -1432,7 +1559,6 @@ class NRSDApp {
       this.showToast('Urutan soal berhasil diacak!', 'info');
     });
 
-    // Reset Form
     document.getElementById('btnBldReset')?.addEventListener('click', () => {
       window.soundEngine.playPop();
       if (n1) n1.value = 27;
@@ -1442,7 +1568,6 @@ class NRSDApp {
       this.showToast('Form pembuat soal di-reset ke awal.', 'info');
     });
 
-    // Save Question Set
     document.getElementById('btnBldSaveSet')?.addEventListener('click', () => {
       if (this.builderProblems.length === 0) {
         this.showToast('Belum ada soal untuk disimpan!', 'warning');
@@ -1460,25 +1585,23 @@ class NRSDApp {
       this.showToast(`Paket ${this.builderProblems.length} soal berhasil disimpan!`, 'success');
     });
 
-    // Use in Practice Mode
+    // Use in Practice (Penjumlahan Menyimpan)
     document.getElementById('btnBldUseInPractice')?.addEventListener('click', () => {
       if (this.builderProblems.length === 0) {
         this.showToast('Buat soal terlebih dahulu!', 'warning');
         return;
       }
       window.soundEngine.playPop();
-      // Convert builder problems to practice quiz format
       this.practiceQuestions = this.builderProblems.map(p => ({
-        type: 'withCarry',
-        prompt: `Berapakah hasil penjumlahan: <strong>${p.a} + ${p.b}</strong>?`,
+        prompt: `Berapakah hasil dari <strong>${p.a} + ${p.b}</strong>?`,
         visual: `<div style="font-family:var(--font-numbers); font-size:2rem; font-weight:900; color:#1e1b4b; background:#f1f5f9; padding:6px 20px; border-radius:8px; display:inline-block;">${p.a} + ${p.b}</div>`,
         answer: p.a + p.b,
         hint1: `Hitung satuan: ${p.a % 10} + ${p.b % 10} = ${(p.a % 10) + (p.b % 10)}.`,
-        hint2: `Simpan puluhan dan jumlahkan seluruh digit puluhan.`,
+        hint2: `Simpan puluhan dan jumlahkan puluhan.`,
         hint3: `Kunci jawabannya adalah ${p.a + p.b}.`
       }));
 
-      this.practiceFocus = 'customTeacher';
+      this.practiceFocus = 'withCarry';
       this.practiceIndex = 0;
       this.practiceCorrectCount = 0;
       this.practiceWrongCount = 0;
@@ -1487,6 +1610,8 @@ class NRSDApp {
 
       this.showScreen('screen-practice');
       document.getElementById('practiceSetupView').style.display = 'none';
+      document.getElementById('practicePlaceValueView').style.display = 'none';
+      document.getElementById('practiceRegroupingView').style.display = 'none';
       document.getElementById('practiceQuizView').style.display = 'block';
       document.getElementById('practiceSummaryView').style.display = 'none';
 
@@ -1505,7 +1630,46 @@ class NRSDApp {
       this.renderCurrentPracticeQuestion();
     });
 
-    // Add single manual problem
+    // Use in Challenge
+    document.getElementById('btnBldUseInChallenge')?.addEventListener('click', () => {
+      if (this.builderProblems.length === 0) {
+        this.showToast('Buat soal terlebih dahulu!', 'warning');
+        return;
+      }
+      window.soundEngine.playPop();
+      this.challengeQuestions = this.builderProblems.map(p => ({
+        a: p.a,
+        b: p.b,
+        ans: p.a + p.b,
+        prompt: `${p.a} + ${p.b} = __`
+      }));
+
+      this.challengeCurrentLevel = 2;
+      this.challengeIndex = 0;
+      this.challengeCorrectCount = 0;
+      this.challengeWrongCount = 0;
+      this.challengeScore = 0;
+      this.challengeStartTime = Date.now();
+
+      this.showScreen('screen-challenge');
+      document.getElementById('challengePickerView').style.display = 'none';
+      document.getElementById('challengeQuizView').style.display = 'block';
+
+      const lvlBadge = document.getElementById('challengeLevelBadge');
+      if (lvlBadge) lvlBadge.textContent = `TANTANGAN GURU`;
+
+      clearInterval(this.challengeTimerInterval);
+      const timerElem = document.getElementById('challengeTimer');
+      this.challengeTimerInterval = setInterval(() => {
+        const elapsed = Math.floor((Date.now() - this.challengeStartTime) / 1000);
+        const mins = String(Math.floor(elapsed / 60)).padStart(2, '0');
+        const secs = String(elapsed % 60).padStart(2, '0');
+        if (timerElem) timerElem.textContent = `⏱️ ${mins}:${secs}`;
+      }, 1000);
+
+      this.renderCurrentChallengeQuestion();
+    });
+
     document.getElementById('btnBldAddSingle')?.addEventListener('click', () => {
       const a = Math.floor(Math.random() * 50) + 15;
       const b = Math.floor(Math.random() * 50) + 15;
@@ -1519,7 +1683,6 @@ class NRSDApp {
       window.soundEngine.playPop();
     });
 
-    // Edit modal actions
     document.getElementById('btnCancelEditProb')?.addEventListener('click', () => {
       document.getElementById('modalEditProblem')?.classList.remove('active');
     });
@@ -1553,7 +1716,6 @@ class NRSDApp {
     this.builderProblems = [];
     const used = new Set();
 
-    // Include the base problem first
     this.builderProblems.push({
       a: baseA,
       b: baseB,
@@ -1645,7 +1807,7 @@ class NRSDApp {
   }
 
   /* ==========================================================================
-     PETUNJUK BERMAIN 10 LANGKAH (Section E)
+     PETUNJUK BERMAIN 10 LANGKAH
      ========================================================================== */
   bindGuideController() {
     const dotsContainer = document.getElementById('guideStepDots');
@@ -1667,7 +1829,6 @@ class NRSDApp {
       if (this.guideCurrentStep < 10) {
         this.setGuideStep(this.guideCurrentStep + 1);
       } else {
-        // Step 10 Finish -> Start Learning
         window.soundEngine.playPop();
         this.setMode('belajar');
         this.startProblem(27, 18);
@@ -1690,13 +1851,13 @@ class NRSDApp {
         icon: '📚',
         title: '1. Pilih MULAI BELAJAR',
         desc: 'Buka menu MULAI BELAJAR dari beranda untuk masuk ke papan permainan matematika interaktif.',
-        visual: '💡 Siap belajar dengan panduan visual lengkap!'
+        visual: '💡 Siap belajar bersama SpongeBob & Penguin!'
       },
       {
         icon: '🏷️',
         title: '2. Kenali Puluhan dan Satuan',
-        desc: 'Kolom ungu sebelah kiri bernilai Puluhan (10), dan kolom kuning sebelah kanan bernilai Satuan (1).',
-        visual: '🟣 Puluhan (Ungu) │ 🟡 Satuan (Kuning)'
+        desc: 'Rumah Nanas Orange-Kuning di kiri bernilai Puluhan (10), dan Rumah Nanas Pink-Cream di kanan bernilai Satuan (1).',
+        visual: '🏠 Rumah Puluhan (Orange) │ 🏠 Rumah Satuan (Pink)'
       },
       {
         icon: '➕',
@@ -1723,14 +1884,14 @@ class NRSDApp {
         visual: '🐧 "Aku siap menjaga angka simpanmu!"'
       },
       {
-        icon: '🌊',
-        title: '7. Jalankan Penguin melalui Jalur Simpan',
-        desc: 'Penguin akan meluncur di sepanjang Jalur Simpan mengantar angka simpan ke atas kolom puluhan.',
-        visual: '🐧 Meluncur ke Carry Slot Puluhan ➜'
+        icon: '🚀',
+        title: '7. Tekan JALANKAN PENGUIN',
+        desc: 'Penguin akan meluncur melalui Jalur Simpan (Naik ➜ Belok ➜ Ke Kiri) mengantar angka simpan.',
+        visual: '🐧 Meluncur Naik ➜ Belok ➜ Ke Kiri ➜'
       },
       {
         icon: '⭐',
-        title: '8. Letakkan Angka Simpan di Atas Puluhan',
+        title: '8. Letakkan Angka Simpan di Rumah Puluhan',
         desc: 'Angka simpan mendarat di Slot Simpan Puluhan dan siap dijumlahkan bersama puluhan lainnya.',
         visual: '⭐ Slot Angka Simpan Terisi (+1)'
       },
@@ -1769,7 +1930,6 @@ class NRSDApp {
       btnNext.className = stepNum === 10 ? 'btn btn-green' : 'btn btn-primary';
     }
 
-    // Update Dots
     document.querySelectorAll('.step-indicator-dot').forEach(dot => {
       const s = parseInt(dot.getAttribute('data-step') || '1', 10);
       dot.className = `step-indicator-dot ${s === stepNum ? 'active' : ''}`;
@@ -1779,7 +1939,7 @@ class NRSDApp {
   }
 
   /* ==========================================================================
-     MODE DEMONSTRASI GURU (Section G)
+     MODE DEMONSTRASI GURU
      ========================================================================== */
   bindDemoController() {
     document.getElementById('btnDemoPrev')?.addEventListener('click', () => {
@@ -1846,26 +2006,26 @@ class NRSDApp {
         desc: '1. Mengenali bilangan yang akan dijumlahkan: 27 (2 Puluhan, 7 Satuan) dan 18 (1 Puluhan, 8 Satuan).',
         visual: `
           <div style="display:flex; gap:20px; align-items:center;">
-            <div style="background:#ede9fe; border:3px solid #8b5cf6; padding:14px 20px; border-radius:12px; font-family:var(--font-numbers); font-size:2rem; font-weight:800; color:#5b21b6;">27</div>
+            <div style="background:#fef08a; border:3px solid #b45309; padding:14px 20px; border-radius:12px; font-family:var(--font-numbers); font-size:2rem; font-weight:800; color:#78350f;">27</div>
             <span style="font-size:2.5rem; font-weight:900;">+</span>
-            <div style="background:#fef3c7; border:3px solid #f59e0b; padding:14px 20px; border-radius:12px; font-family:var(--font-numbers); font-size:2rem; font-weight:800; color:#b45309;">18</div>
+            <div style="background:#fbcfe8; border:3px solid #db2777; padding:14px 20px; border-radius:12px; font-family:var(--font-numbers); font-size:2rem; font-weight:800; color:#831843;">18</div>
           </div>
         `
       },
       {
         name: 'Tahap 2: Memisahkan Puluhan & Satuan',
-        desc: '2. Memisahkan nilai tempat: Puluhan (2 & 1) di kolom ungu sebelah kiri, Satuan (7 & 8) di kolom kuning sebelah kanan.',
+        desc: '2. Memisahkan nilai tempat: Puluhan (2 & 1) di Rumah Nanas Puluhan (Orange), Satuan (7 & 8) di Rumah Nanas Satuan (Pink).',
         visual: `
-          <div style="display:grid; grid-template-columns: 140px 140px; gap:20px;">
-            <div style="background:#f5f3ff; border:2px dashed #8b5cf6; padding:10px; border-radius:8px;">
-              <div style="font-size:0.8rem; font-weight:800; color:#5b21b6;">PULUHAN</div>
+          <div style="display:grid; grid-template-columns: 150px 150px; gap:20px;">
+            <div style="background:#fef3c7; border:2px dashed #d97706; padding:10px; border-radius:8px;">
+              <div style="font-size:0.8rem; font-weight:800; color:#b45309;">🏠 PULUHAN</div>
               <div style="display:flex; gap:8px; justify-content:center; margin-top:8px;">
                 <div class="digit-ball digit-ball-purple">2</div>
                 <div class="digit-ball digit-ball-purple">1</div>
               </div>
             </div>
-            <div style="background:#fffbeb; border:2px dashed #f59e0b; padding:10px; border-radius:8px;">
-              <div style="font-size:0.8rem; font-weight:800; color:#b45309;">SATUAN</div>
+            <div style="background:#ffe4e6; border:2px dashed #f472b6; padding:10px; border-radius:8px;">
+              <div style="font-size:0.8rem; font-weight:800; color:#db2777;">🏠 SATUAN</div>
               <div style="display:flex; gap:8px; justify-content:center; margin-top:8px;">
                 <div class="digit-ball digit-ball-amber">7</div>
                 <div class="digit-ball digit-ball-amber">8</div>
@@ -1892,30 +2052,30 @@ class NRSDApp {
         desc: '4. Karena hasil satuan 15 ≥ 10, satu kolom satuan tidak dapat menampung dua digit. Maka dilakukan REGROUPING.',
         visual: `
           <div style="background:#fee2e2; border:2px solid #ef4444; color:#991b1b; padding:12px 24px; border-radius:8px; font-weight:800; font-size:1.2rem;">
-            ⚠️ 15 ≥ 10 ➜ Perlu Teknik Menyimpan!
+            ⚠️ 15 ≥ 10 ➜ Perlu Teknik Menyimpan bersama Penguin!
           </div>
         `
       },
       {
         name: 'Tahap 5: Membentuk Angka Simpan',
-        desc: '5. Angka 15 dipisahkan menjadi 1 Puluhan yang harus disimpan dan 5 Satuan yang tetap di kolom hasil satuan.',
+        desc: '5. Angka 15 dipisahkan menjadi 1 Puluhan yang harus disimpan dan 5 Satuan yang tetap di Rumah Nanas Satuan.',
         visual: `
           <div style="display:flex; gap:20px; align-items:center;">
             <div class="digit-ball digit-ball-carry" style="width:56px; height:56px; font-size:1.8rem;" title="1 Puluhan Simpan">1</div>
-            <span style="font-weight:800; font-size:1.3rem;">(Simpan ke Puluhan)</span>
+            <span style="font-weight:800; font-size:1.2rem;">(Simpan via Penguin)</span>
             <span style="font-size:1.5rem;">&</span>
             <div class="digit-ball digit-ball-amber" style="width:56px; height:56px; font-size:1.8rem;" title="5 Satuan">5</div>
-            <span style="font-weight:800; font-size:1.3rem;">(Hasil Satuan)</span>
+            <span style="font-weight:800; font-size:1.2rem;">(Rumah Satuan)</span>
           </div>
         `
       },
       {
-        name: 'Tahap 6: Pengiriman via Penguin',
-        desc: '6. Maskot Penguin membawa angka simpan 1 meluncur melalui Jalur Simpan tengah ke atas kolom Puluhan.',
+        name: 'Tahap 6: Pengiriman via Penguin (Naik ➜ Belok ➜ Ke Kiri)',
+        desc: '6. Maskot Penguin membawa angka simpan 1 meluncur melalui Jalur Simpan: Naik ➜ Belok ➜ Ke Kiri ke Rumah Nanas Puluhan.',
         visual: `
           <div style="display:flex; align-items:center; gap:16px;">
             <div style="font-size:3rem;">🐧</div>
-            <div style="background:#0284c7; color:#fff; padding:6px 14px; border-radius:20px; font-weight:800;">Meluncur Membawa Angka 1 ➜</div>
+            <div style="background:#0284c7; color:#fff; padding:6px 14px; border-radius:20px; font-weight:800;">Meluncur Naik ➜ Belok ➜ Ke Kiri ➜</div>
             <div class="digit-ball digit-ball-carry" style="width:50px; height:50px; font-size:1.6rem;">1</div>
           </div>
         `
@@ -1955,20 +2115,17 @@ class NRSDApp {
   }
 
   /* ==========================================================================
-     DASHBOARD & 7-STAGE DIAGNOSTICS CONTROLLER (Section H & I)
+     DASHBOARD & 7-STAGE DIAGNOSTICS CONTROLLER
      ========================================================================== */
   bindDashboardController() {
-    // Export CSV Button
     document.getElementById('btnExportCSV')?.addEventListener('click', () => {
       this.exportCSV();
     });
 
-    // Print Report Button
     document.getElementById('btnPrintReport')?.addEventListener('click', () => {
       window.print();
     });
 
-    // Clear History Button
     document.getElementById('btnClearHistory')?.addEventListener('click', () => {
       if (confirm('Apakah kamu yakin ingin menghapus seluruh riwayat aktivitas belajar?')) {
         this.state.sessions = [];
@@ -1987,7 +2144,6 @@ class NRSDApp {
     const avgScore = sessions.length > 0 ? Math.round(totalScore / sessions.length) : 0;
     const accuracy = totalProblems > 0 ? Math.round((totalCorrect / totalProblems) * 100) : 0;
 
-    // Student Status Category
     let statusText = 'Belum Ada Aktivitas';
     if (sessions.length > 0) {
       if (avgScore >= 85) statusText = '🏆 Mahir';
@@ -2008,7 +2164,6 @@ class NRSDApp {
     if (statElem) statElem.textContent = statusText;
     if (countElem) countElem.textContent = `${sessions.length} Sesi Tercatat`;
 
-    // Render 7-Stage Diagnostic Cards (Section I)
     const stages = [
       { id: 'placeValue', title: '1. Nilai Tempat', icon: '🏷️' },
       { id: 'onesAddition', title: '2. Menjumlah Satuan', icon: '➕' },
@@ -2045,7 +2200,6 @@ class NRSDApp {
       stagesGrid.innerHTML = stagesHtml;
     }
 
-    // Render Sessions Table
     const tbody = document.getElementById('sessionHistoryBody');
     if (tbody) {
       if (sessions.length === 0) {
@@ -2102,16 +2256,18 @@ class NRSDApp {
   }
 
   /* ==========================================================================
-     PENGATURAN SCREEN (Section K & L)
+     PENGATURAN SCREEN
      ========================================================================== */
   syncSettingsForm() {
     const s = this.state.settings;
+    const chkOcean = document.getElementById('chkSettingOceanSound');
     const chkSound = document.getElementById('chkSettingSound');
     const sliderVol = document.getElementById('sliderSettingVolume');
     const chkVoice = document.getElementById('chkSettingVoice');
     const chkAnim = document.getElementById('chkSettingAnim');
     const chkUnlock = document.getElementById('chkSettingUnlockLevels');
 
+    if (chkOcean) chkOcean.checked = s.oceanSound !== false;
     if (chkSound) chkSound.checked = s.sound !== false;
     if (sliderVol) sliderVol.value = s.volume || 0.8;
     if (chkVoice) chkVoice.checked = s.voice !== false;
@@ -2122,6 +2278,7 @@ class NRSDApp {
   applySettings() {
     const s = this.state.settings || {};
     window.soundEngine.setSoundEnabled(s.sound !== false);
+    window.soundEngine.setOceanAmbienceEnabled(s.oceanSound !== false);
     window.soundEngine.setVoiceEnabled(s.voice !== false);
     window.soundEngine.setVolume(s.volume || 0.8);
 
@@ -2133,6 +2290,12 @@ class NRSDApp {
   }
 
   bindSettingsController() {
+    document.getElementById('chkSettingOceanSound')?.addEventListener('change', (e) => {
+      this.state.settings.oceanSound = e.target.checked;
+      this.saveState();
+      this.applySettings();
+    });
+
     document.getElementById('chkSettingSound')?.addEventListener('change', (e) => {
       this.state.settings.sound = e.target.checked;
       this.saveState();
@@ -2182,7 +2345,20 @@ class NRSDApp {
       this.showScreen('screen-home');
     });
 
-    // Sound toggle in top header
+    // Ocean ambience toggle in header
+    const btnOcean = document.getElementById('btnToggleOceanSound');
+    if (btnOcean) {
+      btnOcean.addEventListener('click', () => {
+        const active = btnOcean.classList.toggle('active');
+        this.state.settings.oceanSound = active;
+        this.saveState();
+        this.applySettings();
+        btnOcean.setAttribute('data-tooltip', active ? 'Suara Ombak & Laut (Aktif)' : 'Suara Ombak & Laut (Mati)');
+      });
+      if (this.state.settings?.oceanSound !== false) btnOcean.classList.add('active');
+    }
+
+    // Sound toggle in header
     const btnSound = document.getElementById('btnToggleSound');
     if (btnSound) {
       btnSound.addEventListener('click', () => {
@@ -2209,7 +2385,7 @@ class NRSDApp {
   }
 
   /* ==========================================================================
-     CORE WORKSPACE MANIPULATIVE ENGINE (Unbroken from PRD)
+     CORE WORKSPACE MANIPULATIVE ENGINE (RUMAH NANAS & PENGUIN NAIK->BELOK->KIRI)
      ========================================================================== */
   bindWorkspaceEvents() {
     document.getElementById('btnHelp')?.addEventListener('click', () => {
@@ -2257,36 +2433,9 @@ class NRSDApp {
       this.showScreen('screen-home');
     });
 
-    document.getElementById('btnApplyTeacherProblem')?.addEventListener('click', () => {
-      const n1 = parseInt(document.getElementById('teacherNum1')?.value || '27', 10);
-      const n2 = parseInt(document.getElementById('teacherNum2')?.value || '18', 10);
-      if (isNaN(n1) || isNaN(n2) || n1 < 0 || n2 < 0 || n1 > 99 || n2 > 99) {
-        alert('Masukkan bilangan valid antara 0 sampai 99');
-        return;
-      }
-      window.soundEngine.playPop();
-      this.setMode('guru');
-      this.startProblem(n1, n2);
-      this.showScreen('screen-workspace');
-    });
-
-    document.querySelectorAll('.preset-pill-btn').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        const n1 = e.currentTarget.getAttribute('data-n1');
-        const n2 = e.currentTarget.getAttribute('data-n2');
-        if (n1 && n2) {
-          const input1 = document.getElementById('teacherNum1');
-          const input2 = document.getElementById('teacherNum2');
-          if (input1) input1.value = n1;
-          if (input2) input2.value = n2;
-          window.soundEngine.playPop();
-        }
-      });
-    });
-
-    document.getElementById('btnTeacherBack')?.addEventListener('click', () => {
-      window.soundEngine.playPop();
-      this.showScreen('screen-home');
+    // Jalankan Penguin button in center Jalur Simpan
+    document.getElementById('btnRunPenguin')?.addEventListener('click', () => {
+      this.animatePenguinGlideToCarry(this.carryDigit || 1);
     });
   }
 
@@ -2429,16 +2578,16 @@ class NRSDApp {
       if (phasePill) phasePill.textContent = 'Tahap 1: Hitung Satuan';
       const prompt = `Hitung angka satuan: ${this.onesA} + ${this.onesB} = ? Masukkan di keypad!`;
       if (instructionText) instructionText.textContent = prompt;
-      if (spongeSpeech) spongeSpeech.innerHTML = `Mulai dari kolom Satuan ya! Berapa hasil dari <strong>${this.onesA} + ${this.onesB}</strong>?`;
+      if (spongeSpeech) spongeSpeech.innerHTML = `Mulai dari Rumah Satuan (Pink) ya! Berapa hasil dari <strong>${this.onesA} + ${this.onesB}</strong>?`;
       if (btnCheckText) btnCheckText.textContent = 'KIRIM HASIL';
       if (keypadCard) keypadCard.style.opacity = '1';
       window.soundEngine.speak(`Hitung angka satuan: ${this.onesA} ditambah ${this.onesB}`);
     } 
     else if (phase === 'ONES_SPLIT_CHOICE') {
       if (phasePill) phasePill.textContent = 'Tahap 2: Pisahkan Hasil Satuan';
-      const prompt = `Hasilnya ${this.onesSum}: Pindahkan ${this.onesDigit} ke Hasil Satuan, dan simpan ${this.carryDigit} ke Penguin!`;
+      const prompt = `Hasilnya ${this.onesSum}: Pindahkan ${this.onesDigit} ke Rumah Satuan, dan simpan ${this.carryDigit} ke Penguin!`;
       if (instructionText) instructionText.textContent = prompt;
-      if (spongeSpeech) spongeSpeech.innerHTML = `Hasilnya <strong>${this.onesSum}</strong>! Letakkan angka <strong>${this.onesDigit}</strong> di Hasil Satuan, dan simpan <strong>${this.carryDigit}</strong> ke Sarang Penguin di tengah!`;
+      if (spongeSpeech) spongeSpeech.innerHTML = `Hasilnya <strong>${this.onesSum}</strong>! Letakkan angka <strong>${this.onesDigit}</strong> di Hasil Satuan, dan seret <strong>${this.carryDigit}</strong> ke Penguin di Jalur Simpan!`;
       if (btnCheckText) btnCheckText.textContent = 'CEK LANGKAH';
       if (keypadCard) keypadCard.style.opacity = '0.5';
 
@@ -2448,28 +2597,28 @@ class NRSDApp {
     }
     else if (phase === 'MOVE_TO_PENGUIN') {
       if (phasePill) phasePill.textContent = 'Tahap 3: Simpan ke Penguin';
-      const prompt = `Bawa angka ${this.carryDigit} ke Sarang Penguin di tengah Jalur Simpan!`;
+      const prompt = `Bawa angka ${this.carryDigit} ke Penguin lalu tekan JALANKAN PENGUIN!`;
       if (instructionText) instructionText.textContent = prompt;
-      if (spongeSpeech) spongeSpeech.innerHTML = `Sekarang simpan angka <strong>${this.carryDigit}</strong> ke Sarang Penguin di tengah!`;
+      if (spongeSpeech) spongeSpeech.innerHTML = `Sekarang simpan angka <strong>${this.carryDigit}</strong> ke Penguin lalu tekan tombol <strong>JALANKAN PENGUIN</strong>!`;
       
       this.highlightValidTarget('penguin-nest');
-      this.setPenguinSpeech(`“Oper angka ${this.carryDigit} ke sini, biar aku antar ke Puluhan!”`);
+      this.setPenguinSpeech(`“Oper angka ${this.carryDigit} ke sini, lalu tekan Jalankan Penguin!”`);
       window.soundEngine.speak(`Simpan angka ${this.carryDigit} ke Penguin`);
     }
     else if (phase === 'MOVE_TO_ONES_RESULT') {
       if (phasePill) phasePill.textContent = 'Tahap 3: Tempatkan Satuan';
-      const prompt = `Pindahkan angka satuan (${this.onesDigit}) ke kotak HASIL SATUAN!`;
+      const prompt = `Pindahkan angka satuan (${this.onesDigit}) ke kotak HASIL SATUAN di Rumah Satuan!`;
       if (instructionText) instructionText.textContent = prompt;
-      if (spongeSpeech) spongeSpeech.innerHTML = `Bagus! Sekarang letakkan angka <strong>${this.onesDigit}</strong> di Hasil Satuan.`;
+      if (spongeSpeech) spongeSpeech.innerHTML = `Bagus! Sekarang letakkan angka <strong>${this.onesDigit}</strong> di Rumah Satuan.`;
       
       this.highlightValidTarget('result-ones');
       window.soundEngine.speak(`Pindahkan angka ${this.onesDigit} ke hasil satuan`);
     }
     else if (phase === 'TENS_INPUT') {
       if (phasePill) phasePill.textContent = 'Tahap 4: Jumlahkan Puluhan';
-      const prompt = `Jumlahkan semua puluhan: ${this.carryDigit > 0 ? this.carryDigit + ' (simpan) + ' : ''}${this.tensA} + ${this.tensB} = ?`;
+      const prompt = `Jumlahkan semua puluhan di Rumah Nanas Puluhan: ${this.carryDigit > 0 ? this.carryDigit + ' (simpan) + ' : ''}${this.tensA} + ${this.tensB} = ?`;
       if (instructionText) instructionText.textContent = prompt;
-      if (spongeSpeech) spongeSpeech.innerHTML = `Angka simpan sudah siap di atas Puluhan! Sekarang hitung: <strong>${this.carryDigit > 0 ? this.carryDigit + ' + ' : ''}${this.tensA} + ${this.tensB}</strong> di keypad!`;
+      if (spongeSpeech) spongeSpeech.innerHTML = `Angka simpan sudah mendarat di atas Rumah Puluhan! Sekarang hitung: <strong>${this.carryDigit > 0 ? this.carryDigit + ' + ' : ''}${this.tensA} + ${this.tensB}</strong> di keypad!`;
       if (keypadCard) keypadCard.style.opacity = '1';
       
       const keyPrompt = document.getElementById('keypadPrompt');
@@ -2548,7 +2697,7 @@ class NRSDApp {
 
     container.innerHTML = `
       <div style="display:flex; align-items:center; gap:16px;">
-        <div class="digit-ball digit-ball-carry" id="splitBallCarry" data-digit="${carry}" data-type="carry" title="Digit Puluhan Simpan: ${carry} (Simpan ke Penguin)">
+        <div class="digit-ball digit-ball-carry" id="splitBallCarry" data-digit="${carry}" data-type="carry" title="Digit Puluhan Simpan: ${carry} (Seret ke Penguin)">
           ${carry}
         </div>
         <div class="digit-ball digit-ball-amber" id="splitBallOnes" data-digit="${ones}" data-type="ones" title="Digit Satuan: ${ones} (Tetap di Satuan)">
@@ -2671,7 +2820,7 @@ class NRSDApp {
       window.soundEngine.playSnap();
       this.placeOnesResultBall(digit);
       tokenElem.remove();
-      this.showToast(`Bagus! Angka ${digit} tetap pada tempat satuan.`, 'success');
+      this.showToast(`Bagus! Angka ${digit} tetap pada tempat satuan di Rumah Satuan.`, 'success');
 
       const carrySlotFilled = document.getElementById('wsCarryDropSlot')?.classList.contains('filled');
       if (carrySlotFilled) {
@@ -2691,7 +2840,7 @@ class NRSDApp {
 
     window.soundEngine.playErrorBounce();
     if (tokenType === 'ones') {
-      this.showToast(`Angka ${digit} adalah satuan. Letakkan di kotak Hasil Satuan!`, 'warning');
+      this.showToast(`Angka ${digit} adalah satuan. Letakkan di kotak Hasil Satuan (Rumah Pink)!`, 'warning');
     } else if (tokenType === 'carry') {
       this.showToast(`Angka ${digit} adalah puluhan. Letakkan di Sarang Penguin di tengah!`, 'warning');
     } else {
@@ -2699,9 +2848,10 @@ class NRSDApp {
     }
   }
 
+  /* --- Penguin Animation along Naik -> Belok -> Ke Kiri --- */
   animatePenguinGlideToCarry(digit) {
     window.soundEngine.playPenguinChirp();
-    this.setPenguinSpeech(`“Hore! Aku bawa angka ${digit} meluncur ke Slot Simpan Puluhan!”`);
+    this.setPenguinSpeech(`“Hore! Aku bawa angka ${digit} meluncur Naik ➜ Belok ➜ Ke Kiri ke Rumah Puluhan!”`);
     
     const jalurCol = document.getElementById('colJalurCenter');
     if (jalurCol) jalurCol.classList.add('active-flow');
@@ -2728,45 +2878,56 @@ class NRSDApp {
       const startX = startRect.left - boardRect.left + startRect.width / 2 - 40;
       const startY = startRect.top - boardRect.top + startRect.height / 2 - 42;
 
+      const topCornerX = startX;
+      const topCornerY = endRect.top - boardRect.top + endRect.height / 2 - 42;
+
       const endX = endRect.left - boardRect.left + endRect.width / 2 - 40;
-      const endY = endRect.top - boardRect.top + endRect.height / 2 - 42;
+      const endY = topCornerY;
 
       sprite.style.left = `${startX}px`;
       sprite.style.top = `${startY}px`;
-      sprite.style.transform = 'scale(0.8)';
+      sprite.style.transform = 'scale(0.85)';
       boardElem.appendChild(sprite);
 
       window.soundEngine.playWhoosh();
 
+      // Step 1: Naik (Upwards along Jalur Simpan)
       requestAnimationFrame(() => {
-        sprite.style.transform = 'scale(1.1)';
-        requestAnimationFrame(() => {
+        sprite.style.transition = 'top 0.5s ease-out, transform 0.3s ease';
+        sprite.style.top = `${topCornerY}px`;
+        sprite.style.transform = 'scale(1.15)';
+
+        // Step 2: Belok & Ke Kiri (Turn and slide leftwards to Rumah Puluhan)
+        setTimeout(() => {
+          sprite.style.transition = 'left 0.6s cubic-bezier(0.25, 1, 0.5, 1), transform 0.4s ease';
+          sprite.style.transform = 'scale(1.15) rotate(-10deg)';
           sprite.style.left = `${endX}px`;
-          sprite.style.top = `${endY}px`;
-        });
+
+          // Step 3: Land at Carry Slot
+          setTimeout(() => {
+            sprite.style.transform = 'scale(1) rotate(0deg)';
+            window.soundEngine.playCarryPlaced();
+            this.placeCarrySlotBall(digit);
+
+            if (sprite.parentNode) {
+              sprite.remove();
+            }
+
+            if (jalurCol) jalurCol.classList.remove('active-flow');
+            if (carryAnchor) carryAnchor.classList.remove('target-active');
+
+            this.setPenguinSpeech(`“Angka ${digit} berhasil disimpan di atas Rumah Puluhan!”`);
+            this.showToast(`Tepat! Angka simpan ${digit} berhasil dipindahkan ke Rumah Puluhan.`, 'success');
+
+            const onesSlotFilled = document.getElementById('wsResultOnesSlot')?.classList.contains('filled');
+            if (onesSlotFilled) {
+              this.setPhase('TENS_INPUT');
+            } else {
+              this.setPhase('MOVE_TO_ONES_RESULT');
+            }
+          }, 650);
+        }, 500);
       });
-
-      setTimeout(() => {
-        window.soundEngine.playCarryPlaced();
-        this.placeCarrySlotBall(digit);
-
-        if (sprite.parentNode) {
-          sprite.remove();
-        }
-
-        if (jalurCol) jalurCol.classList.remove('active-flow');
-        if (carryAnchor) carryAnchor.classList.remove('target-active');
-
-        this.setPenguinSpeech(`“Angka ${digit} berhasil disimpan di atas Puluhan!”`);
-        this.showToast(`Tepat! Angka simpan ${digit} berhasil dipindahkan ke atas Puluhan.`, 'success');
-
-        const onesSlotFilled = document.getElementById('wsResultOnesSlot')?.classList.contains('filled');
-        if (onesSlotFilled) {
-          this.setPhase('TENS_INPUT');
-        } else {
-          this.setPhase('MOVE_TO_ONES_RESULT');
-        }
-      }, 1250);
     } else {
       this.placeCarrySlotBall(digit);
       this.setPhase('TENS_INPUT');
@@ -2849,11 +3010,11 @@ class NRSDApp {
   showTieredHint() {
     window.soundEngine.playPop();
     const hints = [
-      `Level 1: Selalu mulai menjumlahkan dari kolom Satuan (sebelah kanan).`,
+      `Level 1: Selalu mulai menjumlahkan dari kolom Satuan (Rumah Nanas Pink).`,
       `Level 2: Hitunglah digit satuan: ${this.onesA} + ${this.onesB}.`,
       `Level 3: Hasil dari ${this.onesA} + ${this.onesB} adalah ${this.onesSum}.`,
       `Level 4: Angka ${this.onesDigit} tetap di tempat Satuan.`,
-      `Level 5: Angka ${this.carryDigit} adalah 1 puluhan yang harus disimpan ke Penguin, lalu dipindahkan ke Slot Simpan Puluhan di atas.`
+      `Level 5: Angka ${this.carryDigit} adalah 1 puluhan yang harus disimpan ke Penguin, lalu dipindahkan ke Slot Simpan Rumah Puluhan di atas.`
     ];
 
     const hintMsg = hints[this.currentHintLevel - 1] || hints[hints.length - 1];
@@ -2879,7 +3040,7 @@ class NRSDApp {
       `💡 Contoh: 7 + 8 = 15.`,
       `15 memiliki 1 Puluhan dan 5 Satuan.`,
       `Angka 5 ditaruh di Hasil Satuan.`,
-      `Angka 1 disimpan ke Penguin, lalu diteruskan ke Carry Slot di atas Puluhan.`
+      `Angka 1 disimpan ke Penguin, lalu diteruskan ke Carry Slot Rumah Puluhan.`
     ];
     this.showToast(demoDescriptions.join(' '), 'info');
   }
@@ -2926,8 +3087,6 @@ class NRSDApp {
     const penguinSlot = document.getElementById('penguinDropSlot');
     if (penguinSlot) {
       penguinSlot.innerHTML = snapshot.penguinSlotHTML;
-      const penguinStoredBall = document.getElementById('penguinStoredBall');
-      if (penguinStoredBall) this.bindTokenInteractivity(penguinStoredBall);
     }
 
     const wsCarrySlot = document.getElementById('wsCarryDropSlot');
@@ -2963,14 +3122,13 @@ class NRSDApp {
 
     if (formulaDisplay) formulaDisplay.textContent = `${this.numA} + ${this.numB} = ${this.finalResult}`;
     if (rowOnes) rowOnes.textContent = `${this.onesSum} (${this.carryDigit} Puluhan + ${this.onesDigit} Satuan)`;
-    if (rowCarry) rowCarry.textContent = `+ ${this.carryDigit} (ke Puluhan)`;
+    if (rowCarry) rowCarry.textContent = `+ ${this.carryDigit} (ke Rumah Puluhan)`;
     const tensExp = this.carryDigit > 0 
       ? `${this.carryDigit} + ${this.tensA} + ${this.tensB} = ${this.tensSum}`
       : `${this.tensA} + ${this.tensB} = ${this.tensSum}`;
     if (rowTens) rowTens.textContent = tensExp;
     if (rowFinal) rowFinal.textContent = `${this.finalResult}`;
 
-    // Record session into dashboard
     this.recordSession({
       mode: 'belajar',
       focus: 'general',

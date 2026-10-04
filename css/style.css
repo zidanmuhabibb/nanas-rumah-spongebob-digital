@@ -3039,10 +3039,382 @@ body.no-anim *::after {
     grid-template-columns: 1fr;
   }
   .challenge-levels-grid {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
   }
   .kpi-grid, .stages-grid-7 {
     grid-template-columns: 1fr;
   }
+}
+
+/* ==========================================================================
+   NEW HERO TITLE & HOME BANNER STYLING
+   ========================================================================== */
+.home-hero-header-card {
+  background: rgba(255, 255, 255, 0.95);
+  border: 4px solid #fbbf24;
+  border-radius: var(--radius-xl);
+  padding: 24px 32px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12), 0 0 20px rgba(251, 191, 36, 0.3);
+  text-align: center;
+  margin-bottom: 22px;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-tagline-neon {
+  display: inline-block;
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  font-weight: 900;
+  color: #d97706;
+  text-shadow: 0 0 10px rgba(245, 158, 11, 0.8), 0 0 20px rgba(217, 119, 6, 0.6);
+  letter-spacing: 2px;
+  background: #fef3c7;
+  padding: 5px 18px;
+  border-radius: var(--radius-full);
+  border: 2px solid #f59e0b;
+  margin-bottom: 12px;
+  animation: neonGlow 2.5s infinite alternate;
+}
+
+@keyframes neonGlow {
+  0% { text-shadow: 0 0 8px rgba(245, 158, 11, 0.6); box-shadow: 0 0 10px rgba(245, 158, 11, 0.3); }
+  100% { text-shadow: 0 0 16px rgba(217, 119, 6, 1), 0 0 25px rgba(245, 158, 11, 0.8); box-shadow: 0 0 20px rgba(245, 158, 11, 0.6); }
+}
+
+.hero-headline {
+  font-family: var(--font-display);
+  font-size: 2.1rem;
+  font-weight: 900;
+  color: #1e1b4b;
+  line-height: 1.3;
+  margin-bottom: 10px;
+  letter-spacing: -0.5px;
+}
+
+.hero-headline span.highlight-nanas {
+  color: #d97706;
+  text-decoration: underline wavy #fbbf24;
+}
+
+.hero-subheadline {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #4338ca;
+  margin-bottom: 10px;
+}
+
+.hero-author-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #78350f;
+  background: linear-gradient(90deg, #fef3c7 0%, #fde68a 100%);
+  border: 2px solid #f59e0b;
+  padding: 5px 20px;
+  border-radius: var(--radius-full);
+  box-shadow: 0 3px 8px rgba(245, 158, 11, 0.25);
+}
+
+.hero-mascot-triad {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  margin: 16px 0 8px;
+}
+
+/* Undersea Margin Decorations */
+.undersea-side-decor-left,
+.undersea-side-decor-right {
+  position: fixed;
+  bottom: 0;
+  pointer-events: none;
+  z-index: 4;
+}
+
+.undersea-side-decor-left { left: 4px; }
+.undersea-side-decor-right { right: 4px; }
+
+.coral-reef-svg {
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.2));
+}
+
+.seaweed-sway-1 { animation: sway1 4s ease-in-out infinite alternate; transform-origin: bottom center; }
+.seaweed-sway-2 { animation: sway2 3.5s ease-in-out infinite alternate; transform-origin: bottom center; }
+.seaweed-sway-3 { animation: sway1 5s ease-in-out infinite alternate; transform-origin: bottom center; }
+
+@keyframes sway1 {
+  0% { transform: rotate(-4deg); }
+  100% { transform: rotate(5deg); }
+}
+
+@keyframes sway2 {
+  0% { transform: rotate(5deg); }
+  100% { transform: rotate(-6deg); }
+}
+
+/* Animated Swimming Fishes */
+.ocean-swimming-fish {
+  position: fixed;
+  pointer-events: none;
+  z-index: 3;
+  animation: swimAcross 18s linear infinite;
+}
+
+.fish-1 { top: 18%; animation-duration: 22s; animation-delay: 0s; }
+.fish-2 { top: 48%; animation-duration: 16s; animation-delay: 5s; }
+.fish-3 { top: 78%; animation-duration: 25s; animation-delay: 9s; }
+
+@keyframes swimAcross {
+  0% { transform: translateX(-120px) translateY(0); opacity: 0; }
+  5% { opacity: 0.85; }
+  50% { transform: translateX(calc(100vw + 120px)) translateY(-30px); opacity: 0.85; }
+  51% { transform: translateX(calc(100vw + 120px)) translateY(-30px) scaleX(-1); opacity: 0; }
+  55% { opacity: 0.85; }
+  95% { opacity: 0.85; }
+  100% { transform: translateX(-120px) translateY(20px) scaleX(-1); opacity: 0; }
+}
+
+/* ==========================================================================
+   PINEAPPLE HOUSE COLUMNS (PULUHAN & SATUAN)
+   ========================================================================== */
+/* Puluhan Pineapple House: Orange-Kuning + Daun Hijau */
+.col-tens.pineapple-house-tens {
+  background: radial-gradient(ellipse at 50% 30%, #fef08a 0%, #fde047 35%, #f59e0b 70%, #d97706 100%);
+  border: 4px solid #b45309;
+  box-shadow: 0 8px 20px rgba(217, 119, 6, 0.25), inset 0 2px 10px rgba(255, 255, 255, 0.4);
+  position: relative;
+}
+
+.pineapple-canopy-tens {
+  position: absolute;
+  top: -26px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 4px;
+  z-index: 5;
+}
+
+.leaf-green {
+  width: 18px;
+  height: 28px;
+  background: linear-gradient(180deg, #4ade80 0%, #16a34a 100%);
+  border-radius: 50% 50% 10% 10%;
+  border: 2px solid #15803d;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+}
+
+.leaf-green:nth-child(1) { transform: rotate(-25deg); height: 24px; }
+.leaf-green:nth-child(2) { transform: rotate(0deg); height: 30px; }
+.leaf-green:nth-child(3) { transform: rotate(25deg); height: 24px; }
+
+/* Satuan Pineapple House: Pink-Cream + Daun Biru */
+.col-ones.pineapple-house-ones {
+  background: radial-gradient(ellipse at 50% 30%, #fff1f2 0%, #ffe4e6 35%, #fbcfe8 70%, #f472b6 100%);
+  border: 4px solid #db2777;
+  box-shadow: 0 8px 20px rgba(219, 39, 119, 0.25), inset 0 2px 10px rgba(255, 255, 255, 0.4);
+  position: relative;
+}
+
+.pineapple-canopy-ones {
+  position: absolute;
+  top: -26px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 4px;
+  z-index: 5;
+}
+
+.leaf-blue {
+  width: 18px;
+  height: 28px;
+  background: linear-gradient(180deg, #7dd3fc 0%, #0284c7 100%);
+  border-radius: 50% 50% 10% 10%;
+  border: 2px solid #0369a1;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+}
+
+.leaf-blue:nth-child(1) { transform: rotate(-25deg); height: 24px; }
+.leaf-blue:nth-child(2) { transform: rotate(0deg); height: 30px; }
+.leaf-blue:nth-child(3) { transform: rotate(25deg); height: 24px; }
+
+/* Central Jalur Simpan & Jalankan Penguin Button */
+.btn-run-penguin {
+  background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+  color: #ffffff;
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  font-weight: 800;
+  padding: 8px 16px;
+  border-radius: var(--radius-full);
+  border: 2px solid #7dd3fc;
+  box-shadow: 0 4px 0 #075985, 0 0 14px rgba(2, 132, 199, 0.6);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  animation: pulseGlow 1.8s infinite;
+  margin-top: 8px;
+}
+
+.btn-run-penguin:hover {
+  transform: scale(1.08) translateY(-2px);
+  box-shadow: 0 6px 0 #075985, 0 0 20px rgba(56, 189, 248, 0.9);
+}
+
+.btn-run-penguin:active {
+  transform: translateY(2px);
+  box-shadow: 0 2px 0 #075985;
+}
+
+@keyframes pulseGlow {
+  0%, 100% { box-shadow: 0 4px 0 #075985, 0 0 10px rgba(2, 132, 199, 0.4); }
+  50% { box-shadow: 0 4px 0 #075985, 0 0 22px rgba(56, 189, 248, 0.9); }
+}
+
+/* Penguin Glide Animation: Naik -> Belok -> Ke Kiri */
+.penguin-glide-sprite {
+  position: absolute;
+  z-index: 100;
+  pointer-events: none;
+  transition: all 1.25s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+/* ==========================================================================
+   LATIHAN INTERACTIVE MODULES (NILAI TEMPAT, REGROUPING, ANGKA SIMPAN)
+   ========================================================================== */
+.interactive-tool-box {
+  background: #ffffff;
+  border: 4px solid #cbd5e1;
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  box-shadow: var(--shadow-md);
+  margin-top: 16px;
+}
+
+.place-value-interactive-stage {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin: 20px 0;
+}
+
+.pv-house-dropzone {
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 220px;
+  border: 3px dashed #94a3b8;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.pv-house-dropzone.highlight {
+  border-style: solid;
+  border-color: #10b981;
+  background: rgba(209, 250, 229, 0.5);
+  box-shadow: 0 0 18px rgba(16, 185, 129, 0.4);
+}
+
+/* Regrouping Bundler Styles */
+.regrouping-stage-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 20px;
+}
+
+.unit-pearls-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  max-width: 380px;
+  background: #f8fafc;
+  border: 2px solid #e2e8f0;
+  border-radius: var(--radius-md);
+  padding: 14px;
+}
+
+.bundle-ten-box {
+  background: #ede9fe;
+  border: 3px solid #8b5cf6;
+  border-radius: var(--radius-md);
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: var(--shadow-sm);
+}
+
+/* ==========================================================================
+   TANTANGAN LEVEL 1 - 3 & BANYUMAS CULTURE INTEGRATION
+   ========================================================================== */
+.clean-vertical-board {
+  background: #ffffff;
+  border: 3px solid #cbd5e1;
+  border-radius: var(--radius-lg);
+  padding: 24px 36px;
+  max-width: 480px;
+  margin: 0 auto;
+  box-shadow: var(--shadow-md);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.math-sentence-display {
+  font-family: var(--font-numbers);
+  font-size: 2.2rem;
+  font-weight: 900;
+  color: #1e1b4b;
+  margin-bottom: 16px;
+  background: #f8fafc;
+  padding: 8px 24px;
+  border-radius: var(--radius-md);
+  border: 2px solid #e2e8f0;
+}
+
+/* Banyumas Culture Card */
+.banyumas-culture-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #fef3c7;
+  color: #92400e;
+  border: 2px solid #fde68a;
+  padding: 4px 14px;
+  border-radius: var(--radius-full);
+  font-family: var(--font-display);
+  font-size: 0.88rem;
+  font-weight: 800;
+  margin-bottom: 10px;
+}
+
+.banyumas-worksheet-step {
+  background: #f8fafc;
+  border: 2px solid #e2e8f0;
+  border-radius: var(--radius-md);
+  padding: 14px 18px;
+  margin-bottom: 12px;
+}
+
+.banyumas-step-title {
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #1e1b4b;
+  margin-bottom: 8px;
 }
 
