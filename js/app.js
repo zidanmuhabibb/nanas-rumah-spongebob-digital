@@ -970,8 +970,16 @@ class NRSDApp {
     const onesSum = a + b;
     const carry = 1;
     const onesRemain = onesSum - 10;
-    this.rgTensPlaced = false;
-    this.rgOnesPlaced = false;
+    
+    // States for the sequential interactive flow:
+    // 1. 'HOLDING_TO_ONES': Both balls [1] and [onesRemain] start in Area Hasil Sementara and must be dropped into Rumah Satuan.
+    // 2. 'ONES_TO_NEST': Both balls are in Rumah Satuan. Ball [1] is now draggable to Sarang Penguin.
+    // 3. 'READY_TO_RUN': Ball [1] is stored in Sarang Penguin. Student must click JALANKAN PENGUIN.
+    // 4. 'RUNNING' -> 'COMPLETED': Penguin carries ball [1] via Jalur Simpan to Slot Angka Simpan.
+    this.rgPhase = 'HOLDING_TO_ONES';
+    this.rgBallsInOnes = { carry: false, remain: false };
+    this.rgCarryInNest = false;
+    this.rgCarryInTens = false;
     this.selectedRGBall = null;
 
     const title = document.getElementById('rgTitle');
@@ -1006,26 +1014,40 @@ class NRSDApp {
       remainDots.innerHTML = html;
     }
 
-    // Temporary Holding Area with Balls [1] and [onesRemain] (Revisi 5 & 6)
+    // Temporary Holding Area with Balls [1] and [onesRemain]
     const tempRow = document.getElementById('rgTempBallsRow');
     if (tempRow) {
       tempRow.innerHTML = `
-        <div class="digit-ball digit-ball-purple rg-draggable-ball" id="rgTempBallTens" draggable="true" data-type="carry" data-val="${carry}" style="cursor:grab; width:60px; height:60px; font-size:2rem;" title="1 Puluhan (hasil pertukaran 10 satuan)">${carry}</div>
-        <div class="digit-ball digit-ball-amber rg-draggable-ball" id="rgTempBallOnes" draggable="true" data-type="remain" data-val="${onesRemain}" style="cursor:grab; width:60px; height:60px; font-size:2rem;" title="${onesRemain} Satuan (sisa satuan)">${onesRemain}</div>
+        <div class="digit-ball digit-ball-purple rg-draggable-ball" id="rgTempBallTens" draggable="true" data-type="carry" data-val="${carry}" style="cursor:grab; width:60px; height:60px; font-size:2rem; position:relative;" title="1 Puluhan (10 satuan)">${carry}<span class="ball-badge">10</span></div>
+        <div class="digit-ball digit-ball-amber rg-draggable-ball" id="rgTempBallOnes" draggable="true" data-type="remain" data-val="${onesRemain}" style="cursor:grab; width:60px; height:60px; font-size:2rem;" title="${onesRemain} Satuan (sisa)">${onesRemain}</div>
       `;
     }
 
-    // Reset target drop zones in houses
-    const tensZone = document.getElementById('rgTensDropZone');
-    const onesZone = document.getElementById('rgOnesDropZone');
-    if (tensZone) tensZone.innerHTML = `<span>Drop Bola [${carry}] di sini</span>`;
-    if (onesZone) onesZone.innerHTML = `<span>Drop Bola [${onesRemain}] di sini</span>`;
-
-    const carrySlot = document.getElementById('rgCarryDropTarget');
-    if (carrySlot) {
-      carrySlot.innerHTML = '';
-      carrySlot.classList.remove('filled');
+    const tempInstruct = document.getElementById('rgTempBallsInstruction');
+    if (tempInstruct) {
+      tempInstruct.textContent = 'Tentukan sendiri: Bola bilangan mana yang ke Rumah Puluhan dan ke Rumah Satuan!';
     }
+
+    // Reset Rumah Satuan drop zone
+    const onesPrompt = document.getElementById('rgOnesPromptText');
+    if (onesPrompt) {
+      onesPrompt.style.display = 'block';
+      onesPrompt.innerHTML = `<span>📥 Drop Bola [${carry}] & [${onesRemain}] di sini</span>`;
+    }
+    const onesTray = document.getElementById('rgOnesBallsTray');
+    if (onesTray) {
+      onesTray.innerHTML = '';
+    }
+
+    // Reset Sarang Penguin
+    const nestBox = document.getElementById('rgPenguinNestBox');
+    if (nestBox) {
+      nestBox.classList.remove('highlight-target');
+      nestBox.classList.remove('has-stored-ball');
+      nestBox.classList.remove('drag-over');
+    }
+    const nestHint = document.getElementById('rgNestHint');
+    if (nestHint) nestHint.style.display = 'none';
 
     const nestSlot = document.getElementById('rgPenguinNestSlot');
     if (nestSlot) {
@@ -1033,27 +1055,42 @@ class NRSDApp {
       nestSlot.classList.remove('filled');
     }
 
-    const runBtn = document.getElementById('btnRGRunPenguin');
-    if (runBtn) runBtn.style.display = 'none';
+    // Reset Slot Angka Simpan
+    const carrySlot = document.getElementById('rgCarryDropTarget');
+    if (carrySlot) {
+      carrySlot.innerHTML = '';
+      carrySlot.classList.remove('filled');
+    }
 
-    // Populate Penguin SVG avatar
+    // Reset Penguin Avatar
     const penguinAvatar = document.getElementById('rgPenguinAvatar');
     if (penguinAvatar) {
       penguinAvatar.innerHTML = Mascots.getPenguinMascotSvg(90, 95, 'neutral');
     }
 
+    // Reset Run Button
+    const runBtn = document.getElementById('btnRGRunPenguin');
+    if (runBtn) {
+      runBtn.style.display = 'none';
+      runBtn.disabled = false;
+      runBtn.classList.remove('pulse-btn');
+    }
+
+    // Reset Feedback
     const fbBox = document.getElementById('rgFeedbackBox');
     if (fbBox) fbBox.style.display = 'none';
 
-    // Bind Drag & Drop for Temporary Holding Balls
-    this.bindRGDragAndDrop(carry, onesRemain);
+    // Bind Drag & Drop & Click Selection for Phase 1 (Holding -> Rumah Satuan)
+    this.bindRGPhase1DragAndDrop(carry, onesRemain);
   }
 
-  bindRGDragAndDrop(carry, remain) {
+  bindRGPhase1DragAndDrop(carry, remain) {
     const ballT = document.getElementById('rgTempBallTens');
     const ballO = document.getElementById('rgTempBallOnes');
-    const colTens = document.getElementById('rgColTens');
     const colOnes = document.getElementById('rgColOnes');
+    const onesZone = document.getElementById('rgOnesDropZone');
+    const colTens = document.getElementById('rgColTens');
+    const nestBox = document.getElementById('rgPenguinNestBox');
 
     const handleDragStart = (e, bType, bVal) => {
       e.dataTransfer.setData('text/plain', JSON.stringify({ type: bType, val: bVal }));
@@ -1078,135 +1115,322 @@ class NRSDApp {
         document.querySelectorAll('.rg-draggable-ball').forEach(b => b.classList.remove('selected-for-drop'));
         ball.classList.add('selected-for-drop');
         this.selectedRGBall = { type: bType, val: bVal, elem: ball };
-        this.showToast(`Bola [${bVal}] dipilih. Klik Rumah Puluhan atau Rumah Satuan!`, 'info');
+        this.showToast(`Bola [${bVal}] dipilih. Klik Rumah Satuan!`, 'info');
       });
     };
     setupClickSelect(ballT, 'carry', carry);
     setupClickSelect(ballO, 'remain', remain);
 
-    // Setup Drop Zones
-    const setupRGDropZone = (dropElem, targetHouse) => {
-      dropElem?.addEventListener('dragover', (e) => {
+    // Drop handler on Rumah Satuan
+    const handleDropOnes = (e) => {
+      if (e) {
         e.preventDefault();
-        dropElem.classList.add('drag-over');
-      });
+        onesZone?.classList.remove('drag-over');
+      }
+      let bType = null;
+      let bVal = null;
 
-      dropElem?.addEventListener('dragleave', () => {
-        dropElem.classList.remove('drag-over');
-      });
-
-      dropElem?.addEventListener('drop', (e) => {
-        e.preventDefault();
-        dropElem.classList.remove('drag-over');
+      if (e && e.dataTransfer) {
         try {
           const data = JSON.parse(e.dataTransfer.getData('text/plain'));
-          this.validateRGDrop(data.type, data.val, targetHouse);
-        } catch (err) {
-          if (this.selectedRGBall) {
-            this.validateRGDrop(this.selectedRGBall.type, this.selectedRGBall.val, targetHouse);
-          }
-        }
-      });
+          bType = data.type;
+          bVal = data.val;
+        } catch (err) {}
+      }
+      if (!bType && this.selectedRGBall) {
+        bType = this.selectedRGBall.type;
+        bVal = this.selectedRGBall.val;
+      }
 
-      dropElem?.addEventListener('click', () => {
-        if (this.selectedRGBall) {
-          this.validateRGDrop(this.selectedRGBall.type, this.selectedRGBall.val, targetHouse);
-        }
-      });
+      if (!bType) return;
+      this.processDropToOnes(bType, bVal, carry, remain);
     };
 
-    setupRGDropZone(colTens, 'rg-tens');
-    setupRGDropZone(colOnes, 'rg-ones');
+    [colOnes, onesZone].forEach(elem => {
+      elem?.addEventListener('dragover', (e) => {
+        if (this.rgPhase === 'HOLDING_TO_ONES') {
+          e.preventDefault();
+          onesZone?.classList.add('drag-over');
+        }
+      });
+      elem?.addEventListener('dragleave', () => {
+        onesZone?.classList.remove('drag-over');
+      });
+      elem?.addEventListener('drop', (e) => {
+        if (this.rgPhase === 'HOLDING_TO_ONES') {
+          handleDropOnes(e);
+        }
+      });
+      elem?.addEventListener('click', () => {
+        if (this.rgPhase === 'HOLDING_TO_ONES' && this.selectedRGBall) {
+          handleDropOnes(null);
+        }
+      });
+    });
+
+    // Wrong drops during Phase 1
+    const handleWrongPhase1Drop = (targetName) => {
+      if (this.rgPhase !== 'HOLDING_TO_ONES') return;
+      window.soundEngine.playWrong();
+      const fbBox = document.getElementById('rgFeedbackBox');
+      const fbIcon = document.getElementById('rgFeedbackIcon');
+      const fbText = document.getElementById('rgFeedbackText');
+      if (fbBox && fbIcon && fbText) {
+        fbBox.className = 'growth-feedback-box wrong show';
+        fbBox.style.display = 'flex';
+        fbIcon.textContent = '💡';
+        fbText.innerHTML = `<strong>Petunjuk:</strong> Letakkan kedua bola bilangan <strong>[${carry}]</strong> dan <strong>[${remain}]</strong> ke <strong>Rumah Satuan</strong> terlebih dahulu!`;
+      }
+      this.showToast('Letakkan bola bilangan ke Rumah Satuan terlebih dahulu!', 'warning');
+    };
+
+    colTens?.addEventListener('click', () => {
+      if (this.rgPhase === 'HOLDING_TO_ONES' && this.selectedRGBall) {
+        handleWrongPhase1Drop('Rumah Puluhan');
+      }
+    });
+    colTens?.addEventListener('dragover', (e) => {
+      if (this.rgPhase === 'HOLDING_TO_ONES') e.preventDefault();
+    });
+    colTens?.addEventListener('drop', (e) => {
+      if (this.rgPhase === 'HOLDING_TO_ONES') {
+        e.preventDefault();
+        handleWrongPhase1Drop('Rumah Puluhan');
+      }
+    });
+
+    nestBox?.addEventListener('click', () => {
+      if (this.rgPhase === 'HOLDING_TO_ONES' && this.selectedRGBall) {
+        handleWrongPhase1Drop('Sarang Penguin');
+      }
+    });
+    nestBox?.addEventListener('dragover', (e) => {
+      if (this.rgPhase === 'HOLDING_TO_ONES') e.preventDefault();
+    });
+    nestBox?.addEventListener('drop', (e) => {
+      if (this.rgPhase === 'HOLDING_TO_ONES') {
+        e.preventDefault();
+        handleWrongPhase1Drop('Sarang Penguin');
+      }
+    });
   }
 
-  validateRGDrop(bType, bVal, targetHouse) {
-    const fbBox = document.getElementById('rgFeedbackBox');
-    const fbIcon = document.getElementById('rgFeedbackIcon');
-    const fbText = document.getElementById('rgFeedbackText');
-
+  processDropToOnes(bType, bVal, carry, remain) {
     if (bType === 'carry') {
-      if (targetHouse === 'rg-tens') {
-        window.soundEngine.playSnap();
-        this.rgTensPlaced = true;
-        document.getElementById('rgTempBallTens')?.remove();
-        this.selectedRGBall = null;
-
-        const tensZone = document.getElementById('rgTensDropZone');
-        if (tensZone) {
-          tensZone.innerHTML = `<div class="digit-ball digit-ball-purple locked" style="width:50px; height:50px; font-size:1.6rem;">${bVal}</div>`;
-        }
-      } else {
-        window.soundEngine.playWrong();
-        if (fbBox && fbIcon && fbText) {
-          fbBox.className = 'growth-feedback-box wrong show';
-          fbBox.style.display = 'flex';
-          fbIcon.textContent = '💡';
-          fbText.innerHTML = `<strong>Belum tepat.</strong> Angka <strong>${bVal}</strong> adalah 1 puluhan hasil pertukaran 10 satuan, tempatkan di <strong>Rumah Puluhan</strong>!`;
-        }
-        return;
-      }
+      if (this.rgBallsInOnes.carry) return;
+      this.rgBallsInOnes.carry = true;
+      document.getElementById('rgTempBallTens')?.remove();
+      window.soundEngine.playSnap();
     } else if (bType === 'remain') {
-      if (targetHouse === 'rg-ones') {
-        window.soundEngine.playSnap();
-        this.rgOnesPlaced = true;
-        document.getElementById('rgTempBallOnes')?.remove();
-        this.selectedRGBall = null;
-
-        const onesZone = document.getElementById('rgOnesDropZone');
-        if (onesZone) {
-          onesZone.innerHTML = `<div class="digit-ball digit-ball-amber locked" style="width:50px; height:50px; font-size:1.6rem;">${bVal}</div>`;
-        }
-      } else {
-        window.soundEngine.playWrong();
-        if (fbBox && fbIcon && fbText) {
-          fbBox.className = 'growth-feedback-box wrong show';
-          fbBox.style.display = 'flex';
-          fbIcon.textContent = '💡';
-          fbText.innerHTML = `<strong>Belum tepat.</strong> Angka <strong>${bVal}</strong> adalah sisa satuan, tempatkan di <strong>Rumah Satuan</strong>!`;
-        }
-        return;
-      }
+      if (this.rgBallsInOnes.remain) return;
+      this.rgBallsInOnes.remain = true;
+      document.getElementById('rgTempBallOnes')?.remove();
+      window.soundEngine.playSnap();
     }
 
-    // When both are placed in houses (Revisi 9 & 10)
-    if (this.rgTensPlaced && this.rgOnesPlaced) {
-      window.soundEngine.playCorrect();
-      const remain = this.rgCurrentPair ? (this.rgCurrentPair.a + this.rgCurrentPair.b - 10) : 5;
+    this.selectedRGBall = null;
+    const tray = document.getElementById('rgOnesBallsTray');
+    const prompt = document.getElementById('rgOnesPromptText');
+    const totalSum = carry * 10 + remain;
 
+    // If both balls are placed in Rumah Satuan!
+    if (this.rgBallsInOnes.carry && this.rgBallsInOnes.remain) {
+      this.rgPhase = 'ONES_TO_NEST';
+      window.soundEngine.playPop();
+
+      if (prompt) {
+        prompt.style.display = 'block';
+        prompt.innerHTML = `<strong>${totalSum} Satuan</strong> terkumpul di Rumah Satuan`;
+      }
+
+      if (tray) {
+        tray.innerHTML = `
+          <div class="digit-ball digit-ball-purple pulse-ball rg-draggable-ball" id="rgOnesBallTens" draggable="true" data-type="carry" data-val="${carry}" style="cursor:grab; width:54px; height:54px; font-size:1.7rem; position:relative;" title="1 Puluhan (= 10 satuan) - Seret ke Sarang Penguin">${carry}<span class="ball-badge">10</span></div>
+          <div class="digit-ball digit-ball-amber locked" id="rgOnesBallRemain" style="width:54px; height:54px; font-size:1.7rem;" title="${remain} Satuan">${remain}</div>
+        `;
+      }
+
+      // Highlight Sarang Penguin
+      const nestBox = document.getElementById('rgPenguinNestBox');
+      const nestHint = document.getElementById('rgNestHint');
+      if (nestBox) nestBox.classList.add('highlight-target');
+      if (nestHint) nestHint.style.display = 'block';
+
+      // Feedback & Voice
+      const fbBox = document.getElementById('rgFeedbackBox');
+      const fbIcon = document.getElementById('rgFeedbackIcon');
+      const fbText = document.getElementById('rgFeedbackText');
       if (fbBox && fbIcon && fbText) {
         fbBox.className = 'growth-feedback-box correct show';
         fbBox.style.display = 'flex';
         fbIcon.textContent = '✨';
-        fbText.innerHTML = `<strong>Benar!</strong> 10 satuan ditukar menjadi 1 puluhan dan tersisa ${remain} satuan.<br>Angka <strong>1</strong> adalah 1 puluhan hasil pertukaran 10 satuan. Angka ini akan disimpan oleh Penguin! 🐧`;
+        fbText.innerHTML = `<strong>Hasil ${totalSum} satuan</strong> berada di Rumah Satuan!<br>Namun Rumah Satuan hanya boleh 1 digit. Pindahkan bola <strong>[${carry}]</strong> (10 satuan = 1 puluhan) ke <strong>🪺 Sarang Penguin</strong> untuk disimpan!`;
       }
-      window.soundEngine.speak(`Benar! 10 satuan ditukar menjadi 1 puluhan dan tersisa ${remain} satuan. Angka 1 akan disimpan oleh Penguin.`);
+      window.soundEngine.speak(`${totalSum} satuan berada di Rumah Satuan. Pindahkan bola 1 ke Sarang Penguin untuk disimpan.`);
 
-      // Step 9 & 10: Ball [1] enters Sarang Penguin
-      setTimeout(() => {
-        const tensZone = document.getElementById('rgTensDropZone');
-        if (tensZone) tensZone.innerHTML = `<span>1 Puluhan menuju Sarang Penguin ➜</span>`;
+      // Bind Phase 2 (Rumah Satuan -> Sarang Penguin)
+      this.bindRGPhase2DragAndDrop(carry, remain);
 
-        const nestSlot = document.getElementById('rgPenguinNestSlot');
-        if (nestSlot) {
-          nestSlot.innerHTML = `<div class="digit-ball digit-ball-carry" id="rgCarryBall" style="width:46px; height:46px; font-size:1.5rem;">1</div>`;
-          nestSlot.classList.add('filled');
+    } else {
+      // Only one ball is in Rumah Satuan so far
+      if (prompt) prompt.innerHTML = `<span>Bagus! Masukkan 1 bola lagi ke Rumah Satuan.</span>`;
+      if (tray) {
+        if (this.rgBallsInOnes.carry) {
+          tray.innerHTML = `<div class="digit-ball digit-ball-purple" style="width:50px; height:50px; font-size:1.5rem; opacity:0.85; position:relative;">${carry}<span class="ball-badge">10</span></div>`;
+        } else if (this.rgBallsInOnes.remain) {
+          tray.innerHTML = `<div class="digit-ball digit-ball-amber" style="width:50px; height:50px; font-size:1.5rem; opacity:0.85;">${remain}</div>`;
         }
-
-        const penguinAvatar = document.getElementById('rgPenguinAvatar');
-        if (penguinAvatar) {
-          penguinAvatar.innerHTML = Mascots.getPenguinMascotSvg(90, 95, 'holding');
-        }
-
-        const runBtn = document.getElementById('btnRGRunPenguin');
-        if (runBtn) {
-          runBtn.style.display = 'inline-flex';
-          runBtn.classList.add('pulse-btn');
-        }
-      }, 700);
+      }
     }
   }
 
+  bindRGPhase2DragAndDrop(carry, remain) {
+    const ballT = document.getElementById('rgOnesBallTens');
+    const nestBox = document.getElementById('rgPenguinNestBox');
+    const nestSlot = document.getElementById('rgPenguinNestSlot');
+    const centerCol = document.getElementById('rgColCenter');
+
+    const handleDragStart = (e) => {
+      e.dataTransfer.setData('text/plain', JSON.stringify({ type: 'carry', val: carry }));
+      e.target.classList.add('dragging');
+      this.selectedRGBall = { type: 'carry', val: carry, elem: e.target };
+    };
+
+    const handleDragEnd = (e) => {
+      e.target.classList.remove('dragging');
+    };
+
+    ballT?.addEventListener('dragstart', handleDragStart);
+    ballT?.addEventListener('dragend', handleDragEnd);
+
+    // Tap/Click Selection fallback
+    ballT?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      window.soundEngine.playPop();
+      ballT.classList.add('selected-for-drop');
+      this.selectedRGBall = { type: 'carry', val: carry, elem: ballT };
+      this.showToast(`Bola [${carry}] dipilih. Klik Sarang Penguin!`, 'info');
+    });
+
+    const handleDropNest = (e) => {
+      if (e) {
+        e.preventDefault();
+        nestBox?.classList.remove('drag-over');
+      }
+      let bType = null;
+      let bVal = null;
+      if (e && e.dataTransfer) {
+        try {
+          const data = JSON.parse(e.dataTransfer.getData('text/plain'));
+          bType = data.type;
+          bVal = data.val;
+        } catch (err) {}
+      }
+      if (!bType && this.selectedRGBall) {
+        bType = this.selectedRGBall.type;
+        bVal = this.selectedRGBall.val;
+      }
+
+      if (bType === 'carry') {
+        this.processDropToNest(carry, remain);
+      } else {
+        window.soundEngine.playWrong();
+        this.showToast(`Pindahkan bola [${carry}] (1 puluhan) ke Sarang Penguin!`, 'warning');
+      }
+    };
+
+    [nestBox, nestSlot, centerCol].forEach(elem => {
+      elem?.addEventListener('dragover', (e) => {
+        if (this.rgPhase === 'ONES_TO_NEST') {
+          e.preventDefault();
+          nestBox?.classList.add('drag-over');
+        }
+      });
+      elem?.addEventListener('dragleave', () => {
+        nestBox?.classList.remove('drag-over');
+      });
+      elem?.addEventListener('drop', (e) => {
+        if (this.rgPhase === 'ONES_TO_NEST') {
+          handleDropNest(e);
+        }
+      });
+      elem?.addEventListener('click', () => {
+        if (this.rgPhase === 'ONES_TO_NEST' && this.selectedRGBall) {
+          handleDropNest(null);
+        }
+      });
+    });
+  }
+
+  processDropToNest(carry, remain) {
+    this.rgPhase = 'READY_TO_RUN';
+    this.rgCarryInNest = true;
+    this.selectedRGBall = null;
+    window.soundEngine.playSnap();
+
+    // 1. In Sarang Penguin
+    const nestBox = document.getElementById('rgPenguinNestBox');
+    const nestSlot = document.getElementById('rgPenguinNestSlot');
+    const nestHint = document.getElementById('rgNestHint');
+
+    if (nestSlot) {
+      nestSlot.innerHTML = `<div class="digit-ball digit-ball-carry" id="rgCarryBall" style="width:46px; height:46px; font-size:1.5rem;">${carry}</div>`;
+      nestSlot.classList.add('filled');
+    }
+    if (nestBox) {
+      nestBox.classList.remove('highlight-target');
+      nestBox.classList.add('has-stored-ball');
+      nestBox.classList.remove('drag-over');
+    }
+    if (nestHint) nestHint.style.display = 'none';
+
+    // 2. In Rumah Satuan (Ball [carry] is gone, only Ball [remain] remains)
+    const onesTray = document.getElementById('rgOnesBallsTray');
+    const onesPrompt = document.getElementById('rgOnesPromptText');
+    if (onesTray) {
+      onesTray.innerHTML = `<div class="digit-ball digit-ball-amber locked" style="width:54px; height:54px; font-size:1.8rem;" title="${remain} Satuan">${remain}</div>`;
+    }
+    if (onesPrompt) {
+      onesPrompt.innerHTML = `<span style="color:#059669; font-weight:800;">✅ ${remain} Satuan Tetap di Sini</span>`;
+    }
+
+    // 3. Penguin Avatar changes to holding
+    const penguinAvatar = document.getElementById('rgPenguinAvatar');
+    if (penguinAvatar) {
+      penguinAvatar.innerHTML = Mascots.getPenguinMascotSvg(90, 95, 'holding');
+    }
+
+    // 4. Reveal & Pulse Button JALANKAN PENGUIN
+    const runBtn = document.getElementById('btnRGRunPenguin');
+    if (runBtn) {
+      runBtn.style.display = 'inline-flex';
+      runBtn.classList.add('pulse-btn');
+      runBtn.disabled = false;
+    }
+
+    // 5. Feedback & Voice Prompt
+    const fbBox = document.getElementById('rgFeedbackBox');
+    const fbIcon = document.getElementById('rgFeedbackIcon');
+    const fbText = document.getElementById('rgFeedbackText');
+    if (fbBox && fbIcon && fbText) {
+      fbBox.className = 'growth-feedback-box correct show';
+      fbBox.style.display = 'flex';
+      fbIcon.textContent = '🐧';
+      fbText.innerHTML = `<strong>Penguin telah menyimpan bola [${carry}] di sarangnya!</strong><br>Sekarang klik tombol <strong>🚀 JALANKAN PENGUIN</strong> agar Penguin membawa angka simpan ini ke Rumah Puluhan!`;
+    }
+    window.soundEngine.speak(`Penguin telah menyimpan bola 1 di sarangnya. Sekarang klik Jalankan Penguin!`);
+  }
+
   animateRegroupingPenguinGlide(carryVal = 1) {
+    if (this.rgPhase !== 'READY_TO_RUN' && !this.rgCarryInNest) return;
+    this.rgPhase = 'RUNNING';
+
+    const runBtn = document.getElementById('btnRGRunPenguin');
+    if (runBtn) {
+      runBtn.style.display = 'none';
+      runBtn.disabled = true;
+    }
+
     window.soundEngine.playPenguinChirp();
     const startElem = document.getElementById('rgPenguinNestSlot');
     const endElem = document.getElementById('rgCarryDropTarget');
@@ -1226,6 +1450,11 @@ class NRSDApp {
       const endX = endRect.left - boardRect.left + endRect.width / 2 - 30;
       const endY = topCornerY;
 
+      // Empty the nest immediately when penguin lifts off
+      startElem.innerHTML = '';
+      startElem.classList.remove('filled');
+      document.getElementById('rgPenguinNestBox')?.classList.remove('has-stored-ball');
+
       const sprite = document.createElement('div');
       sprite.className = 'penguin-glide-sprite';
       sprite.innerHTML = `
@@ -1241,19 +1470,19 @@ class NRSDApp {
 
       window.soundEngine.playWhoosh();
 
-      // Step 1: NAIK sedikit (upward trajectory)
+      // Step 1: DARI SARANG PENGUIN -> NAIK KE ATAS (Upward trajectory along Jalur Simpan)
       requestAnimationFrame(() => {
         sprite.style.transition = 'top 0.45s ease-out, transform 0.3s ease';
         sprite.style.top = `${topCornerY}px`;
         sprite.style.transform = 'scale(1.1)';
 
-        // Step 2 & 3: BELOK & BERGERAK KE KIRI (Revisi 11)
+        // Step 2: BELOK & BERGERAK KE KIRI MENUJU RUMAH PULUHAN
         setTimeout(() => {
           sprite.style.transition = 'left 0.55s cubic-bezier(0.25, 1, 0.5, 1), transform 0.35s ease';
           sprite.style.transform = 'scale(1.1) rotate(-10deg)';
           sprite.style.left = `${endX}px`;
 
-          // Step 4: MASUK TEPAT KE SLOT ANGKA SIMPAN (Revisi 12)
+          // Step 3: MASUK TEPAT KE SLOT ANGKA SIMPAN
           setTimeout(() => {
             sprite.style.transform = 'scale(1) rotate(0deg)';
             window.soundEngine.playCarryPlaced();
@@ -1265,14 +1494,25 @@ class NRSDApp {
 
             if (sprite.parentNode) sprite.remove();
 
+            // Penguin in center is happy and cheering!
+            const penguinAvatar = document.getElementById('rgPenguinAvatar');
+            if (penguinAvatar) {
+              penguinAvatar.innerHTML = Mascots.getPenguinMascotSvg(90, 95, 'happy');
+            }
+
+            this.rgPhase = 'COMPLETED';
+            const remain = this.rgCurrentPair ? (this.rgCurrentPair.a + this.rgCurrentPair.b - 10) : 5;
+
             const fbBox = document.getElementById('rgFeedbackBox');
+            const fbIcon = document.getElementById('rgFeedbackIcon');
             const fbText = document.getElementById('rgFeedbackText');
-            if (fbBox && fbText) {
+            if (fbBox && fbIcon && fbText) {
               fbBox.className = 'growth-feedback-box correct show';
               fbBox.style.display = 'flex';
-              fbText.innerHTML = `<strong>Luar Biasa!</strong> Penguin berhasil mengantar angka simpan <strong>${carryVal}</strong> tepat ke Slot Angka Simpan di Rumah Puluhan! ⭐`;
+              fbIcon.textContent = '🎉';
+              fbText.innerHTML = `<strong>Luar Biasa!</strong> Penguin berhasil membawa bola <strong>[${carryVal}]</strong> (1 puluhan) melalui Jalur Simpan ke <strong>Slot Angka Simpan</strong> di Rumah Puluhan! ⭐<br>Bola <strong>[${remain}]</strong> tetap tinggal menjadi hasil di Rumah Satuan.`;
             }
-            window.soundEngine.speak('Penguin berhasil menyimpan 1 puluhan ke slot angka simpan di rumah puluhan.');
+            window.soundEngine.speak(`Luar biasa! Penguin berhasil membawa bola 1 ke slot angka simpan di rumah puluhan!`);
           }, 600);
         }, 450);
       });

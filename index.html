@@ -452,8 +452,8 @@
                 <div style="display:flex; justify-content:center; gap:32px; align-items:center;" id="rgTempBallsRow">
                   <!-- Injected via JS: Ball [1] and Ball [5] -->
                 </div>
-                <p style="font-size:0.82rem; color:#881337; margin-top:6px; margin-bottom:0;">
-                  Tentukan sendiri: <strong>[1]</strong> ke Rumah Puluhan, <strong>[5]</strong> ke Rumah Satuan!
+                <p style="font-size:0.88rem; font-weight:700; color:#881337; margin-top:6px; margin-bottom:0;" id="rgTempBallsInstruction">
+                  Tentukan sendiri: Bola bilangan mana yang ke Rumah Puluhan dan ke Rumah Satuan!
                 </p>
               </div>
 
@@ -478,26 +478,28 @@
                     </div>
                   </div>
 
-                  <!-- Drop target area for ball 1 before penguin run -->
-                  <div class="rg-drop-zone-indicator" id="rgTensDropZone" style="margin-top:auto; font-size:0.85rem; color:#78350f; font-weight:700; text-align:center; background:rgba(254,243,199,0.85); padding:8px 12px; border-radius:8px; border:2px dashed #d97706; width:100%; min-height:50px; display:flex; align-items:center; justify-content:center;">
-                    <span>Drop Bola [1] di sini</span>
+                  <!-- Info Helper Rumah Puluhan -->
+                  <div class="rg-tens-helper-note" style="margin-top:auto; font-size:0.85rem; color:#78350f; font-weight:700; text-align:center; background:rgba(254,243,199,0.85); padding:8px 12px; border-radius:8px; border:2px dashed #d97706; width:100%;">
+                    <span>🏠 Rumah Puluhan</span>
+                    <div style="font-size:0.75rem; color:#92400e; margin-top:2px;">(Siap menerima angka simpan dari Penguin)</div>
                   </div>
                 </div>
 
                 <!-- 2. Kolom Jalur Simpan & Penguin Penyimpan (Di Tengah) -->
-                <div class="rg-penguin-center-col" id="rgColCenter">
+                <div class="rg-penguin-center-col" id="rgColCenter" data-target="rg-nest">
                   <div class="penguin-mini-badge">🐧 PENGUIN PENYIMPAN</div>
                   
                   <div id="rgPenguinAvatar" style="width:100px; height:105px; margin: 4px auto;"></div>
                   
-                  <div class="penguin-storage-nest" style="margin: 6px auto; width:100%; max-width:160px;">
+                  <div class="penguin-storage-nest" id="rgPenguinNestBox" data-target="rg-nest" style="margin: 6px auto; width:100%; max-width:160px; cursor:pointer;">
                     <span class="nest-title">🪺 Sarang Penguin</span>
-                    <div class="token-drop-slot" id="rgPenguinNestSlot" style="margin:4px auto; width:52px; height:52px;">
+                    <div class="token-drop-slot" id="rgPenguinNestSlot" data-target="rg-nest" style="margin:4px auto; width:52px; height:52px;" title="Sarang Penyimpan Penguin">
                       <!-- Carry ball moves here before flight -->
                     </div>
+                    <div id="rgNestHint" style="font-size:0.75rem; color:#0369a1; font-weight:800; display:none;">Drop Bola [1] di Sini</div>
                   </div>
 
-                  <button class="btn-run-penguin" id="btnRGRunPenguin" style="font-size:0.85rem; padding:8px 14px; margin: 6px auto; display:none;">
+                  <button class="btn-run-penguin pulse-btn" id="btnRGRunPenguin" style="font-size:0.85rem; padding:8px 14px; margin: 6px auto; display:none;">
                     🚀 JALANKAN PENGUIN
                   </button>
 
@@ -518,12 +520,13 @@
                   <div class="col-title" style="color:#db2777; margin-top:8px;">🏠 RUMAH SATUAN</div>
                   <span class="col-tag" style="background:#fbcfe8; color:#9f1239;">Nilai: 1</span>
 
-                  <!-- Drop target area for ball 5 -->
-                  <div class="rg-drop-zone-indicator" id="rgOnesDropZone" style="margin-top:auto; font-size:0.85rem; color:#831843; font-weight:700; text-align:center; background:rgba(253,242,248,0.9); padding:8px 12px; border-radius:8px; border:2px dashed #db2777; width:100%; min-height:60px; display:flex; align-items:center; justify-content:center;">
-                    <span>Drop Bola [5] di sini</span>
+                  <!-- Drop target area for both balls in ones first -->
+                  <div class="rg-drop-zone-indicator" id="rgOnesDropZone" data-target="rg-ones" style="margin-top:auto; font-size:0.85rem; color:#831843; font-weight:700; text-align:center; background:rgba(253,242,248,0.95); padding:10px 12px; border-radius:10px; border:2px dashed #db2777; width:100%; min-height:85px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px;">
+                    <span id="rgOnesPromptText" style="font-size:0.8rem; color:#9f1239; font-weight:800;">Drop Bola [1] & [5] di sini</span>
+                    <div id="rgOnesBallsTray" style="display:flex; justify-content:center; align-items:center; gap:10px; min-height:48px; width:100%;"></div>
                   </div>
 
-                  <div style="margin-top:8px; font-size:0.8rem; color:#9f1239; font-weight:700; text-align:center;">
+                  <div style="margin-top:8px; font-size:0.8rem; color:#9f1239; font-weight:700; text-align:center;" id="rgOnesFootnote">
                     Sisa satuan tetap tinggal di Rumah Satuan
                   </div>
                 </div>

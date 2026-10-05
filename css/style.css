@@ -3662,6 +3662,52 @@ body.no-anim *::after {
   transform: scale(1.04);
 }
 
+.pulse-ball {
+  animation: pulseBallGlow 1.2s infinite ease-in-out alternate;
+}
+
+@keyframes pulseBallGlow {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 8px rgba(124, 58, 237, 0.4);
+  }
+  100% {
+    transform: scale(1.1);
+    box-shadow: 0 0 22px rgba(124, 58, 237, 0.95);
+  }
+}
+
+.ball-badge {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  background: #7c3aed;
+  color: #ffffff;
+  font-size: 0.65rem;
+  font-weight: 800;
+  padding: 2px 5px;
+  border-radius: 10px;
+  border: 1.5px solid #ffffff;
+  pointer-events: none;
+}
+
+.penguin-storage-nest.highlight-target {
+  background: #d1fae5 !important;
+  border: 2.5px dashed #10b981 !important;
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.7) !important;
+  transform: scale(1.04);
+  animation: pulseNestGlow 1.2s infinite ease-in-out alternate;
+}
+
+@keyframes pulseNestGlow {
+  0% {
+    box-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
+  }
+  100% {
+    box-shadow: 0 0 25px rgba(16, 185, 129, 0.9);
+  }
+}
+
 /* ==========================================================================
    REFLEKSI PERASAAN (FEELINGS REFLECTION POST-LEVEL 3)
    ========================================================================== */
