@@ -3621,4 +3621,245 @@ body.no-anim *::after {
   transform: scale(1.05);
 }
 
+/* ==========================================================================
+   DRAG & DROP PLACE VALUE & TEMPORARY HOLDING STYLES
+   ========================================================================== */
+.pv-house-dropzone {
+  transition: all 0.25s ease;
+  border-width: 3px !important;
+}
+
+.pv-house-dropzone.drag-over,
+.pv-house-dropzone.selectable-target {
+  box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.5) !important;
+  transform: scale(1.02);
+  border-style: dashed !important;
+}
+
+.digit-ball.dragging {
+  opacity: 0.5;
+  transform: scale(0.9);
+}
+
+.digit-ball.selected-for-drop {
+  animation: pulseCarry 0.6s infinite alternate;
+  box-shadow: 0 0 16px #38bdf8 !important;
+  outline: 3px solid #ffffff;
+}
+
+.pv-target-slot {
+  border-radius: var(--radius-md);
+  transition: background 0.2s ease;
+}
+
+.rg-drop-zone-indicator {
+  transition: all 0.25s ease;
+}
+
+.rg-drop-zone-indicator.drag-over {
+  background: #fef08a !important;
+  border-color: #ca8a04 !important;
+  transform: scale(1.04);
+}
+
+/* ==========================================================================
+   REFLEKSI PERASAAN (FEELINGS REFLECTION POST-LEVEL 3)
+   ========================================================================== */
+.reflection-modal-card {
+  max-width: 780px !important;
+  width: 95% !important;
+  padding: 24px 28px !important;
+  text-align: center;
+}
+
+.reflection-mascot-header {
+  margin: 0 auto 10px;
+  width: 85px;
+  height: 90px;
+}
+
+.reflection-title {
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  color: #1e1b4b;
+  margin: 4px 0 8px;
+}
+
+.reflection-subtitle {
+  font-size: 1.05rem;
+  color: #475569;
+  max-width: 580px;
+  margin: 0 auto 20px;
+  line-height: 1.45;
+}
+
+.reflection-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.reflection-option-card {
+  background: #ffffff;
+  border-radius: var(--radius-lg);
+  padding: 16px 12px;
+  border: 3px solid #e2e8f0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.34, 1.3, 0.64, 1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  user-select: none;
+  min-height: 220px;
+}
+
+.reflection-option-card:hover {
+  transform: translateY(-6px) scale(1.03);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.1);
+}
+
+.emotion-svg-wrap {
+  width: 90px;
+  height: 90px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 10px;
+  transition: transform 0.3s ease;
+}
+
+.emotion-label {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 800;
+  margin-bottom: 6px;
+  line-height: 1.2;
+}
+
+.emotion-desc {
+  font-size: 0.8rem;
+  color: #64748b;
+  line-height: 1.35;
+}
+
+/* 1. SANGAT SENANG (Pink Pastel) */
+.emotion-card-sangat-senang {
+  background: linear-gradient(180deg, #ffffff 0%, #fff1f2 100%);
+  border-color: #fbcfe8;
+}
+.emotion-card-sangat-senang .emotion-label {
+  color: #db2777;
+}
+.emotion-card-sangat-senang.active,
+.emotion-card-sangat-senang:hover {
+  border-color: #ec4899;
+  background: #fdf2f8;
+}
+.emotion-card-sangat-senang.active .emotion-svg-wrap {
+  animation: jumpJoy 1.2s infinite ease-in-out;
+}
+
+/* 2. SENANG (Ungu Muda) */
+.emotion-card-senang {
+  background: linear-gradient(180deg, #ffffff 0%, #faf5ff 100%);
+  border-color: #e9d5ff;
+}
+.emotion-card-senang .emotion-label {
+  color: #7c3aed;
+}
+.emotion-card-senang.active,
+.emotion-card-senang:hover {
+  border-color: #a855f7;
+  background: #f5f3ff;
+}
+.emotion-card-senang.active .emotion-svg-wrap {
+  animation: gentleSway 1.4s infinite ease-in-out;
+}
+
+/* 3. MASIH BINGUNG (Biru Muda) */
+.emotion-card-masih-bingung {
+  background: linear-gradient(180deg, #ffffff 0%, #f0f9ff 100%);
+  border-color: #bae6fd;
+}
+.emotion-card-masih-bingung .emotion-label {
+  color: #0284c7;
+}
+.emotion-card-masih-bingung.active,
+.emotion-card-masih-bingung:hover {
+  border-color: #38bdf8;
+  background: #e0f2fe;
+}
+.emotion-card-masih-bingung.active .emotion-svg-wrap {
+  animation: tiltQuestion 1.4s infinite ease-in-out;
+}
+
+/* 4. SULIT (Merah Pastel) */
+.emotion-card-sulit {
+  background: linear-gradient(180deg, #ffffff 0%, #fef2f2 100%);
+  border-color: #fecaca;
+}
+.emotion-card-sulit .emotion-label {
+  color: #dc2626;
+}
+.emotion-card-sulit.active,
+.emotion-card-sulit:hover {
+  border-color: #f87171;
+  background: #fee2e2;
+}
+.emotion-card-sulit.active .emotion-svg-wrap {
+  animation: deepBreath 1.6s infinite ease-in-out;
+}
+
+/* Emotion Keyframe Animations */
+@keyframes jumpJoy {
+  0%, 100% { transform: translateY(0) scale(1); }
+  35% { transform: translateY(-14px) scale(1.1) rotate(-3deg); }
+  65% { transform: translateY(-4px) scale(1.05) rotate(3deg); }
+}
+
+@keyframes gentleSway {
+  0%, 100% { transform: rotate(0deg); }
+  30% { transform: rotate(-8deg) scale(1.05); }
+  70% { transform: rotate(8deg) scale(1.05); }
+}
+
+@keyframes tiltQuestion {
+  0%, 100% { transform: rotate(0deg) scale(1); }
+  50% { transform: rotate(12deg) translateY(-4px) scale(1.06); }
+}
+
+@keyframes deepBreath {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.08) translateY(-2px); }
+}
+
+/* Reflection Penguin Response Bubble */
+.reflection-response-box {
+  background: #ffffff;
+  border-radius: var(--radius-lg);
+  padding: 16px 20px;
+  border: 3px solid #cbd5e1;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
+  animation: fadeIn 0.4s ease;
+  max-width: 620px;
+  margin: 0 auto;
+}
+
+.reflection-penguin-speech {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 800;
+  line-height: 1.45;
+}
+
+@media (max-width: 768px) {
+  .reflection-cards-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
 

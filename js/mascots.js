@@ -508,6 +508,135 @@ const Mascots = {
     return `
       <div style="font-size:3rem; text-align:center;">🥘</div>
     `;
+  },
+
+  // 💕 4 Refleksi Perasaan Mascots (Sangat Senang, Senang, Masih Bingung, Sulit)
+  getEmotionSvg(type = 'sangat_senang', width = 90, height = 95) {
+    if (type === 'sangat_senang') {
+      return `
+        <svg width="${width}" height="${height}" viewBox="0 0 100 105" fill="none" xmlns="http://www.w3.org/2000/svg" class="emotion-svg-bounce">
+          <!-- Sparkles & Hearts -->
+          <path d="M15 25 Q18 15 25 22 Q32 15 35 25 Q25 40 15 25 Z" fill="#f43f5e" opacity="0.85"/>
+          <path d="M75 18 L77 24 L83 26 L77 28 L75 34 L73 28 L67 26 L73 24 Z" fill="#fbbf24"/>
+          <circle cx="88" cy="18" r="3" fill="#f472b6"/>
+          <!-- Penguin Body Joyful -->
+          <ellipse cx="50" cy="98" rx="28" ry="4" fill="rgba(0,0,0,0.12)"/>
+          <!-- Flippers Up (Jumping) -->
+          <path d="M22 45 C10 32 12 18 20 24 C24 30 26 42 24 52 Z" fill="#0284c7" stroke="#0369a1" stroke-width="2"/>
+          <path d="M78 45 C90 32 88 18 80 24 C76 30 74 42 76 52 Z" fill="#0284c7" stroke="#0369a1" stroke-width="2"/>
+          <!-- Body -->
+          <path d="M50 18 C32 18 22 34 22 60 C22 84 34 94 50 94 C66 94 78 84 78 60 C78 34 68 18 50 18 Z" fill="#0369a1" stroke="#075985" stroke-width="2.5"/>
+          <path d="M50 32 C38 32 30 44 30 65 C30 86 38 91 50 91 C62 91 70 86 70 65 C70 44 62 32 50 32 Z" fill="#fff1f2" stroke="#fbcfe8" stroke-width="1.5"/>
+          <!-- Scarf Pink -->
+          <path d="M30 40 C40 45 60 45 70 40 C67 47 60 49 50 49 C40 49 33 47 30 40 Z" fill="#ec4899"/>
+          <!-- Sparkly Happy Eyes (Arcs ^_^) -->
+          <path d="M38 33 Q42 27 46 33" stroke="#0f172a" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+          <path d="M54 33 Q58 27 62 33" stroke="#0f172a" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+          <!-- Wide Open Smile Beak -->
+          <path d="M44 37 Q50 47 56 37 Z" fill="#f59e0b" stroke="#d97706" stroke-width="1.5"/>
+          <!-- Rosy Cheeks -->
+          <circle cx="35" cy="38" r="4" fill="#fb7185" opacity="0.6"/>
+          <circle cx="65" cy="38" r="4" fill="#fb7185" opacity="0.6"/>
+        </svg>
+      `;
+    }
+
+    if (type === 'senang') {
+      return `
+        <svg width="${width}" height="${height}" viewBox="0 0 100 105" fill="none" xmlns="http://www.w3.org/2000/svg" class="emotion-svg-sway">
+          <!-- Small Star -->
+          <path d="M78 20 L80 25 L85 26 L80 28 L78 33 L76 28 L71 26 L76 25 Z" fill="#c084fc"/>
+          <circle cx="20" cy="22" r="3" fill="#a855f7" opacity="0.6"/>
+          <!-- Penguin Body Relaxed Smiling -->
+          <ellipse cx="50" cy="98" rx="28" ry="4" fill="rgba(0,0,0,0.12)"/>
+          <!-- One Waving Flipper -->
+          <path d="M24 50 C12 40 14 26 22 30 C26 36 28 46 26 56 Z" fill="#0284c7" stroke="#0369a1" stroke-width="2"/>
+          <path d="M76 50 C86 56 88 68 82 72 C78 68 76 60 74 54 Z" fill="#0284c7" stroke="#0369a1" stroke-width="2"/>
+          <!-- Body -->
+          <path d="M50 18 C32 18 22 34 22 60 C22 84 34 94 50 94 C66 94 78 84 78 60 C78 34 68 18 50 18 Z" fill="#0369a1" stroke="#075985" stroke-width="2.5"/>
+          <path d="M50 32 C38 32 30 44 30 65 C30 86 38 91 50 91 C62 91 70 86 70 65 C70 44 62 32 50 32 Z" fill="#f5f3ff" stroke="#ddd6fe" stroke-width="1.5"/>
+          <!-- Scarf Purple -->
+          <path d="M30 40 C40 45 60 45 70 40 C67 47 60 49 50 49 C40 49 33 47 30 40 Z" fill="#8b5cf6"/>
+          <!-- Cheerful Round Eyes -->
+          <circle cx="42" cy="32" r="4.5" fill="#0f172a"/>
+          <circle cx="58" cy="32" r="4.5" fill="#0f172a"/>
+          <circle cx="41" cy="30" r="1.5" fill="#ffffff"/>
+          <circle cx="57" cy="30" r="1.5" fill="#ffffff"/>
+          <!-- Happy Smile Beak -->
+          <path d="M46 38 C50 42 54 42 54 38 Z" fill="#f59e0b" stroke="#d97706" stroke-width="1.5"/>
+          <circle cx="36" cy="37" r="3.5" fill="#c084fc" opacity="0.6"/>
+          <circle cx="64" cy="37" r="3.5" fill="#c084fc" opacity="0.6"/>
+        </svg>
+      `;
+    }
+
+    if (type === 'masih_bingung') {
+      return `
+        <svg width="${width}" height="${height}" viewBox="0 0 100 105" fill="none" xmlns="http://www.w3.org/2000/svg" class="emotion-svg-tilt">
+          <!-- Cute Question Mark -->
+          <g transform="translate(68, 12)">
+            <circle cx="12" cy="12" r="10" fill="#e0f2fe" stroke="#38bdf8" stroke-width="1.5"/>
+            <text x="12" y="17" font-size="14" font-family="Fredoka, sans-serif" font-weight="900" fill="#0284c7" text-anchor="middle">?</text>
+          </g>
+          <!-- Penguin Body Head Tilted -->
+          <ellipse cx="50" cy="98" rx="28" ry="4" fill="rgba(0,0,0,0.12)"/>
+          <g transform="rotate(8 50 60)">
+            <!-- Rest Flippers -->
+            <path d="M24 50 C14 56 12 70 18 73 C22 68 25 58 26 52 Z" fill="#0284c7" stroke="#0369a1" stroke-width="2"/>
+            <path d="M76 50 C86 56 88 70 82 73 C78 68 75 58 74 52 Z" fill="#0284c7" stroke="#0369a1" stroke-width="2"/>
+            <!-- Body -->
+            <path d="M50 18 C32 18 22 34 22 60 C22 84 34 94 50 94 C66 94 78 84 78 60 C78 34 68 18 50 18 Z" fill="#0369a1" stroke="#075985" stroke-width="2.5"/>
+            <path d="M50 32 C38 32 30 44 30 65 C30 86 38 91 50 91 C62 91 70 86 70 65 C70 44 62 32 50 32 Z" fill="#f0f9ff" stroke="#bae6fd" stroke-width="1.5"/>
+            <!-- Scarf Blue -->
+            <path d="M30 40 C40 45 60 45 70 40 C67 47 60 49 50 49 C40 49 33 47 30 40 Z" fill="#0284c7"/>
+            <!-- Curious Thinking Eyes (One slightly higher) -->
+            <ellipse cx="42" cy="30" rx="4" ry="5.5" fill="#0f172a"/>
+            <ellipse cx="58" cy="33" rx="4" ry="5.5" fill="#0f172a"/>
+            <circle cx="41" cy="28" r="1.5" fill="#ffffff"/>
+            <circle cx="57" cy="31" r="1.5" fill="#ffffff"/>
+            <!-- Small O-mouth Beak -->
+            <ellipse cx="50" cy="40" rx="3.5" ry="3" fill="#f59e0b" stroke="#d97706" stroke-width="1.2"/>
+            <!-- Subtle Cheek -->
+            <circle cx="34" cy="37" r="3" fill="#38bdf8" opacity="0.5"/>
+            <circle cx="66" cy="39" r="3" fill="#38bdf8" opacity="0.5"/>
+          </g>
+        </svg>
+      `;
+    }
+
+    if (type === 'sulit') {
+      return `
+        <svg width="${width}" height="${height}" viewBox="0 0 100 105" fill="none" xmlns="http://www.w3.org/2000/svg" class="emotion-svg-think">
+          <!-- Encouraging Little Lightbulb / Warm Heart -->
+          <g transform="translate(14, 14)">
+            <path d="M12 4 Q14 0 18 4 Q22 0 24 4 Q18 14 12 4 Z" fill="#f87171" opacity="0.85"/>
+          </g>
+          <!-- Penguin Body Thinking Gently (Never sad/crying, supportive & cute) -->
+          <ellipse cx="50" cy="98" rx="28" ry="4" fill="rgba(0,0,0,0.12)"/>
+          <!-- One Hand to Chin/Beak thinking -->
+          <path d="M24 52 C14 58 12 72 18 75 C22 70 25 60 26 54 Z" fill="#0284c7" stroke="#0369a1" stroke-width="2"/>
+          <path d="M76 52 C65 48 55 46 52 48 C55 56 65 60 74 54 Z" fill="#0284c7" stroke="#0369a1" stroke-width="2"/>
+          <!-- Body -->
+          <path d="M50 18 C32 18 22 34 22 60 C22 84 34 94 50 94 C66 94 78 84 78 60 C78 34 68 18 50 18 Z" fill="#0369a1" stroke="#075985" stroke-width="2.5"/>
+          <path d="M50 32 C38 32 30 44 30 65 C30 86 38 91 50 91 C62 91 70 86 70 65 C70 44 62 32 50 32 Z" fill="#fef2f2" stroke="#fecaca" stroke-width="1.5"/>
+          <!-- Scarf Coral/Red -->
+          <path d="M30 40 C40 45 60 45 70 40 C67 47 60 49 50 49 C40 49 33 47 30 40 Z" fill="#f43f5e"/>
+          <!-- Determined / Concentrating Eyes -->
+          <circle cx="42" cy="33" r="4.5" fill="#0f172a"/>
+          <circle cx="58" cy="33" r="4.5" fill="#0f172a"/>
+          <circle cx="43" cy="32" r="1.5" fill="#ffffff"/>
+          <circle cx="59" cy="32" r="1.5" fill="#ffffff"/>
+          <path d="M38 27 L46 29" stroke="#0f172a" stroke-width="1.5" stroke-linecap="round"/>
+          <path d="M62 27 L54 29" stroke="#0f172a" stroke-width="1.5" stroke-linecap="round"/>
+          <!-- Small Beak -->
+          <path d="M46 38 Q50 42 54 38 Z" fill="#f59e0b" stroke="#d97706" stroke-width="1.5"/>
+          <circle cx="36" cy="38" r="3" fill="#fca5a5" opacity="0.6"/>
+          <circle cx="64" cy="38" r="3" fill="#fca5a5" opacity="0.6"/>
+        </svg>
+      `;
+    }
+
+    return `<div style="font-size:3rem;">🐧</div>`;
   }
 };
 

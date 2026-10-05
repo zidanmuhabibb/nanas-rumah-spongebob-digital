@@ -600,15 +600,37 @@ class NRSDApp {
       this.showScreen('screen-home');
     });
 
+    // Practice focus selection cards (4 Fitur Resmi)
+    document.querySelectorAll('.practice-focus-card').forEach(card => {
+      card.addEventListener('click', () => {
+        window.soundEngine.playPop();
+        document.querySelectorAll('.practice-focus-card').forEach(c => c.classList.remove('selected'));
+        card.classList.add('selected');
+        this.practiceFocus = card.dataset.focus || 'placeValue';
+      });
+    });
+
+    // Practice Question Count Pills
+    document.querySelectorAll('.count-pill').forEach(pill => {
+      pill.addEventListener('click', () => {
+        window.soundEngine.playPop();
+        document.querySelectorAll('.count-pill').forEach(p => p.classList.remove('active'));
+        pill.classList.add('active');
+        this.practiceCount = parseInt(pill.dataset.count, 10) || 5;
+      });
+    });
+
     // Start Practice button routing to specific interactive view
     document.getElementById('btnStartPracticeQuiz')?.addEventListener('click', () => {
       window.soundEngine.playPop();
       if (this.practiceFocus === 'placeValue') {
         this.startPlaceValueInteractive();
-      } else if (this.practiceFocus === 'regrouping' || this.practiceFocus === 'carryDigit') {
-        this.startRegroupingInteractive(this.practiceFocus);
-      } else if (this.practiceFocus === 'withCarry' || this.practiceFocus === 'wordProblems') {
-        this.startWorkspacePractice(this.practiceFocus, this.practiceCount);
+      } else if (this.practiceFocus === 'regrouping') {
+        this.startRegroupingInteractive();
+      } else if (this.practiceFocus === 'withCarry') {
+        this.startWorkspacePractice('withCarry', this.practiceCount);
+      } else if (this.practiceFocus === 'wordProblems') {
+        this.startPracticeQuiz();
       } else {
         this.startPracticeQuiz();
       }
@@ -626,30 +648,58 @@ class NRSDApp {
 
     document.getElementById('btnPVNext')?.addEventListener('click', () => {
       window.soundEngine.playPop();
-      const numbers = [58, 36, 92, 24, 71, 63, 85, 49];
-      const nextNum = numbers[Math.floor(Math.random() * numbers.length)];
+      const numbers = [47, 52, 63, 81, 95, 38, 74, 96];
+      let nextNum = numbers[Math.floor(Math.random() * numbers.length)];
+      if (nextNum === this.pvCurrentNumber) {
+        nextNum = numbers[(numbers.indexOf(nextNum) + 1) % numbers.length];
+      }
       this.setupPlaceValueNumber(nextNum);
     });
 
-    // Regrouping View buttons
+    // Regrouping View buttons (Tukar 10 Satuan & Simpan 1 Puluhan)
     document.getElementById('btnRGQuit')?.addEventListener('click', () => {
       this.openPracticeSetup();
     });
 
     document.getElementById('btnRGReset')?.addEventListener('click', () => {
       window.soundEngine.playPop();
-      this.setupRegroupingExample(27, 18);
+      this.setupRegroupingExample(this.rgCurrentPair?.a || 7, this.rgCurrentPair?.b || 8);
     });
 
     document.getElementById('btnRGNext')?.addEventListener('click', () => {
       window.soundEngine.playPop();
-      const pairs = [{ a: 38, b: 27 }, { a: 46, b: 17 }, { a: 58, b: 24 }, { a: 67, b: 15 }];
-      const nextPair = pairs[Math.floor(Math.random() * pairs.length)];
+      const pairs = [
+        { a: 7, b: 8 },
+        { a: 6, b: 7 },
+        { a: 8, b: 9 },
+        { a: 9, b: 6 },
+        { a: 8, b: 6 },
+        { a: 7, b: 5 }
+      ];
+      let nextPair = pairs[Math.floor(Math.random() * pairs.length)];
+      if (this.rgCurrentPair && nextPair.a === this.rgCurrentPair.a && nextPair.b === this.rgCurrentPair.b) {
+        nextPair = pairs[(pairs.indexOf(nextPair) + 1) % pairs.length];
+      }
       this.setupRegroupingExample(nextPair.a, nextPair.b);
     });
 
     document.getElementById('btnRGRunPenguin')?.addEventListener('click', () => {
       this.animateRegroupingPenguinGlide(1);
+    });
+
+    // Cerita Matematika Helper Button (BUKA RUMAH NANAS - Revisi 15)
+    document.getElementById('btnOpenPineappleHouseWorkspace')?.addEventListener('click', () => {
+      window.soundEngine.playPop();
+      const q = this.practiceQuestions[this.practiceIndex];
+      if (q) {
+        this.setMode('latihan');
+        this.showScreen('screen-workspace');
+        this.startProblem(q.a, q.b);
+        const spongeSpeech = document.getElementById('wsSpongeSpeech');
+        if (spongeSpeech) {
+          spongeSpeech.innerHTML = `Rumah Nanas terbuka! Mari hitung <strong>${q.a} + ${q.b}</strong> mulai dari Rumah Satuan (Pink) ya!`;
+        }
+      }
     });
 
     // Quiz Mode buttons
@@ -676,7 +726,7 @@ class NRSDApp {
     // Summary buttons
     document.getElementById('btnSummaryRetry')?.addEventListener('click', () => {
       window.soundEngine.playPop();
-      if (this.practiceFocus === 'withCarry' || this.practiceFocus === 'wordProblems') {
+      if (this.practiceFocus === 'withCarry') {
         this.startWorkspacePractice(this.practiceFocus, this.practiceCount);
       } else {
         this.startPracticeQuiz();
@@ -706,7 +756,7 @@ class NRSDApp {
     });
   }
 
-  /* --- Fitur 1: Nilai Tempat Interactive Stage --- */
+  /* --- Fitur 1: KENALI RUMAH BILANGAN (Pure Drag & Drop dengan Formative Feedback) --- */
   startPlaceValueInteractive() {
     document.getElementById('practiceSetupView').style.display = 'none';
     document.getElementById('practicePlaceValueView').style.display = 'block';
@@ -721,6 +771,7 @@ class NRSDApp {
     this.pvCurrentNumber = num;
     this.pvTensPlaced = false;
     this.pvOnesPlaced = false;
+    this.selectedPVBall = null;
 
     const numDisplay = document.getElementById('pvNumberDisplay');
     if (numDisplay) numDisplay.textContent = num;
@@ -731,136 +782,428 @@ class NRSDApp {
     const ballsContainer = document.getElementById('pvAvailableBalls');
     if (ballsContainer) {
       ballsContainer.innerHTML = `
-        <div class="digit-ball digit-ball-purple" id="pvBallTens" data-type="tens" data-digit="${tens}" style="cursor:pointer; width:60px; height:60px; font-size:2rem;" title="Klik untuk tempatkan ke Rumah Puluhan">${tens}</div>
-        <div class="digit-ball digit-ball-amber" id="pvBallOnes" data-type="ones" data-digit="${ones}" style="cursor:pointer; width:60px; height:60px; font-size:2rem;" title="Klik untuk tempatkan ke Rumah Satuan">${ones}</div>
+        <div class="digit-ball digit-ball-purple pv-draggable-ball" id="pvBallTens" draggable="true" data-type="tens" data-digit="${tens}" style="cursor:grab; width:65px; height:65px; font-size:2.2rem;" title="Seret angka ${tens} ke rumah yang benar">${tens}</div>
+        <div class="digit-ball digit-ball-amber pv-draggable-ball" id="pvBallOnes" draggable="true" data-type="ones" data-digit="${ones}" style="cursor:grab; width:65px; height:65px; font-size:2.2rem;" title="Seret angka ${ones} ke rumah yang benar">${ones}</div>
       `;
     }
 
     const tensSlot = document.getElementById('pvTensSlot');
     const onesSlot = document.getElementById('pvOnesSlot');
-    if (tensSlot) tensSlot.innerHTML = `<span style="color:#92400e; font-weight:700; font-size:0.9rem;">Letakkan digit puluhan (${tens}) di sini</span>`;
-    if (onesSlot) onesSlot.innerHTML = `<span style="color:#9f1239; font-weight:700; font-size:0.9rem;">Letakkan digit satuan (${ones}) di sini</span>`;
+    if (tensSlot) tensSlot.innerHTML = `<span style="color:#92400e; font-weight:700; font-size:0.88rem; text-align:center;">Seret digit Puluhan ke sini</span>`;
+    if (onesSlot) onesSlot.innerHTML = `<span style="color:#9f1239; font-weight:700; font-size:0.88rem; text-align:center;">Seret digit Satuan ke sini</span>`;
 
     const fbBox = document.getElementById('pvFeedbackBox');
     if (fbBox) fbBox.style.display = 'none';
 
-    // Bind click interactivity
+    // Bind Drag and Drop Events + Touch/Click fallback
+    this.bindPVDragAndDrop(tens, ones);
+  }
+
+  bindPVDragAndDrop(tens, ones) {
     const ballT = document.getElementById('pvBallTens');
     const ballO = document.getElementById('pvBallOnes');
-    const dropT = document.getElementById('pvDropTens');
-    const dropO = document.getElementById('pvDropOnes');
+    const dropTens = document.getElementById('pvDropTens');
+    const dropOnes = document.getElementById('pvDropOnes');
 
-    ballT?.addEventListener('click', () => {
-      this.placePVDigit('tens', tens);
-    });
+    const handleDragStart = (e, ballType, digitVal) => {
+      e.dataTransfer.setData('text/plain', JSON.stringify({ type: ballType, val: digitVal }));
+      e.target.classList.add('dragging');
+      this.selectedPVBall = { type: ballType, val: digitVal, elem: e.target };
+    };
 
-    ballO?.addEventListener('click', () => {
-      this.placePVDigit('ones', ones);
-    });
+    const handleDragEnd = (e) => {
+      e.target.classList.remove('dragging');
+    };
 
-    dropT?.addEventListener('click', () => {
-      if (!this.pvTensPlaced) this.placePVDigit('tens', tens);
-    });
+    ballT?.addEventListener('dragstart', (e) => handleDragStart(e, 'tens', tens));
+    ballT?.addEventListener('dragend', handleDragEnd);
 
-    dropO?.addEventListener('click', () => {
-      if (!this.pvOnesPlaced) this.placePVDigit('ones', ones);
-    });
+    ballO?.addEventListener('dragstart', (e) => handleDragStart(e, 'ones', ones));
+    ballO?.addEventListener('dragend', handleDragEnd);
+
+    // Click/Touch Selection fallback
+    const setupBallClick = (ball, ballType, digitVal) => {
+      ball?.addEventListener('click', () => {
+        window.soundEngine.playPop();
+        document.querySelectorAll('.pv-draggable-ball').forEach(b => b.classList.remove('selected-for-drop'));
+        ball.classList.add('selected-for-drop');
+        this.selectedPVBall = { type: ballType, val: digitVal, elem: ball };
+        this.showToast(`Angka ${digitVal} dipilih. Sekarang klik Rumah Puluhan atau Rumah Satuan!`, 'info');
+      });
+    };
+    setupBallClick(ballT, 'tens', tens);
+    setupBallClick(ballO, 'ones', ones);
+
+    // Setup Drop Zones
+    const setupDropZone = (dropElem, targetHouse) => {
+      dropElem?.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        dropElem.classList.add('drag-over');
+      });
+
+      dropElem?.addEventListener('dragleave', () => {
+        dropElem.classList.remove('drag-over');
+      });
+
+      dropElem?.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropElem.classList.remove('drag-over');
+        try {
+          const data = JSON.parse(e.dataTransfer.getData('text/plain'));
+          this.validatePVDrop(data.type, data.val, targetHouse);
+        } catch (err) {
+          if (this.selectedPVBall) {
+            this.validatePVDrop(this.selectedPVBall.type, this.selectedPVBall.val, targetHouse);
+          }
+        }
+      });
+
+      // Click dropzone for tap selection
+      dropElem?.addEventListener('click', () => {
+        if (this.selectedPVBall) {
+          this.validatePVDrop(this.selectedPVBall.type, this.selectedPVBall.val, targetHouse);
+        }
+      });
+    };
+
+    setupDropZone(dropTens, 'pv-tens');
+    setupDropZone(dropOnes, 'pv-ones');
   }
 
-  placePVDigit(type, val) {
-    window.soundEngine.playSnap();
+  validatePVDrop(ballType, digitVal, targetHouse) {
     const tens = Math.floor(this.pvCurrentNumber / 10);
     const ones = this.pvCurrentNumber % 10;
+    const fbBox = document.getElementById('pvFeedbackBox');
+    const fbIcon = document.getElementById('pvFeedbackIcon');
+    const fbText = document.getElementById('pvFeedbackText');
 
-    if (type === 'tens') {
-      this.pvTensPlaced = true;
-      document.getElementById('pvBallTens')?.remove();
-      const tensSlot = document.getElementById('pvTensSlot');
-      if (tensSlot) {
-        tensSlot.innerHTML = `<div class="digit-ball digit-ball-purple locked" style="width:60px; height:60px; font-size:2rem;">${val}</div>`;
+    if (ballType === 'tens') {
+      if (targetHouse === 'pv-tens') {
+        // Correct drop for Tens
+        window.soundEngine.playSnap();
+        this.pvTensPlaced = true;
+        document.getElementById('pvBallTens')?.remove();
+        this.selectedPVBall = null;
+
+        const tensSlot = document.getElementById('pvTensSlot');
+        if (tensSlot) {
+          tensSlot.innerHTML = `<div class="digit-ball digit-ball-purple locked" style="width:65px; height:65px; font-size:2.2rem;">${digitVal}</div>`;
+        }
+
+        if (fbBox && fbIcon && fbText) {
+          fbBox.className = 'growth-feedback-box correct show';
+          fbBox.style.display = 'flex';
+          fbIcon.textContent = '⭐';
+          fbText.innerHTML = `<strong>Benar!</strong> Angka <strong>${digitVal}</strong> berada pada tempat puluhan. ⭐`;
+        }
+        window.soundEngine.speak(`Benar! ${digitVal} berada pada tempat puluhan.`);
+      } else {
+        // Wrong drop: student dropped tens into ones house! DO NOT AUTO MOVE
+        window.soundEngine.playWrong();
+        if (fbBox && fbIcon && fbText) {
+          fbBox.className = 'growth-feedback-box wrong show';
+          fbBox.style.display = 'flex';
+          fbIcon.textContent = '💡';
+          fbText.innerHTML = `<strong>Belum tepat.</strong> Coba perhatikan posisi angka <strong>${digitVal}</strong> pada bilangan <strong>${this.pvCurrentNumber}</strong>. Apakah angka ${digitVal} menunjukkan puluhan atau satuan?`;
+        }
+        window.soundEngine.speak(`Belum tepat. Coba perhatikan posisi angka ${digitVal} pada bilangan ${this.pvCurrentNumber}.`);
       }
-    } else {
-      this.pvOnesPlaced = true;
-      document.getElementById('pvBallOnes')?.remove();
-      const onesSlot = document.getElementById('pvOnesSlot');
-      if (onesSlot) {
-        onesSlot.innerHTML = `<div class="digit-ball digit-ball-amber locked" style="width:60px; height:60px; font-size:2rem;">${val}</div>`;
+    } else if (ballType === 'ones') {
+      if (targetHouse === 'pv-ones') {
+        // Correct drop for Ones
+        window.soundEngine.playSnap();
+        this.pvOnesPlaced = true;
+        document.getElementById('pvBallOnes')?.remove();
+        this.selectedPVBall = null;
+
+        const onesSlot = document.getElementById('pvOnesSlot');
+        if (onesSlot) {
+          onesSlot.innerHTML = `<div class="digit-ball digit-ball-amber locked" style="width:65px; height:65px; font-size:2.2rem;">${digitVal}</div>`;
+        }
+
+        if (fbBox && fbIcon && fbText) {
+          fbBox.className = 'growth-feedback-box correct show';
+          fbBox.style.display = 'flex';
+          fbIcon.textContent = '⭐';
+          fbText.innerHTML = `<strong>Benar!</strong> Angka <strong>${digitVal}</strong> berada pada tempat satuan. ⭐`;
+        }
+        window.soundEngine.speak(`Benar! ${digitVal} berada pada tempat satuan.`);
+      } else {
+        // Wrong drop: student dropped ones into tens house! DO NOT AUTO MOVE
+        window.soundEngine.playWrong();
+        if (fbBox && fbIcon && fbText) {
+          fbBox.className = 'growth-feedback-box wrong show';
+          fbBox.style.display = 'flex';
+          fbIcon.textContent = '💡';
+          fbText.innerHTML = `<strong>Belum tepat.</strong> Coba perhatikan posisi angka <strong>${digitVal}</strong> pada bilangan <strong>${this.pvCurrentNumber}</strong>. Apakah angka ${digitVal} menunjukkan puluhan atau satuan?`;
+        }
+        window.soundEngine.speak(`Belum tepat. Coba perhatikan posisi angka ${digitVal} pada bilangan ${this.pvCurrentNumber}.`);
       }
     }
 
+    // Check if both are correctly placed
     if (this.pvTensPlaced && this.pvOnesPlaced) {
       window.soundEngine.playSuccessFanfare();
-      const fbBox = document.getElementById('pvFeedbackBox');
-      const fbText = document.getElementById('pvFeedbackText');
-      if (fbBox && fbText) {
+      if (fbBox && fbIcon && fbText) {
         fbBox.className = 'growth-feedback-box correct show';
         fbBox.style.display = 'flex';
-        fbText.innerHTML = `<strong>Hebat!</strong> Pada bilangan <strong>${this.pvCurrentNumber}</strong>: Angka <strong>${tens}</strong> menempati Rumah Puluhan (${tens * 10}) dan Angka <strong>${ones}</strong> menempati Rumah Satuan (${ones})!`;
+        fbIcon.textContent = '🎉';
+        fbText.innerHTML = `<strong>Luar Biasa!</strong> Pada bilangan <strong>${this.pvCurrentNumber}</strong>: Angka <strong>${tens}</strong> menempati Rumah Puluhan (${tens * 10}) dan Angka <strong>${ones}</strong> menempati Rumah Satuan (${ones})!`;
       }
-      window.soundEngine.speak(`Hebat! ${tens} adalah puluhan dan ${ones} adalah satuan.`);
+      window.soundEngine.speak(`Luar biasa! Pada bilangan ${this.pvCurrentNumber}, ${tens} adalah puluhan dan ${ones} adalah satuan.`);
     }
   }
 
-  /* --- Fitur 2 & 3: Regrouping & Angka Simpan 3-Column Interactive Stage --- */
-  startRegroupingInteractive(mode) {
+  /* --- Fitur 2: TUKAR 10 SATUAN & SIMPAN 1 PULUHAN (Merged Single-Digit Addition > 9) --- */
+  startRegroupingInteractive() {
     document.getElementById('practiceSetupView').style.display = 'none';
     document.getElementById('practicePlaceValueView').style.display = 'none';
     document.getElementById('practiceRegroupingView').style.display = 'block';
     document.getElementById('practiceQuizView').style.display = 'none';
     document.getElementById('practiceSummaryView').style.display = 'none';
 
-    this.setupRegroupingExample(27, 18);
+    this.setupRegroupingExample(7, 8);
   }
 
-  setupRegroupingExample(a, b) {
-    const o1 = a % 10;
-    const o2 = b % 10;
-    const onesSum = o1 + o2;
-    const carry = Math.floor(onesSum / 10);
-    const onesRemain = onesSum % 10;
+  setupRegroupingExample(a = 7, b = 8) {
+    this.rgCurrentPair = { a, b };
+    const onesSum = a + b;
+    const carry = 1;
+    const onesRemain = onesSum - 10;
+    this.rgTensPlaced = false;
+    this.rgOnesPlaced = false;
+    this.selectedRGBall = null;
 
     const title = document.getElementById('rgTitle');
     const subtitle = document.getElementById('rgSubtitle');
 
     if (title) {
-      title.innerHTML = `Hasil Penjumlahan Satuan: <span style="font-family:var(--font-numbers); color:#d97706; font-size:2.2rem; font-weight:900;">${o1} + ${o2} = ${onesSum} Satuan</span>`;
+      title.innerHTML = `HASIL PENJUMLAHAN SATUAN: <span style="font-family:var(--font-numbers); color:#d97706; font-size:2.2rem; font-weight:900;">${a} + ${b} = ${onesSum} SATUAN</span>`;
     }
     if (subtitle) {
-      subtitle.innerHTML = `Karena hasil satuan <strong style="color:#e11d48;">${onesSum} &ge; 10</strong> (lebih dari 9), kelompokkan <strong style="color:#7c3aed;">10 Satuan</strong> menjadi <strong style="color:#7c3aed;">${carry} Puluhan</strong> yang siap dibawa Penguin ke Rumah Puluhan!`;
+      subtitle.innerHTML = `“${onesSum} satuan terdiri atas 10 satuan dan ${onesRemain} satuan.”`;
     }
 
-    const carryBall = document.getElementById('rgCarryBall');
-    const onesBall = document.getElementById('rgOnesBall');
-    const onesRemainText = document.getElementById('rgOnesRemainText');
-    if (carryBall) carryBall.textContent = `${carry}`;
-    if (onesBall) onesBall.textContent = `${onesRemain}`;
-    if (onesRemainText) onesRemainText.textContent = `(${onesRemain} Satuan)`;
-
-    // Populate 10 unit dots inside breakdown box
-    const dotsContainer = document.getElementById('rgBundleDots');
-    if (dotsContainer) {
-      let dotsHtml = '';
+    // Populate 10 unit dots
+    const bundleDots = document.getElementById('rgBundleDots');
+    if (bundleDots) {
+      let html = '';
       for (let i = 0; i < 10; i++) {
-        dotsHtml += `<div class="unit-dot" style="animation-delay:${i * 0.12}s;" title="1 Satuan (ke-${i+1})"></div>`;
+        html += `<div class="unit-dot" style="animation-delay:${i * 0.1}s;" title="Butir satuan ke-${i+1}"></div>`;
       }
-      dotsContainer.innerHTML = dotsHtml;
+      bundleDots.innerHTML = html;
     }
+
+    // Populate remaining unit dots
+    const remainDots = document.getElementById('rgRemainDots');
+    const remainLabel = document.getElementById('rgRemainDotsLabel');
+    if (remainLabel) remainLabel.textContent = `🟡 ${onesRemain} SATUAN (Sisa)`;
+    if (remainDots) {
+      let html = '';
+      for (let i = 0; i < onesRemain; i++) {
+        html += `<div class="unit-dot" style="background:radial-gradient(circle at 30% 30%, #fde047, #d97706); border-color:#92400e; animation-delay:${i * 0.12}s;" title="Sisa satuan ke-${i+1}"></div>`;
+      }
+      remainDots.innerHTML = html;
+    }
+
+    // Temporary Holding Area with Balls [1] and [onesRemain] (Revisi 5 & 6)
+    const tempRow = document.getElementById('rgTempBallsRow');
+    if (tempRow) {
+      tempRow.innerHTML = `
+        <div class="digit-ball digit-ball-purple rg-draggable-ball" id="rgTempBallTens" draggable="true" data-type="carry" data-val="${carry}" style="cursor:grab; width:60px; height:60px; font-size:2rem;" title="1 Puluhan (hasil pertukaran 10 satuan)">${carry}</div>
+        <div class="digit-ball digit-ball-amber rg-draggable-ball" id="rgTempBallOnes" draggable="true" data-type="remain" data-val="${onesRemain}" style="cursor:grab; width:60px; height:60px; font-size:2rem;" title="${onesRemain} Satuan (sisa satuan)">${onesRemain}</div>
+      `;
+    }
+
+    // Reset target drop zones in houses
+    const tensZone = document.getElementById('rgTensDropZone');
+    const onesZone = document.getElementById('rgOnesDropZone');
+    if (tensZone) tensZone.innerHTML = `<span>Drop Bola [${carry}] di sini</span>`;
+    if (onesZone) onesZone.innerHTML = `<span>Drop Bola [${onesRemain}] di sini</span>`;
+
+    const carrySlot = document.getElementById('rgCarryDropTarget');
+    if (carrySlot) {
+      carrySlot.innerHTML = '';
+      carrySlot.classList.remove('filled');
+    }
+
+    const nestSlot = document.getElementById('rgPenguinNestSlot');
+    if (nestSlot) {
+      nestSlot.innerHTML = '';
+      nestSlot.classList.remove('filled');
+    }
+
+    const runBtn = document.getElementById('btnRGRunPenguin');
+    if (runBtn) runBtn.style.display = 'none';
 
     // Populate Penguin SVG avatar
     const penguinAvatar = document.getElementById('rgPenguinAvatar');
     if (penguinAvatar) {
-      penguinAvatar.innerHTML = Mascots.getPenguinMascotSvg(90, 95, 'holding');
-    }
-
-    // Reset carry drop slot
-    const carryDropTarget = document.getElementById('rgCarryDropTarget');
-    if (carryDropTarget) {
-      carryDropTarget.innerHTML = '';
-      carryDropTarget.classList.remove('filled');
+      penguinAvatar.innerHTML = Mascots.getPenguinMascotSvg(90, 95, 'neutral');
     }
 
     const fbBox = document.getElementById('rgFeedbackBox');
     if (fbBox) fbBox.style.display = 'none';
+
+    // Bind Drag & Drop for Temporary Holding Balls
+    this.bindRGDragAndDrop(carry, onesRemain);
+  }
+
+  bindRGDragAndDrop(carry, remain) {
+    const ballT = document.getElementById('rgTempBallTens');
+    const ballO = document.getElementById('rgTempBallOnes');
+    const colTens = document.getElementById('rgColTens');
+    const colOnes = document.getElementById('rgColOnes');
+
+    const handleDragStart = (e, bType, bVal) => {
+      e.dataTransfer.setData('text/plain', JSON.stringify({ type: bType, val: bVal }));
+      e.target.classList.add('dragging');
+      this.selectedRGBall = { type: bType, val: bVal, elem: e.target };
+    };
+
+    const handleDragEnd = (e) => {
+      e.target.classList.remove('dragging');
+    };
+
+    ballT?.addEventListener('dragstart', (e) => handleDragStart(e, 'carry', carry));
+    ballT?.addEventListener('dragend', handleDragEnd);
+
+    ballO?.addEventListener('dragstart', (e) => handleDragStart(e, 'remain', remain));
+    ballO?.addEventListener('dragend', handleDragEnd);
+
+    // Tap/Click Selection fallback
+    const setupClickSelect = (ball, bType, bVal) => {
+      ball?.addEventListener('click', () => {
+        window.soundEngine.playPop();
+        document.querySelectorAll('.rg-draggable-ball').forEach(b => b.classList.remove('selected-for-drop'));
+        ball.classList.add('selected-for-drop');
+        this.selectedRGBall = { type: bType, val: bVal, elem: ball };
+        this.showToast(`Bola [${bVal}] dipilih. Klik Rumah Puluhan atau Rumah Satuan!`, 'info');
+      });
+    };
+    setupClickSelect(ballT, 'carry', carry);
+    setupClickSelect(ballO, 'remain', remain);
+
+    // Setup Drop Zones
+    const setupRGDropZone = (dropElem, targetHouse) => {
+      dropElem?.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        dropElem.classList.add('drag-over');
+      });
+
+      dropElem?.addEventListener('dragleave', () => {
+        dropElem.classList.remove('drag-over');
+      });
+
+      dropElem?.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropElem.classList.remove('drag-over');
+        try {
+          const data = JSON.parse(e.dataTransfer.getData('text/plain'));
+          this.validateRGDrop(data.type, data.val, targetHouse);
+        } catch (err) {
+          if (this.selectedRGBall) {
+            this.validateRGDrop(this.selectedRGBall.type, this.selectedRGBall.val, targetHouse);
+          }
+        }
+      });
+
+      dropElem?.addEventListener('click', () => {
+        if (this.selectedRGBall) {
+          this.validateRGDrop(this.selectedRGBall.type, this.selectedRGBall.val, targetHouse);
+        }
+      });
+    };
+
+    setupRGDropZone(colTens, 'rg-tens');
+    setupRGDropZone(colOnes, 'rg-ones');
+  }
+
+  validateRGDrop(bType, bVal, targetHouse) {
+    const fbBox = document.getElementById('rgFeedbackBox');
+    const fbIcon = document.getElementById('rgFeedbackIcon');
+    const fbText = document.getElementById('rgFeedbackText');
+
+    if (bType === 'carry') {
+      if (targetHouse === 'rg-tens') {
+        window.soundEngine.playSnap();
+        this.rgTensPlaced = true;
+        document.getElementById('rgTempBallTens')?.remove();
+        this.selectedRGBall = null;
+
+        const tensZone = document.getElementById('rgTensDropZone');
+        if (tensZone) {
+          tensZone.innerHTML = `<div class="digit-ball digit-ball-purple locked" style="width:50px; height:50px; font-size:1.6rem;">${bVal}</div>`;
+        }
+      } else {
+        window.soundEngine.playWrong();
+        if (fbBox && fbIcon && fbText) {
+          fbBox.className = 'growth-feedback-box wrong show';
+          fbBox.style.display = 'flex';
+          fbIcon.textContent = '💡';
+          fbText.innerHTML = `<strong>Belum tepat.</strong> Angka <strong>${bVal}</strong> adalah 1 puluhan hasil pertukaran 10 satuan, tempatkan di <strong>Rumah Puluhan</strong>!`;
+        }
+        return;
+      }
+    } else if (bType === 'remain') {
+      if (targetHouse === 'rg-ones') {
+        window.soundEngine.playSnap();
+        this.rgOnesPlaced = true;
+        document.getElementById('rgTempBallOnes')?.remove();
+        this.selectedRGBall = null;
+
+        const onesZone = document.getElementById('rgOnesDropZone');
+        if (onesZone) {
+          onesZone.innerHTML = `<div class="digit-ball digit-ball-amber locked" style="width:50px; height:50px; font-size:1.6rem;">${bVal}</div>`;
+        }
+      } else {
+        window.soundEngine.playWrong();
+        if (fbBox && fbIcon && fbText) {
+          fbBox.className = 'growth-feedback-box wrong show';
+          fbBox.style.display = 'flex';
+          fbIcon.textContent = '💡';
+          fbText.innerHTML = `<strong>Belum tepat.</strong> Angka <strong>${bVal}</strong> adalah sisa satuan, tempatkan di <strong>Rumah Satuan</strong>!`;
+        }
+        return;
+      }
+    }
+
+    // When both are placed in houses (Revisi 9 & 10)
+    if (this.rgTensPlaced && this.rgOnesPlaced) {
+      window.soundEngine.playCorrect();
+      const remain = this.rgCurrentPair ? (this.rgCurrentPair.a + this.rgCurrentPair.b - 10) : 5;
+
+      if (fbBox && fbIcon && fbText) {
+        fbBox.className = 'growth-feedback-box correct show';
+        fbBox.style.display = 'flex';
+        fbIcon.textContent = '✨';
+        fbText.innerHTML = `<strong>Benar!</strong> 10 satuan ditukar menjadi 1 puluhan dan tersisa ${remain} satuan.<br>Angka <strong>1</strong> adalah 1 puluhan hasil pertukaran 10 satuan. Angka ini akan disimpan oleh Penguin! 🐧`;
+      }
+      window.soundEngine.speak(`Benar! 10 satuan ditukar menjadi 1 puluhan dan tersisa ${remain} satuan. Angka 1 akan disimpan oleh Penguin.`);
+
+      // Step 9 & 10: Ball [1] enters Sarang Penguin
+      setTimeout(() => {
+        const tensZone = document.getElementById('rgTensDropZone');
+        if (tensZone) tensZone.innerHTML = `<span>1 Puluhan menuju Sarang Penguin ➜</span>`;
+
+        const nestSlot = document.getElementById('rgPenguinNestSlot');
+        if (nestSlot) {
+          nestSlot.innerHTML = `<div class="digit-ball digit-ball-carry" id="rgCarryBall" style="width:46px; height:46px; font-size:1.5rem;">1</div>`;
+          nestSlot.classList.add('filled');
+        }
+
+        const penguinAvatar = document.getElementById('rgPenguinAvatar');
+        if (penguinAvatar) {
+          penguinAvatar.innerHTML = Mascots.getPenguinMascotSvg(90, 95, 'holding');
+        }
+
+        const runBtn = document.getElementById('btnRGRunPenguin');
+        if (runBtn) {
+          runBtn.style.display = 'inline-flex';
+          runBtn.classList.add('pulse-btn');
+        }
+      }, 700);
+    }
   }
 
   animateRegroupingPenguinGlide(carryVal = 1) {
@@ -898,19 +1241,19 @@ class NRSDApp {
 
       window.soundEngine.playWhoosh();
 
-      // Step 1: Naik
+      // Step 1: NAIK sedikit (upward trajectory)
       requestAnimationFrame(() => {
         sprite.style.transition = 'top 0.45s ease-out, transform 0.3s ease';
         sprite.style.top = `${topCornerY}px`;
         sprite.style.transform = 'scale(1.1)';
 
-        // Step 2: Belok & Ke Kiri
+        // Step 2 & 3: BELOK & BERGERAK KE KIRI (Revisi 11)
         setTimeout(() => {
           sprite.style.transition = 'left 0.55s cubic-bezier(0.25, 1, 0.5, 1), transform 0.35s ease';
           sprite.style.transform = 'scale(1.1) rotate(-10deg)';
           sprite.style.left = `${endX}px`;
 
-          // Step 3: Land at Carry Slot
+          // Step 4: MASUK TEPAT KE SLOT ANGKA SIMPAN (Revisi 12)
           setTimeout(() => {
             sprite.style.transform = 'scale(1) rotate(0deg)';
             window.soundEngine.playCarryPlaced();
@@ -927,17 +1270,17 @@ class NRSDApp {
             if (fbBox && fbText) {
               fbBox.className = 'growth-feedback-box correct show';
               fbBox.style.display = 'flex';
-              fbText.innerHTML = `<strong>Luar Biasa!</strong> 10 Satuan telah dikelompokkan menjadi <strong>${carryVal} Puluhan</strong> dan berhasil dibawa Penguin meluncur ke Rumah Puluhan!`;
+              fbText.innerHTML = `<strong>Luar Biasa!</strong> Penguin berhasil mengantar angka simpan <strong>${carryVal}</strong> tepat ke Slot Angka Simpan di Rumah Puluhan! ⭐`;
             }
-            window.soundEngine.speak('10 satuan dikelompokkan menjadi 1 puluhan dibawa oleh penguin ke rumah puluhan.');
+            window.soundEngine.speak('Penguin berhasil menyimpan 1 puluhan ke slot angka simpan di rumah puluhan.');
           }, 600);
         }, 450);
       });
     }
   }
 
-  /* --- Fitur 4 & 5: Penjumlahan Menyimpan & Soal Cerita via Workspace Manipulatif --- */
-  startWorkspacePractice(focus, count = 5) {
+  /* --- Fitur 3: JUMLAHKAN DENGAN PENGUIN via Workspace Manipulatif --- */
+  startWorkspacePractice(focus = 'withCarry', count = 5) {
     this.isPracticeSession = true;
     this.practiceFocus = focus;
     this.practiceQuestions = this.generatePracticeQuestions(focus, count);
@@ -969,17 +1312,10 @@ class NRSDApp {
 
     this.startProblem(q.a, q.b);
 
-    if (this.practiceFocus === 'wordProblems') {
-      const instructionText = document.getElementById('wsInstructionText');
-      if (instructionText) instructionText.textContent = `📖 Soal Cerita: ${q.prompt}`;
-      const spongeSpeech = document.getElementById('wsSpongeSpeech');
-      if (spongeSpeech) spongeSpeech.innerHTML = `Mari kita selesaikan soal cerita ini bersama-sama! Hitung angka satuan <strong>${this.onesA} + ${this.onesB}</strong> di Rumah Satuan (Pink) ya!`;
-    } else {
-      const instructionText = document.getElementById('wsInstructionText');
-      if (instructionText) instructionText.textContent = `Latihan ${this.practiceIndex + 1}: Hitung ${q.a} + ${q.b} dengan Rumah Nanas & Penguin!`;
-      const spongeSpeech = document.getElementById('wsSpongeSpeech');
-      if (spongeSpeech) spongeSpeech.innerHTML = `Mulai dari Rumah Satuan (Pink) ya! Berapa hasil dari <strong>${this.onesA} + ${this.onesB}</strong>?`;
-    }
+    const instructionText = document.getElementById('wsInstructionText');
+    if (instructionText) instructionText.textContent = `Latihan ${this.practiceIndex + 1}: Hitung ${q.a} + ${q.b} dengan Rumah Nanas & Penguin!`;
+    const spongeSpeech = document.getElementById('wsSpongeSpeech');
+    if (spongeSpeech) spongeSpeech.innerHTML = `Mulai dari Rumah Satuan (Pink) ya! Berapa hasil dari <strong>${this.onesA} + ${this.onesB}</strong>?`;
   }
 
   finishPracticeSession() {
@@ -990,7 +1326,7 @@ class NRSDApp {
     this.recordSession({
       mode: 'latihan',
       focus: this.practiceFocus,
-      focusTitle: this.practiceFocus === 'wordProblems' ? 'Soal Cerita' : 'Penjumlahan Menyimpan',
+      focusTitle: this.practiceFocus === 'wordProblems' ? 'Cerita Matematika' : 'Jumlahkan dengan Penguin',
       total: this.practiceQuestions.length,
       correct: this.practiceCorrectCount,
       wrong: this.practiceWrongCount,
@@ -1021,11 +1357,11 @@ class NRSDApp {
     if (sumTime) sumTime.textContent = `${mins}:${secs}`;
 
     if (sumSub) {
-      sumSub.textContent = `Hebat ${this.state.studentName || 'Murid Juara'}! Kamu telah menuntaskan seluruh latihan manipulatif bersama Penguin!`;
+      sumSub.textContent = `Hebat ${this.state.studentName || 'Murid Juara'}! Kamu telah menuntaskan latihan bersama Penguin!`;
     }
 
     window.soundEngine.playLevelUp();
-    this.showAchievementModal('🎉 LATIHAN SELESAI!', `Hebat! Kamu telah menuntaskan seluruh soal latihan manipulatif dengan skor ${score}!`);
+    this.showAchievementModal('🎉 LATIHAN SELESAI!', `Hebat! Kamu telah menuntaskan latihan manipulatif dengan skor ${score}!`);
   }
 
   /* --- Fitur 3: Practice Quiz Mode (Angka Simpan) --- */
@@ -1152,6 +1488,15 @@ class NRSDApp {
     const promptText = document.getElementById('practicePromptText');
     if (promptText) promptText.innerHTML = q.prompt;
 
+    const storyHelperBox = document.getElementById('practiceStoryHelperBox');
+    const mathSentence = document.getElementById('practiceMathSentence');
+    if (this.practiceFocus === 'wordProblems') {
+      if (storyHelperBox) storyHelperBox.style.display = 'flex';
+      if (mathSentence) mathSentence.textContent = `${q.a} + ${q.b} = [ ? ]`;
+    } else {
+      if (storyHelperBox) storyHelperBox.style.display = 'none';
+    }
+
     const visualCard = document.getElementById('practiceVisualCard');
     if (visualCard) visualCard.innerHTML = q.visual || '';
 
@@ -1239,7 +1584,7 @@ class NRSDApp {
       feedbackBox.className = 'growth-feedback-box hint show';
       feedbackBox.style.display = 'flex';
       feedbackIcon.textContent = '💡';
-      feedbackText.innerHTML = `<strong>Petunjuk:</strong> ${q.hint1 || 'Jumlahkan satuan terlebih dahulu lalu simpan 1 ke puluhan.'}`;
+      feedbackText.innerHTML = `<strong>Petunjuk:</strong> Mulailah menjumlahkan angka pada kolom satuan ${q.a % 10} + ${q.b % 10}, lalu kelompokkan 10 satuan menjadi 1 puluhan simpan!`;
     }
   }
 
@@ -1270,7 +1615,7 @@ class NRSDApp {
     this.recordSession({
       mode: 'latihan',
       focus: this.practiceFocus,
-      focusTitle: this.practiceFocus === 'wordProblems' ? 'Soal Cerita' : 'Penjumlahan Menyimpan',
+      focusTitle: this.practiceFocus === 'wordProblems' ? 'Cerita Matematika' : 'Jumlahkan dengan Penguin',
       total: this.practiceQuestions.length,
       correct: this.practiceCorrectCount,
       wrong: this.practiceWrongCount,
@@ -1376,11 +1721,41 @@ class NRSDApp {
       this.triggerChallengeHint();
     });
 
+    document.getElementById('btnChallengeHintNext')?.addEventListener('click', () => {
+      window.soundEngine.playPop();
+      this.advanceChallengeHintStep();
+    });
+
+    document.getElementById('btnChallengeHintClose')?.addEventListener('click', () => {
+      window.soundEngine.playPop();
+      document.getElementById('modalChallengeHint')?.classList.remove('active');
+    });
+
     document.getElementById('btnChallengeQuit')?.addEventListener('click', () => {
       if (confirm('Keluar dari tantangan? Progres level ini tidak akan tersimpan.')) {
         clearInterval(this.challengeTimerInterval);
         this.openChallengePicker();
       }
+    });
+
+    // Post-Level 3 Reflection Action Buttons
+    document.getElementById('btnChallengeToReflection')?.addEventListener('click', () => {
+      window.soundEngine.playPop();
+      this.openReflectionModal();
+    });
+
+    document.getElementById('btnFinishReflection')?.addEventListener('click', () => {
+      window.soundEngine.playPop();
+      document.getElementById('modalReflection')?.classList.remove('active');
+      this.showScreen('screen-home');
+    });
+
+    // Bind 4 Emotion Reflection Cards
+    document.querySelectorAll('.reflection-option-card').forEach(card => {
+      card.addEventListener('click', () => {
+        const emotion = card.dataset.emotion;
+        this.handleReflectionChoice(emotion, card);
+      });
     });
   }
 
@@ -1401,7 +1776,7 @@ class NRSDApp {
       list.push({ a: 58, b: 24, ans: 82, prompt: '58 + 24 = __', carry: 1 });
       list.push({ a: 67, b: 15, ans: 82, prompt: '67 + 15 = __', carry: 1 });
     } else {
-      // Level 3: Banyumas Culture Story Problems (Revisi 5: Ilustrasi Pendukung Soal Cerita)
+      // Level 3: Banyumas Culture Story Problems
       list.push({
         type: 'banyumas',
         key: 'mendoan',
@@ -1462,6 +1837,7 @@ class NRSDApp {
     this.challengeCorrectCount = 0;
     this.challengeWrongCount = 0;
     this.challengeScore = 0;
+    this.challengeHintStep = 1;
     this.challengeStartTime = Date.now();
 
     document.getElementById('challengePickerView').style.display = 'none';
@@ -1485,6 +1861,8 @@ class NRSDApp {
   renderCurrentChallengeQuestion() {
     const q = this.challengeQuestions[this.challengeIndex];
     if (!q) return;
+
+    this.challengeHintStep = 1;
 
     const counter = document.getElementById('challengeQuizCounter');
     if (counter) counter.textContent = `Soal ${this.challengeIndex + 1} / ${this.challengeQuestions.length}`;
@@ -1680,22 +2058,106 @@ class NRSDApp {
     }
   }
 
+  /* --- Fitur Petunjuk Bertahap Tantangan (4 Tingkatan Bantuan Tanpa Jawaban Akhir) --- */
   triggerChallengeHint() {
-    const q = this.challengeQuestions[this.challengeIndex];
     window.soundEngine.playPop();
-    const fbBox = document.getElementById('challengeFeedbackBox');
-    const fbIcon = document.getElementById('challengeFeedbackIcon');
-    const fbText = document.getElementById('challengeFeedbackText');
+    const modal = document.getElementById('modalChallengeHint');
+    if (!modal) return;
 
-    if (fbBox && fbIcon && fbText) {
-      fbBox.className = 'growth-feedback-box hint show';
-      fbBox.style.display = 'flex';
-      fbIcon.textContent = '💡';
-      if (this.challengeCurrentLevel === 1) {
-        fbText.innerHTML = `<strong>Petunjuk:</strong> Jumlahkan satuan ${q.a % 10} + ${q.b % 10} = ${(q.a % 10) + (q.b % 10)}, lalu jumlahkan puluhan ${Math.floor(q.a / 10)} + ${Math.floor(q.b / 10)} = ${Math.floor(q.a / 10) + Math.floor(q.b / 10)}.`;
-      } else {
-        fbText.innerHTML = `<strong>Petunjuk:</strong> Satuan ${q.a % 10} + ${q.b % 10} = ${(q.a % 10) + (q.b % 10)} &ge; 10 (simpan 1 ke puluhan). Total puluhan = 1 + ${Math.floor(q.a / 10)} + ${Math.floor(q.b / 10)}.`;
+    modal.classList.add('active');
+
+    // Populate helper mascot
+    const avatarContainer = document.getElementById('challengeHintPenguinAvatar');
+    if (avatarContainer) {
+      avatarContainer.innerHTML = Mascots.getPenguinMascotSvg(75, 80, 'holding');
+    }
+
+    this.renderChallengeHintStep();
+  }
+
+  renderChallengeHintStep() {
+    const q = this.challengeQuestions[this.challengeIndex];
+    if (!q) return;
+
+    const badge = document.getElementById('challengeHintBadge');
+    const content = document.getElementById('modalChallengeHintContent');
+    const btnNextHint = document.getElementById('btnChallengeHintNext');
+
+    if (badge) badge.textContent = `💡 Petunjuk ${this.challengeHintStep} dari 4`;
+
+    const o1 = q.a % 10;
+    const o2 = q.b % 10;
+    const t1 = Math.floor(q.a / 10);
+    const t2 = Math.floor(q.b / 10);
+
+    let hintText = '';
+
+    if (this.challengeCurrentLevel === 1) {
+      // Level 1 Hints
+      switch (this.challengeHintStep) {
+        case 1:
+          hintText = `“Mulailah menghitung dari angka pada rumah satuan terlebih dahulu.”`;
+          break;
+        case 2:
+          hintText = `“Hitung penjumlahan kolom satuan: ${o1} + ${o2}. Periksa apakah hasilnya perlu disimpan atau tidak.”`;
+          break;
+        case 3:
+          hintText = `“Karena hasilnya tidak melebihi 9, tulis langsung hasil satuan di kolom satuan, lalu lanjutkan menjumlahkan angka puluhan.”`;
+          break;
+        case 4:
+          hintText = `“Jumlahkan angka puluhan ${t1} + ${t2} untuk memperoleh hasil akhir puluhan dan satuan.”`;
+          break;
       }
+    } else if (this.challengeCurrentLevel === 2) {
+      // Level 2 Hints
+      switch (this.challengeHintStep) {
+        case 1:
+          hintText = `“Mulailah menghitung dari rumah satuan terlebih dahulu.”`;
+          break;
+        case 2:
+          hintText = `“Hitung penjumlahan pada kolom satuan: ${o1} + ${o2}. Perhatikan apakah hasilnya lebih dari 9.”`;
+          break;
+        case 3:
+          hintText = `“Jika hasil satuan lebih dari 9, kelompokkan 10 satuan menjadi 1 puluhan. Perhatikan angka yang harus disimpan.”`;
+          break;
+        case 4:
+          hintText = `“Gunakan Penguin untuk membawa angka simpan 1 ke rumah puluhan, kemudian lanjutkan menjumlahkan seluruh puluhan bersama angka simpan.”`;
+          break;
+      }
+    } else {
+      // Level 3 Hints (Banyumas Culture Context)
+      switch (this.challengeHintStep) {
+        case 1:
+          hintText = `“Pahami cerita dan tentukan nilai tempat puluhan dan satuan dari kedua bilangan ${q.a} dan ${q.b}.”`;
+          break;
+        case 2:
+          hintText = `“Tuliskan dalam bentuk penjumlahan bersusun dan mulailah menghitung dari kolom satuan terlebih dahulu.”`;
+          break;
+        case 3:
+          hintText = `“Periksa apakah hasil penjumlahan satuan lebih dari 9 dan membutuhkan pertukaran 10 satuan menjadi 1 puluhan.”`;
+          break;
+        case 4:
+          hintText = `“Simpan 1 puluhan di atas kolom puluhan, lalu jumlahkan seluruh puluhan bersama angka simpan untuk menemukan total akhirnya.”`;
+          break;
+      }
+    }
+
+    if (content) content.innerHTML = hintText;
+
+    if (btnNextHint) {
+      if (this.challengeHintStep < 4) {
+        btnNextHint.style.display = 'inline-flex';
+        btnNextHint.textContent = `Petunjuk Berikutnya (${this.challengeHintStep + 1}/4) ➜`;
+      } else {
+        btnNextHint.style.display = 'none';
+      }
+    }
+  }
+
+  advanceChallengeHintStep() {
+    if (this.challengeHintStep < 4) {
+      this.challengeHintStep++;
+      this.renderChallengeHintStep();
     }
   }
 
@@ -1758,6 +2220,91 @@ class NRSDApp {
 
     this.openChallengePicker();
     this.showToast(`Level ${this.challengeCurrentLevel} selesai! Skor kamu: ${score}/100.`, passed ? 'success' : 'warning');
+  }
+
+  /* ==========================================================================
+     REFLEKSI PERASAAN SETELAH LEVEL 3 (Non-Akademik)
+     ========================================================================== */
+  openReflectionModal() {
+    const modal = document.getElementById('modalReflection');
+    if (!modal) return;
+
+    modal.classList.add('active');
+
+    // Populate Penguin Companion Avatar
+    const avatar = document.getElementById('reflectionPenguinAvatar');
+    if (avatar) {
+      avatar.innerHTML = Mascots.getPenguinMascotSvg(80, 85, 'waving');
+    }
+
+    // Populate 4 SVG Emotion Mascot Avatars
+    const emo1 = document.getElementById('emoSvgSangatSenang');
+    const emo2 = document.getElementById('emoSvgSenang');
+    const emo3 = document.getElementById('emoSvgMasihBingung');
+    const emo4 = document.getElementById('emoSvgSulit');
+
+    if (emo1) emo1.innerHTML = Mascots.getEmotionSvg('sangat_senang', 80, 80);
+    if (emo2) emo2.innerHTML = Mascots.getEmotionSvg('senang', 80, 80);
+    if (emo3) emo3.innerHTML = Mascots.getEmotionSvg('masih_bingung', 80, 80);
+    if (emo4) emo4.innerHTML = Mascots.getEmotionSvg('sulit', 80, 80);
+
+    // Reset card active states
+    document.querySelectorAll('.reflection-option-card').forEach(c => c.classList.remove('active'));
+    const responseBox = document.getElementById('reflectionResponseBox');
+    if (responseBox) responseBox.style.display = 'none';
+
+    const finishBtn = document.getElementById('btnFinishReflection');
+    if (finishBtn) finishBtn.style.display = 'none';
+  }
+
+  handleReflectionChoice(emotion, cardElem) {
+    window.soundEngine.playPop();
+
+    // Highlight selected card
+    document.querySelectorAll('.reflection-option-card').forEach(c => c.classList.remove('active'));
+    cardElem?.classList.add('active');
+
+    const responseBox = document.getElementById('reflectionResponseBox');
+    const speech = document.getElementById('reflectionPenguinSpeech');
+    const finishBtn = document.getElementById('btnFinishReflection');
+
+    const responses = {
+      sangat_senang: {
+        text: '“Wah, hebat! 🥰 Penguin senang sekali kamu menikmati perjalanan berhitung di NANAS RUMAH SPONGEBOB!”',
+        color: '#db2777'
+      },
+      senang: {
+        text: '“Yeay! 💜 Senang sekali kamu belajar dan bermain bersama Penguin!”',
+        color: '#7c3aed'
+      },
+      masih_bingung: {
+        text: '“Tidak apa-apa. 💙 Belajar memang membutuhkan proses. Kamu sudah berusaha dengan sangat baik!”',
+        color: '#0284c7'
+      },
+      sulit: {
+        text: '“Tidak apa-apa. ❤️ Teruslah berlatih sedikit demi sedikit. Kamu pasti bisa berkembang menjadi lebih hebat!”',
+        color: '#dc2626'
+      }
+    };
+
+    const resp = responses[emotion] || responses.senang;
+
+    if (responseBox && speech) {
+      responseBox.style.display = 'block';
+      speech.style.color = resp.color;
+      speech.innerHTML = `<span>🐧</span> ${resp.text}`;
+    }
+
+    window.soundEngine.speak(resp.text.replace(/[“”🥰💜💙❤️🐧]/g, ''));
+
+    // Save reflection to session state (non-academic)
+    this.state.lastReflection = emotion;
+    this.saveState();
+
+    if (finishBtn) {
+      finishBtn.style.display = 'inline-flex';
+      finishBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
   }
 
   showAchievementModal(title, desc) {
